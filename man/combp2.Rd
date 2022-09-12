@@ -4,7 +4,8 @@
 \alias{combp2}
 \title{Run mediation analysis for a set of markers}
 \usage{
-combp2(data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCores = 10)
+combp2(data, dist.cutoff = 1000, bin.size = 310, seed = 0.01,
+  nCores = 10)
 }
 \arguments{
 \item{data}{A data frame from bed format file with colname name
@@ -20,7 +21,7 @@ V2 is chromosome position, V4 is for P value and V5 for name of CpGs.}
 \item{nCores}{Number of computer cores used in calculation}
 }
 \value{
-Results of the DMRs analysis.
+Results of the AMRs analysis.
 }
 \description{
 Function adapt from the combp function() of the ENmix package

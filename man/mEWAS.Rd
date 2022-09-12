@@ -7,44 +7,46 @@
 mEWAS(X, Y, M, K, conf = NULL)
 }
 \arguments{
-\item{X}{an explanatory variable matrix with n rows and d columns.
-Each column corresponds to a distinct explanatory variable (Exposure).
-Explanatory variables must be encoded as numeric variables.}
+\item{X}{(Exposure) a matrix of explanatory variables with n rows and d columns.
+Each column corresponds to a distinct explanatory variable.
+Explanatory variables must be encoded as numeric variables (matrix).}
 
-\item{Y}{an explanatory variable matrix with n rows and d columns.
-Each column corresponds to a distinct explanatory variable (Outcome).
+\item{Y}{(Outcome) a matrix of explanatory variables with n rows and D columns.
+Each column corresponds to a distinct explanatory variable.
 Explanatory variables must be encoded as numeric variables.}
 
 \item{M}{a response variable matrix with n rows and p columns.
 Each column corresponds to a beta-normalized methylation profile.
-Response variables must be encoded as numeric. No NAs allowed.}
+Response variables must be encoded as numeric. No NAs are allowed.}
 
-\item{K}{an integer for the number of latent factors in the regression model.}
+\item{K}{an integer for the number of latent factors in the latent factor
+regression model.}
 
-\item{conf}{set of covariable, must be numeric.}
+\item{conf}{a matrix with n rows that contains additional covariables (observed confounders), must be numeric.}
 }
 \value{
 an object with the following attributes:
 \itemize{
-\item U the latent variable score matrix with dimensions n x K.
-\item B the effect size matrix for the exposure X and the outcome Y.
-\item score matrix for the exposure X and the outcome Y.
-\item pValue matrix for the exposure X and the outcome Y.
-\item calibrated.score2, the calibrated score matrix for the exposure X and the outcome Y.
-\item calibrated.pvalue, the calibrated pValue matrix for the exposure X and the outcome Y.
-\item GIF : Genomic Inflation Factor for exposure and outcome
-\item lfmm : the result of the 2 regressions of lfmm, mod1 for the regression of X on M and mod2 for the regression of Y on M given X.
+\item U a latent variable score matrix with dimensions n x K.
+\item B an effect size matrix for the exposure X and the outcome Y.
+\item score a matrix for the exposure X and the outcome Y.
+\item pValue a matrix for the exposure X and the outcome Y.
+\item calibrated.score2 a calibrated score matrix for the exposure X and the outcome Y.
+\item calibrated.pvalue a calibrated p-value matrix for the exposure X and the outcome Y.
+\item GIF a Genomic Inflation Factor for exposure and outcome
+\item lfmm  the result of the 2 regressions of lfmm, mod1 for the regression of X on M and mod2 for the regression of Y on M given X.
 }
 }
 \description{
 This function uses lfmm (latent factor mixed models) to estimate
-the effects of exposures and outcomes on a response matrix.
+effect sizes of exposures and outcomes on a response matrix with
+beta-normalized methylation data).
 }
 \details{
 The response variable matrix Y and the explanatory variable are centered.
 Missing values must be imputed. The number of latent factors can be estimated
 by looking at the screeplot of eigenvalues of a PCA.
-Possibility of calibrating the scores and pValues by the GIF (Genomic Inflation Factor).
+It allows calibrating scores and p-values by  using the GIF method (Genomic Inflation Factor).
 See lfmm package for more information.
 }
 \examples{

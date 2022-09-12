@@ -7,40 +7,39 @@
 max2(pval1, pval2, diagnostic.plot = F, ...)
 }
 \arguments{
-\item{pval1}{vector of pValues (p*1) of exposure.}
+\item{pval1}{vector of p-values of exposure.}
 
-\item{pval2}{vector of pValues (p*1) of ouctome.}
+\item{pval2}{vector of p-values of ouctome.}
 
 \item{diagnostic.plot}{if TRUE the histogram of the p-values together
-with the estimate of eta0 null line is plotted.
-This is useful to visually check the fit of the estimated proportion of null p-values.}
+with the estimate of the eta0 null line is plotted.
+This is useful to check the fit of the estimated proportion of null p-values visually.}
 
 \item{...}{argument of the fdrtool function from the fdrtool package}
 }
 \value{
 an object with the following attributes:
 \itemize{
-\item a pValue for each markers
-\item a qValue for each markers
-\item the eta0 of the set of pValues
+\item a p-value for each marker
+\item a q-value for each marker
+\item eta0, an estimate of the proportion of null-hypothesis in all tests
 }
 }
 \description{
-This function compute the squared maximum of two series of pValues from the mEWAS() function.
-The objective of this function is to test all the markers and to determine which could be
-potential mediators in the exposure-outcome association.
+This function computes the squared maximum of two series of p-values from the mEWAS() function.
+This function tests all potential mediators to evaluate significance the
+exposure-outcome association.
 }
 \details{
-The pValue is computed for each markers following this formula
+A p-value is computed for each marker following the max formula
 
-\deqn{pV = max(pVal1, pVal2)^2}
+\deqn{pv = max(pval1, pval2)^2}
 
-This quantity eta0, i.e. the proportion eta0 of null p-values in a given vector of p-values,
+The quantity eta0, the proportion of null p-values in a given vector of p-values,
 is an important parameter when controlling the false discovery rate (FDR).
 A conservative choice is eta0 = 1 but a choice closer to the true value will
 increase efficiency and power - see Benjamini and Hochberg (1995, 2000) and Storey (2002) for details.
-We use the fdrtool package to transform pValues into qValues,
-which allows us to control the FDR.
+The function uses the R package fdrtool to transform p-values into q-values and to control the FDR.
 }
 \examples{
 

@@ -2,28 +2,28 @@
 % Please edit documentation in R/hdmax2.R
 \name{wrap_mediation}
 \alias{wrap_mediation}
-\title{Run mediation analysis for a set of markers}
+\title{Perform mediation analysis for multidimensional mediators (beta-normalized methylation profiles)}
 \usage{
 wrap_mediation(qval, X, Y, M, U = NULL, FDR = 0.1, sims = 3, ...)
 }
 \arguments{
-\item{qval}{set of qValues from max2() function}
+\item{qval}{set of q-values obtained from the max2() function}
 
-\item{X}{an explanatory variable matrix with n rows and d columns.
-Each column corresponds to a distinct explanatory variable (Exposure).
+\item{X}{(Exposure matrix) a matrix of explanatory variables with n rows and d columns.
+Each column corresponds to a distinct explanatory variable.
 Explanatory variables must be encoded as numeric variables.}
 
-\item{Y}{an explanatory variable matrix with n rows and d columns.
-Each column corresponds to a distinct explanatory variable (Outcome).
+\item{Y}{(Outcome matrix) a matrix of explanatory variables with n rows and D columns.
+Each column corresponds to a distinct explanatory variable.
 Explanatory variables must be encoded as numeric variables.}
 
-\item{M}{a response variable matrix with n rows and p columns.
+\item{M}{a response matrix with n rows and p columns.
 Each column corresponds to a beta-normalized methylation profile.
-Response variables must be encoded as numeric. No NAs allowed.}
+Response variables must be encoded as numeric. No NAs are allowed.}
 
-\item{U}{set of latent factors from mEWAS() function (need include covariable)}
+\item{U}{set of latent factors from mEWAS() function (needs to include covariable)}
 
-\item{FDR}{FDR threshold to pass markers in mediation analysis}
+\item{FDR}{FDR threshold in mediation analysis}
 
 \item{sims}{number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 10000 is recommended.}
@@ -31,25 +31,23 @@ Response variables must be encoded as numeric. No NAs allowed.}
 \item{...}{argument of the mediate function from the mediation package}
 }
 \value{
-Tables of results of mediation analyzes for markers with a qValue below the FDR threshold.
+Tables of results of mediation analyzes for markers with a q-value below the FDR threshold.
 Indirect effect (ACME - average causal mediation effect), ADE (average direct effect),
 PM (proportion mediated) and TE (total effect). Composition of tables: estimated effect,
 confidence interval and mediation pValue.
-We also return, We also return the results of the linear regressions.
-The xm table corresponds to the regressions of X on Mi and
-the my table to the regressions of Y on Mi knowing X.
-With Mi corresponding to the different CpGs tested.
+
+It also returns results of linear regression models.
+The xm table corresponds to the regressions of X on M and
+the my table to the regressions of Y on M conditional on X.
 }
 \description{
-Estimate various quantities for causal mediation analysis for each
-significant markers, including average causal mediation effects
-(indirect effect), average direct effects, proportions mediated,
-and total effect.
+Estimate various quantities for causal mediation analysis, including average causal mediation effects,
+indirect effects, average direct effects, proportion mediated and total effects.
 }
 \details{
-We use the mediate() function of the mediation package on the set of markers having a qValue lower
-than the FDR threshold. This function makes it possible to estimate their indirect effects and to
-test their significance.
+The functions uses the mediate() function of the mediation package on the set of profiles having a q-value lower
+than the FDR threshold. This function estimates indirect effects and
+tests their significance.
 }
 \examples{
 
