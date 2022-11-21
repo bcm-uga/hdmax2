@@ -63,7 +63,7 @@ mEWAS <- function(X, Y, M, K, conf = NULL) {
   res <- list()
   #No NAs
   na = !is.na(X) & !is.na(Y)
-  for (col in colnames(conf){
+  for (col in colnames(conf)){
     na = na & !is.na(conf[, col])
   }
   if (length(na[!na]) > 0){
