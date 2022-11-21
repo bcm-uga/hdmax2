@@ -1,45 +1,43 @@
 ##' Epigenome Wide Association Study with both exposure and outcome
 ##'
 ##' This function uses lfmm (latent factor mixed models) to estimate
-##' effect sizes of exposures and outcomes on a response matrix with
-##' beta-normalized methylation data).
+##' the effects of exposures and outcomes on a response matrix.
 ##'
 ##'
 ##' @param M a response variable matrix with n rows and p columns.
 ##' Each column corresponds to a beta-normalized methylation profile.
-##' Response variables must be encoded as numeric. No NAs are allowed.
-##' @param X  (Exposure) a matrix of explanatory variables with n rows and d columns.
-##' Each column corresponds to a distinct explanatory variable.
-##' Explanatory variables must be encoded as numeric variables (matrix).
-##' @param Y (Outcome) a matrix of explanatory variables with n rows and D columns.
-##' Each column corresponds to a distinct explanatory variable.
+##' Response variables must be encoded as numeric. No NAs allowed.
+##' @param X an explanatory variable matrix with n rows and d columns.
+##' Each column corresponds to a distinct explanatory variable (Exposure).
 ##' Explanatory variables must be encoded as numeric variables.
-##' @param K an integer for the number of latent factors in the latent factor
-##' regression model.
-##' @param conf a matrix with n rows that contains additional covariables (observed confounders), must be numeric.
+##' @param Y an explanatory variable matrix with n rows and d columns.
+##' Each column corresponds to a distinct explanatory variable (Outcome).
+##' Explanatory variables must be encoded as numeric variables.
+##' @param K an integer for the number of latent factors in the regression model.
+##' @param conf set of covariable, must be numeric.
 ##' @return an object with the following attributes:
 ##'
-##'  - U a latent variable score matrix with dimensions n x K.
+##'  - U the latent variable score matrix with dimensions n x K.
 ##'
-##'  - B an effect size matrix for the exposure X and the outcome Y.
+##'  - B the effect size matrix for the exposure X and the outcome Y.
 ##'
-##'  - score a matrix for the exposure X and the outcome Y.
+##'  - score matrix for the exposure X and the outcome Y.
 ##'
-##'  - pValue a matrix for the exposure X and the outcome Y.
+##'  - pValue matrix for the exposure X and the outcome Y.
 ##'
-##'  - calibrated.score2 a calibrated score matrix for the exposure X and the outcome Y.
+##'  - calibrated.score2, the calibrated score matrix for the exposure X and the outcome Y.
 ##'
-##'  - calibrated.pvalue a calibrated p-value matrix for the exposure X and the outcome Y.
+##'  - calibrated.pvalue, the calibrated pValue matrix for the exposure X and the outcome Y.
 ##'
-##'  - GIF a Genomic Inflation Factor for exposure and outcome
+##'  - GIF : Genomic Inflation Factor for exposure and outcome
 ##'
-##'  - lfmm  the result of the 2 regressions of lfmm, mod1 for the regression of X on M and mod2 for the regression of Y on M given X.
+##'  - lfmm : the result of the 2 regressions of lfmm, mod1 for the regression of X on M and mod2 for the regression of Y on M given X.
 ##'
 ##' @details
 ##' The response variable matrix Y and the explanatory variable are centered.
 ##' Missing values must be imputed. The number of latent factors can be estimated
 ##' by looking at the screeplot of eigenvalues of a PCA.
-##' It allows calibrating scores and p-values by  using the GIF method (Genomic Inflation Factor).
+##' Possibility of calibrating the scores and pValues by the GIF (Genomic Inflation Factor).
 ##' See lfmm package for more information.
 ##' @export
 ##' @author Basile Jumentier
@@ -53,39 +51,39 @@
 ##'
 ##'
 mEWAS <- function(X, Y, M, K, conf = NULL) {
-
+  
   res <- list()
-
+  
   # First regression
   dat <- lfmm::lfmm_ridge(Y = M, X = cbind(X, conf), K = K)
   res[[1]] <- dat
   dat <- lfmm::lfmm_test(Y = M, X = cbind(X, conf), lfmm = dat)
-
+  
   pv1 <- dat$pvalue[, 1]
   sc1 <- dat$score[, 1]
-
+  
   sc1.cal <- dat$calibrated.score2[, 1]
   pv1.cal <- dat$calibrated.pvalue[, 1]
-
+  
   gif1 <- dat$gif[1]
-
+  
   # Second regression
   dat <- lfmm::lfmm_ridge(Y = M, X = cbind(X, Y, conf), K = K)
   res[[2]] <- dat
   # ajout
   U <- dat$U
   dat <- lfmm::lfmm_test(Y = M, X = cbind(X, Y, conf), lfmm = dat)
-
+  
   pv2 <- dat$pvalue[, 2]
   sc2 <- dat$score[, 2]
-
+  
   sc2.cal <- dat$calibrated.score2[, 2]
   pv2.cal <- dat$calibrated.pvalue[, 2]
-
+  
   gif2 <- dat$gif[2]
-
+  
   names(res) <- c("mod1", "mod2")
-
+  
   return(list(score = cbind(sc1, sc2),
               pValue = cbind(pv1, pv2),
               calibrated.score2 = cbind(sc1.cal, sc2.cal),
@@ -99,35 +97,36 @@ mEWAS <- function(X, Y, M, K, conf = NULL) {
 
 ##' Compute the squared maximum of two series of pValues
 ##'
-##' This function computes the squared maximum of two series of p-values from the mEWAS() function.
-##' This function tests all potential mediators to evaluate significance the
-##' exposure-outcome association.
+##' This function compute the squared maximum of two series of pValues from the mEWAS() function.
+##' The objective of this function is to test all the markers and to determine which could be
+##' potential mediators in the exposure-outcome association.
 ##'
-##' @param pval1 vector of p-values of exposure.
-##' @param pval2 vector of p-values of ouctome.
+##' @param pval1 vector of pValues (p*1) of exposure.
+##' @param pval2 vector of pValues (p*1) of ouctome.
 ##' @param diagnostic.plot if TRUE the histogram of the p-values together
-##' with the estimate of the eta0 null line is plotted.
-##' This is useful to check the fit of the estimated proportion of null p-values visually.
+##' with the estimate of eta0 null line is plotted.
+##' This is useful to visually check the fit of the estimated proportion of null p-values.
 ##' @param ... argument of the fdrtool function from the fdrtool package
 ##'
 ##' @return an object with the following attributes:
 ##'
-##'  - a p-value for each marker
+##'  - a pValue for each markers
 ##'
-##'  - a q-value for each marker
+##'  - a qValue for each markers
 ##'
-##'  - eta0, an estimate of the proportion of null-hypothesis in all tests
+##'  - the eta0 of the set of pValues
 ##'
 ##' @details
-##' A p-value is computed for each marker following the max formula
+##' The pValue is computed for each markers following this formula
 ##'
-##' \deqn{pv = max(pval1, pval2)^2}
+##' \deqn{pV = max(pVal1, pVal2)^2}
 ##'
-##' The quantity eta0, the proportion of null p-values in a given vector of p-values,
+##' This quantity eta0, i.e. the proportion eta0 of null p-values in a given vector of p-values,
 ##' is an important parameter when controlling the false discovery rate (FDR).
 ##' A conservative choice is eta0 = 1 but a choice closer to the true value will
 ##' increase efficiency and power - see Benjamini and Hochberg (1995, 2000) and Storey (2002) for details.
-##' The function uses the R package fdrtool to transform p-values into q-values and to control the FDR.
+##' We use the fdrtool package to transform pValues into qValues,
+##' which allows us to control the FDR.
 ##' @export
 ##' @author Basile Jumentier
 ##' @examples
@@ -148,52 +147,54 @@ mEWAS <- function(X, Y, M, K, conf = NULL) {
 ##' abline(h = -log10(0.05 / ncol(example$M)))
 ##'
 max2 <- function(pval1, pval2, diagnostic.plot = F, ...) {
-
+  
   pval <- apply(cbind(pval1, pval2), 1, max)^2
   eta0 <- fdrtool::pval.estimate.eta0(pval, diagnostic.plot = diagnostic.plot)
   qval <- fdrtool::fdrtool(pval,statistic = "pvalue", plot = F, verbose = F, ...)$qval
-
+  
   return(list(pval = pval,
               eta0 = eta0,
               qval = qval))
 }
 
-##' Perform mediation analysis for multidimensional mediators (beta-normalized methylation profiles)
+##' Run mediation analysis for a set of markers
 ##'
-##' Estimate various quantities for causal mediation analysis, including average causal mediation effects,
-##' indirect effects, average direct effects, proportion mediated and total effects.
+##' Estimate various quantities for causal mediation analysis for each
+##' significant markers, including average causal mediation effects
+##' (indirect effect), average direct effects, proportions mediated,
+##' and total effect.
 ##'
-##' @param qval set of q-values obtained from the max2() function
-##' @param M a response matrix with n rows and p columns.
+##' @param qval set of qValues from max2() function
+##' @param M a response variable matrix with n rows and p columns.
 ##' Each column corresponds to a beta-normalized methylation profile.
-##' Response variables must be encoded as numeric. No NAs are allowed.
-##' @param X (Exposure matrix) a matrix of explanatory variables with n rows and d columns.
-##' Each column corresponds to a distinct explanatory variable.
+##' Response variables must be encoded as numeric. No NAs allowed.
+##' @param X an explanatory variable matrix with n rows and d columns.
+##' Each column corresponds to a distinct explanatory variable (Exposure).
 ##' Explanatory variables must be encoded as numeric variables.
-##' @param Y (Outcome matrix) a matrix of explanatory variables with n rows and D columns.
-##' Each column corresponds to a distinct explanatory variable.
+##' @param Y an explanatory variable matrix with n rows and d columns.
+##' Each column corresponds to a distinct explanatory variable (Outcome).
 ##' Explanatory variables must be encoded as numeric variables.
-##' @param U set of latent factors from mEWAS() function (needs to include covariable)
-##' @param FDR FDR threshold in mediation analysis
+##' @param U set of latent factors from mEWAS() function (need include covariable)
+##' @param FDR FDR threshold to pass markers in mediation analysis
 ##' @param sims number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 ##' 10000 is recommended.
 ##' @param ... argument of the mediate function from the mediation package
 ##'
 ##' @return
-##' Tables of results of mediation analyzes for markers with a q-value below the FDR threshold.
+##' Tables of results of mediation analyzes for markers with a qValue below the FDR threshold.
 ##' Indirect effect (ACME - average causal mediation effect), ADE (average direct effect),
 ##' PM (proportion mediated) and TE (total effect). Composition of tables: estimated effect,
 ##' confidence interval and mediation pValue.
-##'
-##' It also returns results of linear regression models.
-##' The xm table corresponds to the regressions of X on M and
-##' the my table to the regressions of Y on M conditional on X.
+##' We also return, We also return the results of the linear regressions.
+##' The xm table corresponds to the regressions of X on Mi and
+##' the my table to the regressions of Y on Mi knowing X.
+##' With Mi corresponding to the different CpGs tested.
 ##'
 ##' @details
 ##'
-##' The functions uses the mediate() function of the mediation package on the set of profiles having a q-value lower
-##' than the FDR threshold. This function estimates indirect effects and
-##' tests their significance.
+##' We use the mediate() function of the mediation package on the set of markers having a qValue lower
+##' than the FDR threshold. This function makes it possible to estimate their indirect effects and to
+##' test their significance.
 ##'
 ##' @export
 ##' @author Basile Jumentier
@@ -226,72 +227,72 @@ max2 <- function(pval1, pval2, diagnostic.plot = F, ...) {
 ##'
 ##'
 wrap_mediation <- function(qval, X, Y, M, U = NULL, FDR = 0.1, sims = 3, ...) {
-
+  
   if (is.null(colnames(M))) {
     colnames(M) <- 1:ncol(M)
   }
-
+  
   M <- M[, qval <= FDR]
-
-
+  
+  
   # from package mediation
   ACME <- matrix(ncol = 4, nrow = ncol(M))
   ADE <- matrix(ncol = 4, nrow = ncol(M))
   PM <- matrix(ncol = 4, nrow = ncol(M))
   TE <- matrix(ncol = 4, nrow = ncol(M))
-
+  
   # from linear models
   xm <- matrix(ncol = 4, nrow = ncol(M))
   my <- matrix(ncol = 4, nrow = ncol(M))
-
+  
   for (i in 1:ncol(M)) {
-
+    
     dat.x <- data.frame(X = X, Mi = M[, i], covar = U)
     dat.y <- data.frame(X = X, Mi = M[, i], covar = U, Y = Y)
-
+    
     mod1 <- stats::lm(Mi ~ X + ., data = dat.x)
     mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
-
+    
     # for linear models
     xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
     my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
-
+    
     med <- mediation::mediate(mod1, mod2, sims = sims, treat = "X", mediator = "Mi", ...)
-
+    
     ACME[i, ] <- c(med$d0, med$d0.ci[1], med$d0.ci[2], med$d0.p)
     ADE[i, ] <- c(med$z0, med$z0.ci[1], med$z0.ci[2], med$z0.p)
     PM[i, ] <- c(med$n0, med$n0.ci[1], med$n0.ci[2], med$n0.p)
     TE[i, ] <- c(med$tau.coef, med$tau0.ci[1], med$tau0.ci[2], med$tau.p)
   }
-
+  
   ACME <- as.data.frame(ACME)
   ADE <- as.data.frame(ADE)
   PM <- as.data.frame(PM)
   TE <- as.data.frame(TE)
   xm <- as.data.frame(xm)
   my <- as.data.frame(my)
-
+  
   colnames(ACME) <- c("est", "CI_2.5", "CI_97.5", "pval")
   colnames(ADE) <- c("est", "CI_2.5", "CI_97.5", "pval")
   colnames(PM) <- c("est", "CI_2.5", "CI_97.5", "pval")
   colnames(TE) <- c("est", "CI_2.5", "CI_97.5", "pval")
   colnames(xm) <- c("Estimate", "Std.Error", "t.Value", "pValue")
   colnames(my) <- c("Estimate", "Std.Error", "t.Value", "pValue")
-
+  
   ACME$CpG <- colnames(M)
   ADE$CpG <- colnames(M)
   PM$CpG <- colnames(M)
   TE$CpG <- colnames(M)
   xm$CpG <- colnames(M)
   my$CpG <- colnames(M)
-
+  
   return(list(ACME = ACME,
               ADE = ADE,
               PM = PM,
               TE = TE,
               xm = xm,
               my = my))
-
+  
 }
 
 
@@ -308,7 +309,7 @@ wrap_mediation <- function(qval, X, Y, M, U = NULL, FDR = 0.1, sims = 3, ...) {
 ##' @param nCores Number of computer cores used in calculation
 ##'
 ##' @return
-##' Results of the AMRs analysis.
+##' Results of the DMRs analysis.
 ##'
 ##' @details
 ##'
@@ -319,7 +320,7 @@ wrap_mediation <- function(qval, X, Y, M, U = NULL, FDR = 0.1, sims = 3, ...) {
 ##' @author Basile Jumentier
 ##'
 combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCores = 10) {
-
+  
   ##### a function to get a table of p-values for estimating acf
   #####loc should be increasing;
   acf.table<-function(x,loc,dist.cutoff){
@@ -334,7 +335,7 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
     }
     return(result)
   }
-
+  
   ##### a function to estimate acf
   get.acf<-function(data,dist.cutoff,bin.size){
     temp<-NULL
@@ -345,17 +346,17 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
     bin.label<-findInterval(temp$dist,seq(bin.size,dist.cutoff,bin.size))
     temp.stouffer<-by(temp,bin.label,FUN=function(x){stats::cor.test(stats::qnorm(x$x1),
                                                                      stats::qnorm(x$x2),alternative="greater")},simplify=FALSE)
-
+    
     cor.stouffer<-sapply(temp.stouffer,function(x){x$estimate})
     p.stouffer<-sapply(temp.stouffer,function(x){x$p.value})
-
+    
     if (any(p.stouffer>0.05)){
       index=min(which(p.stouffer>0.05))
       cor.stouffer[index:length(cor.stouffer)]=0
     }
     return(cor.stouffer)
   }
-
+  
   if (nCores > parallel::detectCores()) {
     nCores = parallel::detectCores()
   }
@@ -383,7 +384,7 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
   result <- do.call("rbind", result)
   names(result) = c("chr", "start", "end", "s.p")
   result = result[stats::p.adjust(result$s.p, method = "fdr") < seed,]
-
+  
   result.fdr = NULL
   if (nrow(result) > 0) {
     for (chr in unique(result$chr)) {
@@ -399,9 +400,9 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
       region.max <- max(Biostrings::width(b))
       temp = sapply(1:length(b), function(i) {
         index.i = (pos >= start[i] & pos <= end[i])
-
+        
         # print(sum(index.i))
-
+        
         if (sum(index.i) > 1) {
           int <- findInterval(c(stats::dist(pos[index.i])),
                               seq(bin.size, region.max + bin.size, bin.size))
@@ -420,7 +421,7 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
     result.fdr <- result.fdr[order(result.fdr$p), ]
     result.fdr$start = (result.fdr$start - 1)
   }
-
+  
   return(result.fdr)
 }
 
@@ -471,12 +472,12 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
 ##' #                   cpg = example$annotation$cpg, nCores = 1)
 ##' #
 AMR_search <- function(chr, start, end, pval, cpg, ...) {
-
+  
   tmp <- data.frame(chr, start, end, pval, cpg)
   colnames(tmp) <- paste0("V", 1:5)
-
+  
   tmp <- combp2(tmp, ...)
-
+  
   return(list(res = tmp,
               data = data.frame(chr, start, end, pval, cpg)))
 }
@@ -536,68 +537,68 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
 ##' #
 ##' # tmp <- AMR_build(res, methylation = example$M, nb_cpg = 2)
 AMR_build <- function(res, methylation, nb_cpg = 2) {
-
+  
   data <- res$data
   res <- res$res
-
+  
   # Number of CpG per DMR
-
+  
   nb <- NULL
-
+  
   for (i in 1:nrow(res)) {
-
+    
     chri <- as.character(res$chr[i])
-
+    
     tmp <- dplyr::filter(data, chr == chri)
-
+    
     nb <- c(nb, sum((res$start[i]:res$end[i]) %in% tmp$start))
   }
-
+  
   # Select DMRs with nb_cpg CpGs at minimum
-
+  
   res <- cbind(res, nb)
-
+  
   res <- dplyr::filter(res, nb >= nb_cpg)
-
+  
   DMR.select <- list()
-
+  
   for (i in 1:nrow(res)) {
-
+    
     chri <- as.character(res$chr[i])
-
+    
     tmp <- dplyr::filter(data, chr == chri)
-
+    
     # DMR.select[[i]] <- tmp$cpg[(tmp$start %in% (res$start[i]:res$end[i]))]
     # THE CHANGE
     DMR.select[[i]] <- as.character(tmp$cpg[(tmp$start %in% (res$start[i]:res$end[i]))])
   }
-
+  
   # Select CpGs values in the methylation matrix
-
+  
   DMR.meth <- list()
-
+  
   for (i in 1:length(DMR.select)) {
     DMR.meth[[i]] <- methylation[, DMR.select[[i]]]
   }
-
+  
   # Built a vector for each DMR with the first component of PCA or with the rowmeans
-
+  
   DMR.acp <- as.data.frame(matrix(ncol = length(DMR.meth), nrow = nrow(methylation)))
   colnames(DMR.acp) <- paste0("DMR", 1:length(DMR.meth))
-
+  
   DMR.mean <- as.data.frame(matrix(ncol = length(DMR.meth), nrow = nrow(methylation)))
   colnames(DMR.mean) <- paste0("DMR", 1:length(DMR.meth))
-
+  
   for (i in 1:length(DMR.meth)) {
     DMR.acp[, i] <- prcomp(DMR.meth[[i]])$x[, 1]
     DMR.mean[, i] <- rowMeans(DMR.meth[[i]])
   }
-
+  
   # data
-
+  
   res <- cbind(DMR = colnames(DMR.acp), res)
   names(DMR.select) <- colnames(DMR.acp)
-
+  
   return(list(AMR_acp = DMR.acp,
               AMR_mean = DMR.mean,
               res = res,
@@ -672,66 +673,66 @@ AMR_build <- function(res, methylation, nb_cpg = 2) {
 ##' #
 ##' # res <- wrap_mediation_AMR(X = example$X, Y = example$Y, AMR = tmp$AMR_mean, U = U, sims = 3)
 wrap_mediation_AMR <- function(X, Y, AMR, U = NULL, sims = 3) {
-
+  
   DMR <- AMR
-
+  
   ACME <- matrix(ncol = 4, nrow = ncol(DMR))
   ADE <- matrix(ncol = 4, nrow = ncol(DMR))
   PM <- matrix(ncol = 4, nrow = ncol(DMR))
   TE <- matrix(ncol = 4, nrow = ncol(DMR))
-
+  
   # from linear models
   xm <- matrix(ncol = 4, nrow = ncol(DMR))
   my <- matrix(ncol = 4, nrow = ncol(DMR))
-
+  
   for (i in 1:ncol(DMR)) {
-
+    
     dat.x <- data.frame(X = X, Mi = DMR[, i], covar = U)
     dat.y <- data.frame(X = X, Mi = DMR[, i], covar = U, Y = Y)
-
+    
     mod1 <- stats::lm(Mi ~ X + ., data = dat.x)
     mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
-
+    
     # for linear models
     xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
     my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
-
+    
     med <- mediation::mediate(mod1, mod2, sims = sims, treat = "X", mediator = "Mi")
-
+    
     ACME[i, ] <- c(med$d0, med$d0.ci[1], med$d0.ci[2], med$d0.p)
     ADE[i, ] <- c(med$z0, med$z0.ci[1], med$z0.ci[2], med$z0.p)
     PM[i, ] <- c(med$n0, med$n0.ci[1], med$n0.ci[2], med$n0.p)
     TE[i, ] <- c(med$tau.coef, med$tau0.ci[1], med$tau0.ci[2], med$tau.p)
   }
-
+  
   ACME <- as.data.frame(ACME)
   ADE <- as.data.frame(ADE)
   PM <- as.data.frame(PM)
   TE <- as.data.frame(TE)
   xm <- as.data.frame(xm)
   my <- as.data.frame(my)
-
+  
   colnames(ACME) <- c("est", "CI_2.5", "CI_97.5", "pval")
   colnames(ADE) <- c("est", "CI_2.5", "CI_97.5", "pval")
   colnames(PM) <- c("est", "CI_2.5", "CI_97.5", "pval")
   colnames(TE) <- c("est", "CI_2.5", "CI_97.5", "pval")
   colnames(xm) <- c("Estimate", "Std.Error", "t.Value", "pValue")
   colnames(my) <- c("Estimate", "Std.Error", "t.Value", "pValue")
-
+  
   ACME$DMR <- colnames(DMR)
   ADE$DMR <- colnames(DMR)
   PM$DMR <- colnames(DMR)
   TE$DMR <- colnames(DMR)
   xm$CpG <- colnames(DMR)
   my$CpG <- colnames(DMR)
-
+  
   return(list(ACME = ACME,
               ADE = ADE,
               PM = PM,
               TE = TE,
               xm = xm,
               my = my))
-
+  
 }
 
 
@@ -758,37 +759,36 @@ wrap_mediation_AMR <- function(X, Y, AMR, U = NULL, sims = 3) {
 ##' # res <- est_oie(X, m, Y, C, 10)
 ##'
 est_oie <- function(X, m, Y, C, boots = 100) {
-
+  
   # bootstrap
   acme_sum <- matrix(nrow = 1, ncol = boots)
-
+  
   for (i in 1:ncol(acme_sum)) {
     samp <- sample(length(X), replace = T)
-
+    
     # effet B m -> Y
     dat.1 <- data.frame(X, m, C)
     mod1 <- lm(Y[samp] ~ ., data = dat.1[samp, ])
     B <- as.data.frame(summary(mod1)$coeff[3:(ncol(m) + 2), ])
-
+    
     # effet A X -> M
     mod2 <- lm(m[samp, ] ~ X[samp] + C[samp, ])
     A <- t(sapply(summary(mod2), function(x) x$coeff[2, ]))
     A <- data.frame(CpG = rownames(A), A)
     # A <- separate(A, CpG, c("0", "CpG"), " ")[, -1]
-
+    
     colnames(B) <- c("B", "B_sd", "B_tv", "B_pv")
     colnames(A)[2:5] <- c("A", "A_sd", "A_tv", "A_pv")
-
+    
     ab <- cbind(A, B)
     rownames(ab) <- NULL
-
+    
     # effet A*B
     ab$AB <- ab$A * ab$B
-
+    
     acme_sum[i] <- sum(ab$AB)
   }
-
+  
   return(oie = as.vector(acme_sum))
 }
-
 
