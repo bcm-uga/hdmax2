@@ -56,7 +56,7 @@ $$
 Quantifying indirect effects with single and multiple mediators.
 
 
-To install the latest version of **hdmax2**, use the github repository 
+To install the latest version of **hdmax2**, use the github repository. The library Biostrings from Bioconductor is requierd. 
 ```{r}
 devtools::install_github("bcm-uga/hdmax2")
 ```
