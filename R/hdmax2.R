@@ -2,17 +2,14 @@
 ##'
 ##' This function uses lfmm (latent factor mixed models) to estimate
 ##' the effects of exposures and outcomes on a response matrix.
-##'
+##' All variables must be encoded as numeric. No NAs allowed.
 ##'
 ##' @param M a response variable matrix with n rows and p columns.
 ##' Each column corresponds to a beta-normalized methylation profile.
-##' Response variables must be encoded as numeric. No NAs allowed.
 ##' @param X an explanatory variable matrix with n rows and d columns.
 ##' Each column corresponds to a distinct explanatory variable (Exposure).
-##' Explanatory variables must be encoded as numeric variables.
 ##' @param Y an explanatory variable matrix with n rows and d columns.
 ##' Each column corresponds to a distinct explanatory variable (Outcome).
-##' Explanatory variables must be encoded as numeric variables.
 ##' @param K an integer for the number of latent factors in the regression model.
 ##' @param conf set of covariable, must be numeric.
 ##' @return an object with the following attributes:
@@ -32,7 +29,6 @@
 ##'  - GIF : Genomic Inflation Factor for exposure and outcome
 ##'
 ##'  - lfmm : the result of the 2 regressions of lfmm, mod1 for the regression of X on M and mod2 for the regression of Y on M given X.
-##'
 ##' @details
 ##' The response variable matrix Y and the explanatory variable are centered.
 ##' Missing values must be imputed. The number of latent factors can be estimated
