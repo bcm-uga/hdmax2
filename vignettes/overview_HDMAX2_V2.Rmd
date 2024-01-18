@@ -1,0 +1,219 @@
+---
+title: "Overview of R Package hdmax2"
+author: "Florence Pittion, Magali Richard, Olivier Francois"
+date: "January, 2024"
+output:
+  prettydoc::html_pretty:
+    self_contained: true
+    theme: cayman
+    highlight: github
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+***
+
+**Summary:**
+
+***
+
+## Introduction 
+
+HDMAX2 is an efficient algorithm for high dimensional mediation analysis using max-squared tests.
+HDMAX2 is structured in two main steps:
+Step 1. Evaluating associations between exposure, mediators and outcome, using a latent factor mixed models (LFMMs) to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each marker on outcome $Y$.
+
+$$
+ M=Xa^T +U_1V_1^T +E_1
+$$
+$a$ the vector of effect sizes of exposure on mediators levels,
+$U$ the matrix formed of K latent factors estimated simultaneously with a,
+$V$ loadings associated with the latent factors,
+$E_1$ the matrix of residual errors.
+
+$$
+Y=Xc+Mb^T +U_2V_2^T +E_2 
+$$
+$c$ the direct effect of exposure on outcome,
+$b$ the effect sizes of mediators on outcome,
+$U_2$ the latent factors from a latent factor regression model,
+$V_2$ the corresponding loadings,
+$E_2$ the a matrix of errors.
+
+and identifying potential mediators, combining the significance values $P_x$ and $P_y$ to compute a P-value for each mediators with *max²* test.
+$$
+P = max(P_x, P_y)^2
+$$
+Step 2. Estimation of the individual indirect effects of mediators via the **mediation** package and estimation of the **overall indirect effect** of all the mediators, with the following formula.
+
+$$
+OIE = \sum _{j=1} ^m a_j b_j 
+$$
+
+
+To install the latest version of **hdmax2**, use the github repository 
+```{r}
+#devtools::install_github("bcm-uga/hdmax2")
+```
+
+***
+## Starting with hdmax2
+
+
+In this tutorial, we present an example of mediation analysis. 
+
+```{r}
+#load("example_hdmax2.data")
+
+#load("../../../results/git_thema/results/20240111_new_hdmax2/R/sample_hdmax2_data.RData")
+
+load("../data/sample_hdmax2_data.RData")
+X = data$X_binary
+Y = data$Y_time
+M = data$M
+FDR=0.1
+```
+***
+
+## Evaluating associations between exposure, mediators and outcome
+
+In order to estimate how many latent factors can be infered from the methylation matrix, we perform a principal component analysis (PCA) using the **prcomp** function as follows. 
+
+```{r}
+# pc <- prcomp(methylation)
+# plot(pc$sdev[1:15]^2,
+#      xlab = 'Principal Component',
+#      ylab = "Explained variance",
+#      col = c(rep(1, 3), 2, rep(1, 16)))
+```
+
+The screeplot indicates around 4 main components in the data. We will use $K = 4$ latent factors in subsequent analyses.
+
+The **runAS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. It uses the covariables matrix $conf$ and $K$ latent factors.
+
+```{r}
+source("../R/runAS.R")
+# X continuous, Y continuous
+
+# step 1 association study + max2
+res_step1 = runAS(X_matrix = X ,
+                 Y_matrix = Y,
+                 M_matrix = M, 
+                 K = 5,
+                 X_type = "binary",
+                 Y_type = "continuous",
+                 M_type = "methylation",
+                 conf = NULL,
+                 diagnostic.plot = F)
+```
+
+The function estimates for each regression:
+
+- pvalues to assess signification of the regression
+
+- z score
+
+- gif : genomic inflation factor which expresses the deviation of the distribution of the observed test statistic compared to the distribution of the expected test statistic. In case of highly stratified population (high gif), it allows to calibrate P-values without excess false positive rate.
+
+- latent factor effect (when regression type is compatible)
+
+- effects sizes of the regression
+
+
+It also estimate results of *max²* test which identifying potential CpG mediators:
+combining the significance values $pvalues$ with the function **max2**.
+This rejects the null-hypothesis that either the effect of exposure on potential mediators or the effect of potential mediators on outcome is null:
+
+- pvalue of each test
+
+- eta0 for each test, the local false discovery rate (FDR) parameter
+
+- qvalue of each test
+
+
+
+
+```{r}
+# #lfmm estimation
+
+head(res_step1$mod1$pval)
+head(res_step1$mod1$effect.sizes)
+# #regression
+head(res_step1$mod2$zscores)
+head(res_step1$mod2$gif)
+
+# 
+# # max test
+head(res_step1$max2$pval)
+head(res_step1$max2$eta0)
+head(res_step1$max2$qval)
+
+```
+
+
+***
+
+In this example, we will consider FDR levels <10%.
+
+
+```{r}
+##Selecting CpG
+mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
+mediators
+```
+
+**Quantifying indirect effects of single mediator**
+
+The function **wrap_mediation** estimate the individual indirect effect of mediators
+```{r}
+source("../R/acme_mediation.R")
+res_med = acme_mediation(qval = res_step1$max2$qval,
+                            X = X,
+                            Y = Y,
+                            M = M,
+                            U = res_step1$mod1$U,
+                            sims = 100, FDR = FDR)
+
+##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
+
+
+```
+
+Estimation of the average causal mediation effect (ACME) is the indirect effect. Other effect estimated include the average direct effect (ADE), the proportion mediated (PM), and the total effect.
+
+```{r}
+head(res_med$ACME)
+head(res_med$ADE)
+head(res_med$PM)
+head(res_med$TE)
+# #Regression
+head(res_med$xm)
+head(res_med$my)
+
+library(ggplot2)
+plot_summary_ACME(res_med$ACME)
+
+```
+
+```{r oie}
+source("../R/oie_estimation.R")
+m = M[,names(sort(mediators))]
+res_oie =oie_estimation(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )
+median(res_oie)
+
+boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
+
+```
+
+
+
+
