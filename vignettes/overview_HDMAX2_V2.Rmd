@@ -28,8 +28,8 @@ knitr::opts_chunk$set(
 
 ## Introduction 
 
-HDMAX2 is an efficient algorithm for high dimensional mediation analysis using max-squared tests.
-HDMAX2 is structured in two main steps:
+*HDMAX2* is an efficient algorithm for high dimensional mediation analysis using max-squared tests.
+*HDMAX2* is structured in two main steps:
 Step 1. Evaluating associations between exposure, mediators and outcome, using a latent factor mixed models (LFMMs) to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each marker on outcome $Y$.
 
 $$
@@ -69,7 +69,7 @@ To install the latest version of **hdmax2**, use the github repository
 ## Starting with hdmax2
 
 
-In this tutorial, we present an example of mediation analysis. 
+Data set is produce from transcription, methylation and patients meta data of PDAC (Pancreatic Ductal AdenoCarcinoma) TCGA data. For this first use case we used binary exposition and continuous outcome, we analyzed 100 samples and 500 potential mediators.
 
 ```{r}
 #load("example_hdmax2.data")
@@ -80,31 +80,36 @@ load("../data/sample_hdmax2_data.RData")
 X = data$X_binary
 Y = data$Y_time
 M = data$M
-FDR=0.1
+
 ```
 ***
 
 ## Evaluating associations between exposure, mediators and outcome
 
-In order to estimate how many latent factors can be infered from the methylation matrix, we perform a principal component analysis (PCA) using the **prcomp** function as follows. 
+In order to estimate how many latent factors can be inferred from the potential mediators matrix, we performed a principal component analysis (PCA). 
 
 ```{r}
-# pc <- prcomp(methylation)
+library("FactoMineR")
+library("factoextra")
+res_pca = PCA(M, graph = F)
+fviz_screeplot(res_pca, ncp=10)
+
+# 
+# pc <- prcomp(M)
 # plot(pc$sdev[1:15]^2,
 #      xlab = 'Principal Component',
-#      ylab = "Explained variance",
-#      col = c(rep(1, 3), 2, rep(1, 16)))
+#      ylab = "Explained variance")
 ```
 
-The screeplot indicates around 4 main components in the data. We will use $K = 4$ latent factors in subsequent analyses.
+The screeplot indicates around 5 main components in the data. We will use $K = 5$ latent factors in subsequent analyses.
 
-The **runAS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. It uses the covariables matrix $conf$ and $K$ latent factors.
+The **runAS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$.
 
 ```{r}
 source("../R/runAS.R")
 # X continuous, Y continuous
 
-# step 1 association study + max2
+# step 1 association studies + max2
 res_step1 = runAS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
@@ -118,41 +123,45 @@ res_step1 = runAS(X_matrix = X ,
 
 The function estimates for each regression:
 
-- pvalues to assess signification of the regression
+- *p-values* to assess signification of the regression
 
-- z score
+- *effects sizes* of the regression
 
-- gif : genomic inflation factor which expresses the deviation of the distribution of the observed test statistic compared to the distribution of the expected test statistic. In case of highly stratified population (high gif), it allows to calibrate P-values without excess false positive rate.
+- *latent factor effect* (when regression type is compatible)
 
-- latent factor effect (when regression type is compatible)
+- *z-score*
 
-- effects sizes of the regression
+- *gif* : genomic inflation factor which expresses the deviation of the distribution of the observed test statistic compared to the distribution of the expected test statistic. In case of highly stratified population (high gif), it allows to calibrate P-values without excess false positive rate.
 
 
-It also estimate results of *max²* test which identifying potential CpG mediators:
-combining the significance values $pvalues$ with the function **max2**.
-This rejects the null-hypothesis that either the effect of exposure on potential mediators or the effect of potential mediators on outcome is null:
+It also estimate results of *max²*  test which identifying potential CpG mediators:
+combining the significance values *pvalues*.
+This rejects the null-hypothesis that either the effect of exposure on potential mediators or the effect of potential mediators on outcome is null. *runAS* function also provides results from max² test:
 
-- pvalue of each test
+- *p-value* of each test
 
-- eta0 for each test, the local false discovery rate (FDR) parameter
+- *eta0* for each test, the local false discovery rate (FDR) parameter
 
-- qvalue of each test
+- *q-value* of each test
 
 
 
 
 ```{r}
-# #lfmm estimation
-
+# first regression
 head(res_step1$mod1$pval)
 head(res_step1$mod1$effect.sizes)
-# #regression
+head(res_step1$mod1$zscores)
+head(res_step1$mod1$gif)
+
+# second regression
+head(res_step1$mod2$pval)
+head(res_step1$mod2$effect.sizes)
 head(res_step1$mod2$zscores)
 head(res_step1$mod2$gif)
 
-# 
-# # max test
+ 
+# max2 test results
 head(res_step1$max2$pval)
 head(res_step1$max2$eta0)
 head(res_step1$max2$qval)
@@ -166,14 +175,15 @@ In this example, we will consider FDR levels <10%.
 
 
 ```{r}
-##Selecting CpG
+##Selecting mediators
+FDR=0.1
 mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
 mediators
 ```
 
-**Quantifying indirect effects of single mediator**
+**Mediators individual indirect effects estimation**
 
-The function **wrap_mediation** estimate the individual indirect effect of mediators
+The function **acme_mediation** estimate the individual indirect effect of mediators
 ```{r}
 source("../R/acme_mediation.R")
 res_med = acme_mediation(qval = res_step1$max2$qval,
@@ -188,7 +198,7 @@ res_med = acme_mediation(qval = res_step1$max2$qval,
 
 ```
 
-Estimation of the average causal mediation effect (ACME) is the indirect effect. Other effect estimated include the average direct effect (ADE), the proportion mediated (PM), and the total effect.
+Estimation of average causal mediation effect (ACME) is the indirect effect. Other effect estimated include average direct effect (ADE), proportion mediated (PM), and total effect (TE).
 
 ```{r}
 head(res_med$ACME)
@@ -203,6 +213,15 @@ library(ggplot2)
 plot_summary_ACME(res_med$ACME)
 
 ```
+
+**Mediators Overall Indirect Effect (OIE) estimation**
+
+A novelty of HDMAX2 is to evaluate an overall (cumulated) indirect effect for all CpGs or AMRs identified in Step 3. The overall indirect effect (OIE) was estimated in a model including m mediator variables as follows:
+
+$$
+y_i = cx_i + \sum_{j=1}^{m} b_jm_{ij}+ \sum_{k=1}^{K} v_k u_{ik}^{(2)} + \epsilon_i
+$$
+
 
 ```{r oie}
 source("../R/oie_estimation.R")
