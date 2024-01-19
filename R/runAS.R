@@ -115,27 +115,73 @@ runAS = function(X_matrix,
                 gif2)
     names(reg2) = c("pval", "U", "V", "effect.sizes", "lambda", "zscores", "fscores", "gif")
   }
-  res[[2]] = reg2  
-  # if(Y_type=="binary"){
-  # }
+    
   
   
-  # if(Y_type=="surv_Cox"){
-  #   #Y = survival::Surv(OT, status)
-  #   #regression 2: Y ~ M +X
-  #   p = ncol(M)
-  #   pval2 = c()
-  #   for (j in 1:p) {
-  #     #cox_model = survival::coxph(Y ~ M[,j] + X)
-  #     cox_model = survival::coxph(Y ~ M[,j] + X + mod.lfmm@U)
-  #     pval2 = c(pval2, summary(cox_model)$coefficients[1,5])
-  #     # beta_est = c(beta_est, summary(cox_model)$coefficients)
-  #   }
-  #   names(pval2)=  colnames(M)
-  # }
-  # if(Y_type=="surv_AG")
+   if(Y_type=="binary"){
+  mod.lfmm2 = LEA::lfmm2(input = M_matrix, 
+                         env = cbind(X_matrix, Y_matrix, conf), 
+                         K=5)
+  res_ewas2 = LEA::lfmm2.test(mod.lfmm2, 
+                              input = M_matrix, 
+                              env = cbind(X_matrix, Y_matrix, conf),
+                              genomic.control = T,
+                              full = F,
+                              linear = F)
+  pval2 = as.double(res_ewas2$pvalues)
+  names(pval2) = colnames(M)
+  length(pval2)
+  U2 = mod.lfmm2@U
+  V2 = mod.lfmm2@V
+  effect.sizes2 = mod.lfmm2@B
+  lambda2 = mod.lfmm2@lambda
   
-  # TODO transform pval in calibrated pval
+  zscores2 = res_ewas2$zscores
+  fscores2 = res_ewas2$fscores
+  #adj_rsquared2 = res_ewas2$adj.r.squared
+  gif2 = res_ewas2$gif
+  reg2 = list(pval2,
+              U2, 
+              V2, 
+              effect.sizes2, 
+              lambda2, 
+              zscores2,
+              fscores2,
+              #adj_rsquared2 = res_ewas2$adj.r.squared
+              gif2)
+  names(reg2) = c("pval", "U", "V", "effect.sizes", "lambda", "zscores", "fscores", "gif")
+   }
+  
+  
+  if(Y_type=="surv_Cox"){
+    #Y = survival::Surv(OT, status)
+    #regression 2: Y ~ M +X
+    p = ncol(M)
+    pval2 = c()
+    for (j in 1:p) {
+      #cox_model = survival::coxph(Y ~ M[,j] + X)
+      cox_model = survival::coxph(Y ~ M[,j] + X + U1)
+      pval2 = c(pval2, summary(cox_model)$coefficients[1,5])
+      # beta_est = c(beta_est, summary(cox_model)$coefficients)
+    }
+    names(pval2)=  colnames(M)
+    reg2 = list(pval2#,
+                # effect.sizes2,
+                # zscores2,
+                # fscores2,
+                # #adj_rsquared2 = res_ewas2$adj.r.squared
+                # gif2)
+    )
+    names(reg2) = c("pval") #, "effect.sizes", "zscores", "fscores", "gif")
+    
+  }
+  # TODO transform pval in calibrated pval  
+  
+  # TODO
+  # if(Y_type=="surv_AG"){
+  #}
+  
+  res[[2]] = reg2
   
   # max2 test
   max2_pval <- apply(cbind(pval1, pval2), 1, max)^2

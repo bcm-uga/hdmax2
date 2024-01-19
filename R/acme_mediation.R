@@ -1,4 +1,4 @@
-acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sims = 3, ...) {
+acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sims = 3, mod2_type, ...) {
   
   if (is.null(colnames(M))) {
     colnames(M) <- 1:ncol(M)
@@ -29,12 +29,24 @@ acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sim
     
     # ici cas de deux reg lineaires pour les deux associations
     # TODO refaire pour les autres regressions
-    mod1 <- stats::lm(Mi ~ X + ., data = dat.x)
-    mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
     
-    # for linear models
-    xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
-    my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
+    
+    mod1 <- stats::lm(Mi ~ X + ., data = dat.x)
+    
+    if(mod2_type=="continuous"){
+    mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
+    }
+    
+    if(mod2_type=="surv_Cox"){
+    mod2 = survival::survreg(Y ~ X + Mi , dist='exponential', data = dat.y)
+    }
+    
+    
+    # # for linear models
+    # xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
+    # my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
+    # 
+    
     
     med <- mediation::mediate(mod1, mod2, sims = sims, treat = "X", mediator = "Mi", ...)
     

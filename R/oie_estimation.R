@@ -10,11 +10,12 @@ oie_estimation <- function(X, m, Y, C, boots = 100) {
     dat.1 <- data.frame(X, m, C)
     mod1 <- lm(Y[samp] ~ ., data = dat.1[samp, ])
     B <- as.data.frame(summary(mod1)$coeff[3:(ncol(m) + 2), ])
+    #B <- as.data.frame(summary(mod1)$coeff[3:10, ])
     
     # effet A X -> M
     mod2 <- lm(m[samp, ] ~ X[samp] + C[samp, ])
     A <- t(sapply(summary(mod2), function(x) x$coeff[2, ]))
-    A <- data.frame(CpG = rownames(A), A)
+    A <- data.frame(feat = rownames(A), A)
     # A <- separate(A, CpG, c("0", "CpG"), " ")[, -1]
     
     colnames(B) <- c("B", "B_sd", "B_tv", "B_pv")
