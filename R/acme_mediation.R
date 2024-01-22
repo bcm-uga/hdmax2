@@ -90,7 +90,7 @@ acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sim
 plot_summary_ACME <- function(ACME) {
   
   # for check problem
-  
+  res_med$ACME = ACME
   p <- ggplot(res_med$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, shape = pval <= 0.05)) +
     geom_vline(xintercept = 0, linetype = "dashed") +
     geom_errorbarh(aes(xmin = CI_2.5, xmax = CI_97.5)) +
