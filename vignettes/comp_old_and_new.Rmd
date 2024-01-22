@@ -1,0 +1,344 @@
+---
+title: "Overview of R Package hdmax2"
+author: "Florence Pittion, Magali Richard, Olivier Francois"
+date: "January, 2024"
+output:
+  prettydoc::html_pretty:
+    self_contained: true
+    theme: cayman
+    highlight: github
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Comparison mediation results (mediators and effects) computed with hdmax2 old and new version.
+
+## First use case 
+
+For this first use case we used *binary exposition* and *continuous outcome*, we analyzed 100 samples and 500 potential mediators.
+
+```{r}
+#load("example_hdmax2.data")
+
+#load("../../../results/git_thema/results/20240111_new_hdmax2/R/sample_hdmax2_data.RData")
+
+load("../data/sample_hdmax2_data.RData")
+X = data$X_binary
+Y = data$Y_time
+M = data$M
+
+```
+***
+
+### Evaluating associations between exposure, mediators and outcome
+
+#### New
+
+```{r}
+source("../R/runAS.R")
+# X continuous, Y continuous
+
+# step 1 association studies + max2
+res_step1 = runAS(X_matrix = X ,
+                 Y_matrix = Y,
+                 M_matrix = M, 
+                 K = 5,
+                 X_type = "binary",
+                 Y_type = "continuous",
+                 M_type = "methylation",
+                 conf = NULL,
+                 diagnostic.plot = F)
+```
+
+#### Old
+
+```{r}
+library(hdmax2)
+res_mEWAS = mEWAS(X =X, Y=Y, M =M, K=5)
+res_max2 = max2(pval1=res_mEWAS$pValue[,1], pval2 =res_mEWAS$pValue[,2])
+```
+
+```{r}
+##Selecting mediators
+FDR=0.1
+mediators_new = res_step1$max2$qval[res_step1$max2$qval<= FDR]
+mediators_new
+length(mediators_new)
+mediators_old = res_max2$qval[res_max2$qval<=FDR]
+mediators_old
+length(mediators_old)
+intersect_mediators= intersect(names(mediators_new), names(mediators_old))
+recover_runAS_mEWAS = length(intersect_mediators)/length(mediators_old)
+ratio_runAS_mEWAS = length(mediators_new)/length(mediators_old)
+recover_runAS_mEWAS
+ratio_runAS_mEWAS 
+```
+
+all mediators found with mEWAS are found with runAS
+
+but mEWAS found 6 mediators and runAS found 37
+
+### Mediators individual indirect effects estimation
+
+#### New
+```{r}
+source("../R/acme_mediation.R")
+res_med1 = acme_mediation(qval = res_step1$max2$qval,
+                            X = X,
+                            Y = Y,
+                            M = M,
+                            U = res_step1$mod1$U,
+                            sims = 100, FDR = FDR,
+                            mod2_type = "continuous")
+```
+
+
+
+```{r}
+res_med2 = acme_mediation(qval = res_max2$qval,
+                            X = X,
+                            Y = Y,
+                            M = M,
+                            U = res_mEWAS$U,
+                            sims = 100, FDR = FDR,
+                            mod2_type = "continuous")
+
+##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
+
+
+```
+
+Estimation of average causal mediation effect (ACME) 
+
+#### New
+
+```{r}
+library(ggplot2)
+
+ggplot(res_med1$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, shape = pval <= 0.05)) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_errorbarh(aes(xmin = CI_2.5, xmax = CI_97.5)) +
+    geom_point(size = 0.8) +
+    theme_bw() +
+    xlab("ACME (Average Causal Mediation Effect)") +
+    ylab("CpG") +
+    theme(panel.border = element_blank(),
+          panel.spacing = unit(0.01, "lines"),
+          axis.ticks = element_blank()) +
+    scale_color_manual(values = c("black", "red"))
+```
+
+#### Old
+
+```{r}
+
+ggplot(res_med2$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, shape = pval <= 0.05)) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_errorbarh(aes(xmin = CI_2.5, xmax = CI_97.5)) +
+    geom_point(size = 0.8) +
+    theme_bw() +
+    xlab("ACME (Average Causal Mediation Effect)") +
+    ylab("CpG") +
+    theme(panel.border = element_blank(),
+          panel.spacing = unit(0.01, "lines"),
+          axis.ticks = element_blank()) +
+    scale_color_manual(values = c("black", "red"))
+
+
+
+```
+
+### Mediators Overall Indirect Effect (OIE) estimation
+
+#### New
+
+```{r}
+source("../R/oie_estimation.R")
+m = M[,names(sort(mediators_new))]
+res_oie =oie_estimation(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )
+median(res_oie)
+
+boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
+```
+
+#### Old
+
+```{r}
+m = M[,names(sort(mediators_old))]
+res_oie =oie_estimation(X=X, C=res_mEWAS$U, m = m, Y=Y, boots = 100 )
+median(res_oie)
+
+boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
+
+```
+
+
+
+## Second use case 
+
+For this second use case we used **continuous exposition** and **continuous outcome**, we analyzed 100 samples and 500 potential mediators.
+
+```{r}
+#load("example_hdmax2.data")
+
+#load("../../../results/git_thema/results/20240111_new_hdmax2/R/sample_hdmax2_data.RData")
+
+load("../data/sample_hdmax2_data.RData")
+X = data$X_continuous
+Y = data$Y_time
+M = data$M
+
+```
+***
+
+### Evaluating associations between exposure, mediators and outcome
+
+#### New
+
+```{r}
+source("../R/runAS.R")
+# X continuous, Y continuous
+
+# step 1 association studies + max2
+res_step1 = runAS(X_matrix = X ,
+                 Y_matrix = Y,
+                 M_matrix = M, 
+                 K = 5,
+                 X_type = "continuous",
+                 Y_type = "continuous",
+                 M_type = "methylation",
+                 conf = NULL,
+                 diagnostic.plot = F)
+```
+
+#### Old
+
+```{r}
+library(hdmax2)
+res_mEWAS = mEWAS(X =X, Y=Y, M =M, K=5)
+res_max2 = max2(pval1=res_mEWAS$pValue[,1], pval2 =res_mEWAS$pValue[,2])
+```
+
+```{r}
+##Selecting mediators
+FDR=0.1
+mediators_new = res_step1$max2$qval[res_step1$max2$qval<= FDR]
+mediators_new
+length(mediators_new)
+mediators_old = res_max2$qval[res_max2$qval<=FDR]
+mediators_old
+length(mediators_old)
+intersect_mediators= intersect(names(mediators_new), names(mediators_old))
+recover_runAS_mEWAS = length(intersect_mediators)/length(mediators_old)
+ratio_runAS_mEWAS = length(mediators_new)/length(mediators_old)
+recover_runAS_mEWAS
+ratio_runAS_mEWAS 
+```
+
+all mediators found with mEWAS are found with runAS
+
+but mEWAS found 6 mediators and runAS found 37
+
+### Mediators individual indirect effects estimation
+
+#### New
+
+```{r}
+source("../R/acme_mediation.R")
+res_med1 = acme_mediation(qval = res_step1$max2$qval,
+                            X = X,
+                            Y = Y,
+                            M = M,
+                            U = res_step1$mod1$U,
+                            sims = 100, FDR = FDR,
+                            mod2_type = "continuous")
+```
+
+
+#### Old
+
+```{r}
+res_med2 = acme_mediation(qval = res_max2$qval,
+                            X = X,
+                            Y = Y,
+                            M = M,
+                            U = res_mEWAS$U,
+                            sims = 100, FDR = FDR,
+                            mod2_type = "continuous")
+
+##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
+
+
+```
+
+
+Estimation of average causal mediation effect (ACME) 
+
+#### New
+
+```{r}
+library(ggplot2)
+
+ggplot(res_med1$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, shape = pval <= 0.05)) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_errorbarh(aes(xmin = CI_2.5, xmax = CI_97.5)) +
+    geom_point(size = 0.8) +
+    theme_bw() +
+    xlab("ACME (Average Causal Mediation Effect)") +
+    ylab("CpG") +
+    theme(panel.border = element_blank(),
+          panel.spacing = unit(0.01, "lines"),
+          axis.ticks = element_blank()) +
+    scale_color_manual(values = c("black", "red"))
+```
+
+#### Old
+
+```{r}
+
+ggplot(res_med2$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, shape = pval <= 0.05)) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_errorbarh(aes(xmin = CI_2.5, xmax = CI_97.5)) +
+    geom_point(size = 0.8) +
+    theme_bw() +
+    xlab("ACME (Average Causal Mediation Effect)") +
+    ylab("CpG") +
+    theme(panel.border = element_blank(),
+          panel.spacing = unit(0.01, "lines"),
+          axis.ticks = element_blank()) +
+    scale_color_manual(values = c("black", "red"))
+
+
+
+```
+
+### Mediators Overall Indirect Effect (OIE) estimation
+
+
+
+
+```{r, eval =FALSE}
+source("../R/oie_estimation.R")
+m = M[,names(sort(mediators_new))]
+res_oie =oie_estimation(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )
+median(res_oie)
+
+boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
+
+
+m = M[,names(sort(mediators_old))]
+res_oie =oie_estimation(X=X, C=res_mEWAS$U, m = m, Y=Y, boots = 100 )
+median(res_oie)
+
+boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
+
+```
