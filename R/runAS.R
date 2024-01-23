@@ -5,6 +5,10 @@
 ##' applied to estimate the effects of exposure $X$ on a matrix $M$
 ##' of potential mediators, and the effect of each marker on outcome $Y$.
 ##' It uses the covariables matrix $conf$ and $K$ latent factors.
+##' Compute the squared maximum of two series of P-values
+##' Test all possible markers to determine potential mediators in the exposure-outcome association.
+##' It computes the squared maximum of two series of P-values from the association studie.
+##' This rejects the null-hypothesis that either the effect of X on M, or the effect of M on Y is null.
 ##'
 ##'
 ##' @param M_matrix a response variable matrix with n rows and p columns.
@@ -20,7 +24,9 @@
 ##' @param Y_type
 ##' @param K an integer for the number of latent factors in the regression model.
 ##' @param conf set of covariable, must be numeric. No NAs allowed
-##' @param diagnostic.plot
+##' @param diagnostic.plot if TRUE the histogram of the p-values together
+##' with the estimate of eta0 null line is plotted.
+##' Useful to visually check the fit of the estimated proportion of null p-values.
 ##' @param genomic.control correctef pvalue with genomic inflation factor
 ##' @return an object with the following attributes 
 ##'   for each association study:
@@ -55,13 +61,23 @@
 ##' with the eigenvalues of a PCA.
 ##' Possibility of calibrating the scores and pValues by the GIF (Genomic Inflation Factor).
 ##' See LEA package for more information.
+##' Max2 test The P-value is computed for each markers following this formula
+##'
+##' \deqn{pV = max(pVal1, pVal2)^2}
+##' 
+##' This quantity eta0, i.e. the proportion eta0 of null p-values in a given vector of p-values,
+##' is an important parameter when controlling the false discovery rate (FDR).
+##' A conservative choice is eta0 = 1 but a choice closer to the true value will
+##' increase efficiency and power - see Benjamini and Hochberg (1995, 2000) and Storey (2002) for details.
+##' We use the fdrtool package to transform pValues into qValues,
+##' which allows us to control the FDR.
 ##' @export
 ##' @author Florence Pittion
 ##' @examples
 ##'
 ##' library(hdmax2)
 ##'
-##' # Exemple 1
+##' # Example 1
 ##' res <- runAS(X_matrix = example$X, Y_matrix = example$Y, M_matrix = example$M, X_type = "binary", Y_type = "continuous", K = 5)
 ##'
 ##' 

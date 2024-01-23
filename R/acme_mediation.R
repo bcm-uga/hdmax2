@@ -1,3 +1,64 @@
+##' Estimate effects for a set of mediation markers
+##'
+##' Estimate various quantities for causal mediation analysis for a set of
+##' markers, including average causal mediation effects
+##' (indirect effect), average direct effects, proportions mediated,
+##' and total effect.
+##'
+##' @param qval set of qValues from max2 function
+##' @param M a response variable matrix with n rows and p columns.
+##' Response variables must be encoded as numeric. No NAs allowed.
+##' @param X Exposure. An explanatory variable matrix with n rows and d columns.
+##' Each column corresponds to a distinct explanatory variable (Exposure).
+##' Explanatory variables must be encoded as numeric variables.
+##' @param Y Outcome. An explanatory variable matrix with n rows and d columns.
+##' Each column corresponds to a distinct explanatory variable (Outcome).
+##' Explanatory variables must be encoded as numeric variables.
+##' @param U set of latent factors from runAS function (need include covariable)
+##' @param FDR FDR threshold to pass markers in mediation analysis
+##' @param sims number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
+##' 10000 is recommended.
+##' @param ... argument of the mediate function from the mediation package
+##'
+##' @return
+##' 
+##' Tables of results of mediation analyzes for markers with a Q-value below the FDR threshold.
+##' Composition of tables: estimated effect, confidence interval and mediation pValue.
+##'  - ACME, estimation of the average causal mediation effect (the indirect effect)
+##'  - ADE, estimation average direct effect
+##'  - PM, estimation of the proportion mediated
+##'  - TE, estimation of the total effect
+##'  
+##' Regressions:
+##'  - xm, regression X on M
+##'  - my, regression M on Y
+##' 
+##' @details
+##'
+##' We use the mediate function of the mediation package on the set of markers having Q-value lower
+##' than the FDR threshold. It estimates their indirect effects and 
+##' tests their significance.
+##'
+##' @export
+##' @author Basile Jumentier
+##' @examples
+##'
+##' library(hdmax2)
+##'
+##'
+##'
+##' #
+##' res <- runAS(X_matrix = example$X, Y_matrix = example$Y, M_matrix = example$M, X_type = "binary", Y_type = "continuous", K = 5)
+##'
+##' res <- acme_mediation(qval = res$max2$qval,
+##'                             X = example$X,
+##'                             Y = example$Y,
+##'                             M = example$M,
+##'                             U = res$mod1$U, sims = 3,
+##'                             FDR = 0.5)
+##'
+##'
+
 acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sims = 3, mod2_type, ...) {
   
   if (is.null(colnames(M))) {
