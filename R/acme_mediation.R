@@ -114,7 +114,7 @@ acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sim
     ACME[i, ] <- c(med$d0, med$d0.ci[1], med$d0.ci[2], med$d0.p)
     ADE[i, ] <- c(med$z0, med$z0.ci[1], med$z0.ci[2], med$z0.p)
     PM[i, ] <- c(med$n0, med$n0.ci[1], med$n0.ci[2], med$n0.p)
-    TE[i, ] <- c(med$tau.coef, med$tau0.ci[1], med$tau0.ci[2], med$tau.p)
+    TE[i, ] <- c(med$tau.coef, med$tau.ci[1], med$tau.ci[2], med$tau.p)
   }
   
   ACME <- as.data.frame(ACME)
