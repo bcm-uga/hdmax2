@@ -76,9 +76,12 @@
 ##' @examples
 ##'
 ##' library(hdmax2)
-##'
+##' 
 ##' # Example 1
-##' res <- runAS(X_matrix = example$X, Y_matrix = example$Y, M_matrix = example$M, X_type = "binary", Y_type = "continuous", K = 5)
+##' X_matrix = hdmax2::sample_hdmax2_data$X_binary
+##' Y_matrix = sample_hdmax2_data$Y_continuous
+##' M_matrix = sample_hdmax2_data$M
+##' res <- runAS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "binary", Y_type = "continuous", K = 5)
 ##'
 ##' 
 runAS = function(X_matrix,

@@ -10,3 +10,15 @@ License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Imports: 
+    LEA,
+    ggplot2,
+    survival,
+    dplyr,
+    fdrtool,
+    mediation,
+    parallel,
+    stats,
+    utils
+Depends: 
+    R (>= 2.10)
