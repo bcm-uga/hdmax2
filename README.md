@@ -1,23 +1,27 @@
 # hdmax2
 
-## Installation 
+## Conda Installation for Mac OS arm64
 
 
 ```
-install.packages (c("survival", "FDRtools", "mediation", "FactoMineR"), depandencies = TRUE)
-devtools::install_github("bcm-uga/LEA")
+conda create --name hdmax2  
+
+conda activate hdmax2
+conda install -c conda-forge r-base
+conda install conda-forge::r-devtools
+conda install conda-forge::r-rcppeigen
+conda install conda-forge::r-lme4
+
+R
+> install.packages("prettydoc")
+> install.packages("FactoMineR")
+> install.packages("factoextra")
+> install.packages("fdrtool")
+> install.packages("mediation")
+> devtools::install_github("bcm-uga/LEA")
+
+devtools::install_github("bcm-uga/hdmax2")
+
 ```
 
-***
-#### Mac OS arm64 
 
-You need to compile from source a couple of packages `svglite`, `gifski`, `jpeg`, `hdf5r`, `nloptr` and `showtext`.  
-
-Download binaries on CRAN (r-release (arm64)) and locally install them using R CMD INSTALL
-
-- https://cran.r-project.org/web/packages/svglite/index.html
-- https://cran.r-project.org/web/packages/gifski/index.html
-- https://cran.r-project.org/web/packages/jpeg/index.html
-- https://cran.r-project.org/web/packages/hdf5r/index.html
-- https://cran.r-project.org/web/packages/nloptr/index.html
-- https://cran.r-project.org/web/packages/showtext/index.html
