@@ -1,3 +1,26 @@
+##' Overall Indirect Effect for a set of mediator
+##'
+##' This function estimate the Overall Indirect Effect
+##'
+##' @param X exposure
+##' @param m a set of mediator
+##' @param Y outcome
+##' @param C set of covariable (need to include latent factor)
+##' @param boots number of bootstrap
+##' @return
+##' The estimate of Overall Indirect Effect
+##'
+##' @details
+##' A novelty of HDMAX2 is to evaluate a cumulated indirect effect for all mediators
+##'
+##' @export
+##' @author Basile Jumentier
+##' @examples
+##'
+##' #
+##' # res <- oie_estimation(X, m, Y, C, 10)
+##'
+
 oie_estimation <- function(X, m, Y, C, boots = 100) {
   
   # bootstrap
