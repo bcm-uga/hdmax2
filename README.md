@@ -20,7 +20,7 @@ R
 > install.packages("mediation")
 > devtools::install_github("bcm-uga/LEA")
 
-devtools::install_github("bcm-uga/hdmax2")
+> devtools::install_github("bcm-uga/hdmax2")
 
 ```
 
