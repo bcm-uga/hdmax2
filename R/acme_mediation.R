@@ -43,17 +43,15 @@
 ##' @author Basile Jumentier
 ##' @examples
 ##'
-##' library(hdmax2)
-##'
-##'
-##'
-##' #
-##' res <- runAS(X_matrix = example$X, Y_matrix = example$Y, M_matrix = example$M, X_type = "binary", Y_type = "continuous", K = 5)
+##' X_matrix = hdmax2::sample_hdmax2_data$X_binary
+##' Y_matrix = sample_hdmax2_data$Y_continuous
+##' M_matrix = sample_hdmax2_data$M
+##' res <- runAS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "binary", Y_type = "continuous", K = 5)
 ##'
 ##' res <- acme_mediation(qval = res$max2$qval,
-##'                             X = example$X,
-##'                             Y = example$Y,
-##'                             M = example$M,
+##'                             X = X_matrix,
+##'                             Y = Y_matrix,
+##'                             M = M_matrix,
 ##'                             U = res$mod1$U, sims = 3,
 ##'                             FDR = 0.5)
 ##'
@@ -145,24 +143,4 @@ acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sim
               xm = xm,
               my = my))
   
-}
-
-
-plot_summary_ACME <- function(ACME) {
-  
-  # for check problem
-  res_med$ACME = ACME
-  p <- ggplot(res_med$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, shape = pval <= 0.05)) +
-    geom_vline(xintercept = 0, linetype = "dashed") +
-    geom_errorbarh(aes(xmin = CI_2.5, xmax = CI_97.5)) +
-    geom_point(size = 0.8) +
-    theme_bw() +
-    xlab("ACME (Average Causal Mediation Effect)") +
-    ylab("CpG") +
-    theme(panel.border = element_blank(),
-          panel.spacing = unit(0.01, "lines"),
-          axis.ticks = element_blank()) +
-    scale_color_manual(values = c("black", "red"))
-  
-  print(p)
 }
