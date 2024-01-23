@@ -1,3 +1,70 @@
+##' Association Study with both exposure and outcome
+##'
+##' This function uses lfmm (latent factor mixed models) to estimate
+##' the effects of exposures and outcomes on a response matrix.
+##' applied to estimate the effects of exposure $X$ on a matrix $M$
+##' of potential mediators, and the effect of each marker on outcome $Y$.
+##' It uses the covariables matrix $conf$ and $K$ latent factors.
+##'
+##'
+##' @param M_matrix a response variable matrix with n rows and p columns.
+##' Response variables must be encoded as numeric. No NAs allowed.
+##' @param X_matrix Exposure. An explanatory variable matrix with n rows and d columns.
+##' Each column corresponds to a distinct explanatory variable (Exposure).
+##' Explanatory variables must be encoded as numeric variables.
+##' @param Y_matrix Outcome. An explanatory variable matrix with n rows and d columns.
+##' Each column corresponds to a distinct explanatory variable (Outcome).
+##' Explanatory variables must be encoded as numeric variables.
+##' @param M_type
+##' @param X_type
+##' @param Y_type
+##' @param K an integer for the number of latent factors in the regression model.
+##' @param conf set of covariable, must be numeric. No NAs allowed
+##' @param diagnostic.plot
+##' @param genomic.control correctef pvalue with genomic inflation factor
+##' @return an object with the following attributes 
+##'   for each association study:
+##'
+##'  - U, scores matrix for the K latent factors.
+##'  
+##'  - V, latent factors loadings
+##'
+##'  - effect.sizes , the effect size matrix for the exposure X and the outcome Y.
+##'  
+##'  - lambda , use in ridge lfmm
+##'  
+##'  - gif, Genomic inflation factor for X and Y, expressing the deviation of the distribution of the observed test statistic compared to the distribution of the expected test statistic
+##'  
+##'  - pValue, estimation of the effects of X and Y on the matrix M.
+##' 
+##'  - zscore, a score matrix for the exposure X and the outcome Y.
+##'  
+##'  - fscore, a score matrix for the exposure X and the outcome Y.
+##'
+##'    results of max2 test:
+##'    
+##'  - pval, results of max2 test
+##'  
+##'  - eta0, for each test, the local false discovery rate (FDR) parameter
+##'  
+##'  - qval, results of max2 test
+##'  
+##' @details
+##' The response variable matrix Y and the explanatory variable are centered.
+##' For each argument, missing values must be imputed: no NA allowed. K (number of latent factors) can be estimated
+##' with the eigenvalues of a PCA.
+##' Possibility of calibrating the scores and pValues by the GIF (Genomic Inflation Factor).
+##' See LEA package for more information.
+##' @export
+##' @author Florence Pittion
+##' @examples
+##'
+##' library(hdmax2)
+##'
+##' # Exemple 1
+##' res <- runAS(X_matrix = example$X, Y_matrix = example$Y, M_matrix = example$M, X_type = "binary", Y_type = "continuous", K = 5)
+##'
+##' 
 runAS = function(X_matrix,
                  Y_matrix,
                  M_matrix, 
@@ -193,26 +260,5 @@ runAS = function(X_matrix,
   
   names(res) <- c("mod1", "mod2", "max2")
   return(res)
-  # return(list(calibrated_pval1 = pval1, 
-  #             calibrated_pval2 = pval2, 
-  #             U1 = U1,
-  #             V1 = V1,
-  #             effect.sizes1 = effect.sizes1,
-  #             lambda1 = lambda1,
-  #             zscores1 = zscores1,
-  #             fscores1 = fscores1,
-  #             #adj_rsquared1 = adj.r.squared1,
-  #             gif1 = gif1,
-  #             U2 = U2,
-  #             V2 = V2,
-  #             effect.sizes2 = effect.sizes2,
-  #             lambda2 = lambda2,
-  #             zscores2 = zscores2,
-  #             fscores2 = fscores2,
-  #             #adj_rsquared2 = adj.r.squared2,
-  #             gif2 = gif2,
-  #             max2_pval = max2_pval,
-  #             max2_eta0 = eta0,
-  #             max2_qval = qval
-  # ))
+ 
 }
