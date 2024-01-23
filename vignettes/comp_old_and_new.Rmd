@@ -1,5 +1,5 @@
 ---
-title: "Overview of R Package hdmax2"
+title: "old and new version of HDMAX2 comparison"
 author: "Florence Pittion, Magali Richard, Olivier Francois"
 date: "January, 2024"
 output:
@@ -56,7 +56,8 @@ res_step1 = runAS(X_matrix = X ,
                  Y_type = "continuous",
                  M_type = "methylation",
                  conf = NULL,
-                 diagnostic.plot = F)
+                 diagnostic.plot = F,
+                 genomic.control = T)
 ```
 
 #### Old
@@ -83,9 +84,7 @@ recover_runAS_mEWAS
 ratio_runAS_mEWAS 
 ```
 
-all mediators found with mEWAS are found with runAS
 
-but mEWAS found 6 mediators and runAS found 37
 
 ### Mediators individual indirect effects estimation
 
@@ -161,7 +160,7 @@ ggplot(res_med2$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, 
 
 #### New
 
-```{r}
+```{r, eval = F}
 source("../R/oie_estimation.R")
 m = M[,names(sort(mediators_new))]
 res_oie =oie_estimation(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )
@@ -172,7 +171,7 @@ boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "b
 
 #### Old
 
-```{r}
+```{r, eval = F}
 m = M[,names(sort(mediators_old))]
 res_oie =oie_estimation(X=X, C=res_mEWAS$U, m = m, Y=Y, boots = 100 )
 median(res_oie)
@@ -217,7 +216,8 @@ res_step1 = runAS(X_matrix = X ,
                  Y_type = "continuous",
                  M_type = "methylation",
                  conf = NULL,
-                 diagnostic.plot = F)
+                 diagnostic.plot = F,
+                 genomic.control = T)
 ```
 
 #### Old
@@ -244,9 +244,7 @@ recover_runAS_mEWAS
 ratio_runAS_mEWAS 
 ```
 
-all mediators found with mEWAS are found with runAS
 
-but mEWAS found 6 mediators and runAS found 37
 
 ### Mediators individual indirect effects estimation
 

@@ -6,8 +6,8 @@ runAS = function(X_matrix,
                  Y_type,
                  M_type,
                  conf = NULL,
-                 diagnostic.plot = F #,
-                 #genomic.control = T
+                 diagnostic.plot = F ,
+                 genomic.control = T
                  ) {
   res = list()
   
@@ -19,7 +19,7 @@ runAS = function(X_matrix,
     res_ewas1 = LEA::lfmm2.test(mod.lfmm1, 
                                 input = M_matrix, 
                                 env = X_matrix,
-                                genomic.control = T)
+                                genomic.control = genomic.control)
     pval1 = as.double(res_ewas1$pvalues)
     names(pval1) = colnames(M)
     length(pval1)
@@ -52,7 +52,7 @@ runAS = function(X_matrix,
     res_ewas1 = LEA::lfmm2.test(mod.lfmm1, 
                                 input = M_matrix, 
                                 env = X_matrix,
-                                genomic.control = T)
+                                genomic.control = genomic.control)
     pval1 = as.double(res_ewas1$pvalues)
     names(pval1) = colnames(M)
     length(pval1)
@@ -90,7 +90,7 @@ runAS = function(X_matrix,
     res_ewas2 = LEA::lfmm2.test(mod.lfmm2, 
                                 input = M_matrix, 
                                 env = cbind(X_matrix, Y_matrix, conf),
-                                genomic.control = T,
+                                genomic.control = genomic.control,
                                 full = T)
     pval2 = as.double(res_ewas2$pvalues)
     names(pval2) = colnames(M)
@@ -125,7 +125,7 @@ runAS = function(X_matrix,
   res_ewas2 = LEA::lfmm2.test(mod.lfmm2, 
                               input = M_matrix, 
                               env = cbind(X_matrix, Y_matrix, conf),
-                              genomic.control = T,
+                              genomic.control = genomic.control,
                               full = F,
                               linear = F)
   pval2 = as.double(res_ewas2$pvalues)
