@@ -13,7 +13,7 @@ acme_mediation(
   U = NULL,
   FDR = 0.1,
   sims = 3,
-  mod2_type,
+  mod2_type = "linear",
   ...
 )
 }
@@ -31,12 +31,16 @@ Explanatory variables must be encoded as numeric variables.}
 \item{M}{a response variable matrix with n rows and p columns.
 Response variables must be encoded as numeric. No NAs allowed.}
 
+\item{covar}{covariables}
+
 \item{U}{set of latent factors from runAS function (need include covariable)}
 
 \item{FDR}{FDR threshold to pass markers in mediation analysis}
 
 \item{sims}{number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 10000 is recommended.}
+
+\item{mod2_type}{second regression type "linear", "survCox"}
 
 \item{...}{argument of the mediate function from the mediation package}
 }
@@ -69,8 +73,11 @@ tests their significance.
 }
 \examples{
 
-X_matrix = hdmax2::sample_hdmax2_data$X_binary
-Y_matrix = sample_hdmax2_data$Y_continuous
+library(hdmax2)
+data(sample_hdmax2_data)
+# Example 1
+X_matrix = sample_hdmax2_data$X_binary
+Y_matrix = sample_hdmax2_data$Y_time
 M_matrix = sample_hdmax2_data$M
 res <- runAS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "binary", Y_type = "continuous", K = 5)
 
@@ -79,16 +86,8 @@ res <- acme_mediation(qval = res$max2$qval,
                             Y = Y_matrix,
                             M = M_matrix,
                             U = res$mod1$U, sims = 3,
-                            FDR = 0.5)
+                            FDR = 0.1,
+                            mod2_type="linear")
 
 
-Tables of results of mediation analyzes for markers with a Q-value below the FDR threshold.
-Composition of tables: estimated effect, confidence interval and mediation pValue.
- - ACME, estimation of the average causal mediation effect (the indirect effect)
- - ADE, estimation average direct effect
- - PM, estimation of the proportion mediated
- - TE, estimation of the total effect
-}
-\author{
-Basile Jumentier
 }

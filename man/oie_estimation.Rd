@@ -26,12 +26,6 @@ This function estimate the Overall Indirect Effect
 \details{
 A novelty of HDMAX2 is to evaluate a cumulated indirect effect for all mediators
 }
-\examples{
-
-#
-# res <- oie_estimation(X, m, Y, C, 10)
-
-}
 \author{
 Basile Jumentier
 }

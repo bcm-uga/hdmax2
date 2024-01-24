@@ -17,8 +17,8 @@
 ##' @author Basile Jumentier
 ##' @examples
 ##'
-##' #
-##' # res <- oie_estimation(X, m, Y, C, 10)
+##'
+##' 
 ##'
 
 oie_estimation <- function(X, m, Y, C, boots = 100) {

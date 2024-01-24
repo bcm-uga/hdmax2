@@ -31,6 +31,12 @@ Response variables must be encoded as numeric. No NAs allowed.}
 
 \item{K}{an integer for the number of latent factors in the regression model.}
 
+\item{X_type}{type of exposition "binary", "continuous", "categorial"}
+
+\item{Y_type}{type of outcome "binary', "continuous", "survival"}
+
+\item{M_type}{type of potential mediators matrix "methylation", "transcriptome"}
+
 \item{conf}{set of covariable, must be numeric. No NAs allowed}
 
 \item{diagnostic.plot}{if TRUE the histogram of the p-values together
@@ -88,11 +94,12 @@ which allows us to control the FDR.
 }
 \examples{
 
+data(sample_hdmax2_data)
 library(hdmax2)
 
 # Example 1
-X_matrix = hdmax2::sample_hdmax2_data$X_binary
-Y_matrix = sample_hdmax2_data$Y_continuous
+X_matrix = sample_hdmax2_data$X_binary
+Y_matrix = sample_hdmax2_data$Y_time
 M_matrix = sample_hdmax2_data$M
 res <- runAS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "binary", Y_type = "continuous", K = 5)
 
