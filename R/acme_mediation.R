@@ -18,6 +18,8 @@
 ##' @param FDR FDR threshold to pass markers in mediation analysis
 ##' @param sims number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 ##' 10000 is recommended.
+##' @param covar covariables
+##' @param mod2_type second regression type "linear", "survCox"
 ##' @param ... argument of the mediate function from the mediation package
 ##'
 ##' @return
@@ -40,11 +42,14 @@
 ##' tests their significance.
 ##'
 ##' @export
-##' @author Basile Jumentier
-##' @examples
+##' @author 
+##' @examples 
 ##'
-##' X_matrix = hdmax2::sample_hdmax2_data$X_binary
-##' Y_matrix = sample_hdmax2_data$Y_continuous
+##' library(hdmax2)
+##' data(sample_hdmax2_data)
+##' # Example 1
+##' X_matrix = sample_hdmax2_data$X_binary
+##' Y_matrix = sample_hdmax2_data$Y_time
 ##' M_matrix = sample_hdmax2_data$M
 ##' res <- runAS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "binary", Y_type = "continuous", K = 5)
 ##'
@@ -53,11 +58,12 @@
 ##'                             Y = Y_matrix,
 ##'                             M = M_matrix,
 ##'                             U = res$mod1$U, sims = 3,
-##'                             FDR = 0.5)
+##'                             FDR = 0.1,
+##'                             mod2_type="linear")
 ##'
 ##'
 
-acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sims = 3, mod2_type, ...) {
+acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sims = 3, mod2_type="linear", ...) {
   
   if (is.null(colnames(M))) {
     colnames(M) <- 1:ncol(M)
@@ -65,12 +71,7 @@ acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sim
   
   M <- M[, qval <= FDR]
   
-  ##' Tables of results of mediation analyzes for markers with a Q-value below the FDR threshold.
-  ##' Composition of tables: estimated effect, confidence interval and mediation pValue.
-  ##'  - ACME, estimation of the average causal mediation effect (the indirect effect)
-  ##'  - ADE, estimation average direct effect
-  ##'  - PM, estimation of the proportion mediated
-  ##'  - TE, estimation of the total effect
+  
   # from package mediation
   ACME <- matrix(ncol = 4, nrow = ncol(M))
   ADE <- matrix(ncol = 4, nrow = ncol(M))
@@ -92,7 +93,7 @@ acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sim
     
     mod1 <- stats::lm(Mi ~ X + ., data = dat.x)
     
-    if(mod2_type=="continuous"){
+    if(mod2_type=="linear"){
     mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
     }
     

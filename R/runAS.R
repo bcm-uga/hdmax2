@@ -19,9 +19,9 @@
 ##' @param Y_matrix Outcome. An explanatory variable matrix with n rows and d columns.
 ##' Each column corresponds to a distinct explanatory variable (Outcome).
 ##' Explanatory variables must be encoded as numeric variables.
-##' @param M_type
-##' @param X_type
-##' @param Y_type
+##' @param M_type type of potential mediators matrix "methylation", "transcriptome"
+##' @param X_type type of exposition "binary", "continuous", "categorial"
+##' @param Y_type type of outcome "binary', "continuous", "survival"
 ##' @param K an integer for the number of latent factors in the regression model.
 ##' @param conf set of covariable, must be numeric. No NAs allowed
 ##' @param diagnostic.plot if TRUE the histogram of the p-values together
@@ -73,13 +73,14 @@
 ##' which allows us to control the FDR.
 ##' @export
 ##' @author Florence Pittion
-##' @examples
-##'
+##' @examples 
+##' 
+##' data(sample_hdmax2_data)
 ##' library(hdmax2)
 ##' 
 ##' # Example 1
-##' X_matrix = hdmax2::sample_hdmax2_data$X_binary
-##' Y_matrix = sample_hdmax2_data$Y_continuous
+##' X_matrix = sample_hdmax2_data$X_binary
+##' Y_matrix = sample_hdmax2_data$Y_time
 ##' M_matrix = sample_hdmax2_data$M
 ##' res <- runAS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "binary", Y_type = "continuous", K = 5)
 ##'
@@ -107,7 +108,7 @@ runAS = function(X_matrix,
                                 env = X_matrix,
                                 genomic.control = genomic.control)
     pval1 = as.double(res_ewas1$pvalues)
-    names(pval1) = colnames(M)
+    names(pval1) = colnames(M_matrix)
     length(pval1)
     U1 = mod.lfmm1@U
     V1 = mod.lfmm1@V
@@ -140,7 +141,7 @@ runAS = function(X_matrix,
                                 env = X_matrix,
                                 genomic.control = genomic.control)
     pval1 = as.double(res_ewas1$pvalues)
-    names(pval1) = colnames(M)
+    names(pval1) = colnames(M_matrix)
     length(pval1)
     U1 = mod.lfmm1@U
     V1 = mod.lfmm1@V
@@ -179,7 +180,7 @@ runAS = function(X_matrix,
                                 genomic.control = genomic.control,
                                 full = T)
     pval2 = as.double(res_ewas2$pvalues)
-    names(pval2) = colnames(M)
+    names(pval2) = colnames(M_matrix)
     length(pval2)
     U2 = mod.lfmm2@U
     V2 = mod.lfmm2@V
@@ -215,7 +216,7 @@ runAS = function(X_matrix,
                               full = F,
                               linear = F)
   pval2 = as.double(res_ewas2$pvalues)
-  names(pval2) = colnames(M)
+  names(pval2) = colnames(M_matrix)
   length(pval2)
   U2 = mod.lfmm2@U
   V2 = mod.lfmm2@V
@@ -250,7 +251,7 @@ runAS = function(X_matrix,
       pval2 = c(pval2, summary(cox_model)$coefficients[1,5])
       # beta_est = c(beta_est, summary(cox_model)$coefficients)
     }
-    names(pval2)=  colnames(M)
+    names(pval2)=  colnames(M_matrix)
     reg2 = list(pval2#,
                 # effect.sizes2,
                 # zscores2,
