@@ -14,7 +14,8 @@ runAS(
   M_type,
   conf = NULL,
   diagnostic.plot = F,
-  genomic.control = T
+  genomic.control = T,
+  effect.sizes = T
 )
 }
 \arguments{
