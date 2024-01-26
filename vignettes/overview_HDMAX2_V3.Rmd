@@ -103,7 +103,7 @@ res_step1 = hdmax2::run_AS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
                  K = 5,
-                 X_type = "binary",
+                 X_type = "univariate",
                  Y_type = "continuous",
                  M_type = "methylation",
                  conf = NULL,
@@ -129,9 +129,6 @@ This rejects the null-hypothesis that either the effect of exposure on potential
 
 - *p-value* of each test
 
-- *eta0* for each test, the local false discovery rate (FDR) parameter
-
-- *q-value* of each test
 
 
 
@@ -150,9 +147,8 @@ head(res_step1$mod2$zscores)
 head(res_step1$mod2$gif)
 
 # max2 test results
-head(res_step1$max2$pval)
-head(res_step1$max2$eta0)
-head(res_step1$max2$qval)
+head(res_step1$max2)
+
 ```
 
 
@@ -163,9 +159,11 @@ In this example, we will consider FDR levels <10%.
 
 ```{r}
 ##Selecting mediators
-FDR=0.1
-mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
+# FDR=0.1
+# mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
+mediators = M[,names(sort(res_step1$max2)[1:10])]
 mediators
+
 ```
 
 ### Mediators individual indirect effects estimation
@@ -176,9 +174,9 @@ The function **estimate_ACME_ADE_PM_TE** estimate the individual indirect effect
 res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
                             X = X,
                             Y = Y,
-                            M = M,
+                            m = mediators,
                             U = res_step1$mod1$U,
-                            sims = 100, FDR = FDR,
+                            sims = 100, 
                             mod2_type = "linear")
 
 ##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
@@ -211,8 +209,8 @@ $$
 
 ```{r}
 ## OIE estimation and boxplot
-m = M[,names(sort(mediators))]
-res_oie = hdmax2::estimate_OIE(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )
+
+res_oie = hdmax2::estimate_OIE(X=X, C=res_step1$mod1$U, m = mediators, Y=Y, boots = 100 )
 median(res_oie)
 boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
 ```
@@ -247,7 +245,7 @@ res_step1 = hdmax2::run_AS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
                  K = 5,
-                 X_type = "continuous",
+                 X_type = "univariate",
                  Y_type = "continuous",
                  M_type = "methylation",
                  conf = NULL,
@@ -270,9 +268,8 @@ head(res_step1$mod2$zscores)
 head(res_step1$mod2$gif)
  
 # max2 test results
-head(res_step1$max2$pval)
-head(res_step1$max2$eta0)
-head(res_step1$max2$qval)
+head(res_step1$max2)
+
 ```
 
 
@@ -280,8 +277,9 @@ head(res_step1$max2$qval)
 
 ```{r}
 ##Selecting mediators
-FDR=0.1
-mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
+# FDR=0.1
+# mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
+mediators = M[,names(sort(res_step1$max2)[1:10])]
 mediators
 ```
 
@@ -293,10 +291,9 @@ mediators
 res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
                          X = X,
                          Y = Y,
-                         M = M,
+                         m = mediators,
                          U = res_step1$mod1$U,
-                         sims = 100, 
-                         FDR = FDR,
+                         sims = 100,
                          mod2_type = "linear")
 
 ##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
@@ -321,8 +318,8 @@ hdmax2::plot_summary_ACME(ACME = res_med$ACME)
 ### Mediators Overall Indirect Effect (OIE) estimation
 
 ```{r, eval = F}
-m = M[,names(sort(mediators))]
-res_oie = hdmax2::estimate_OIE(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )
+
+res_oie = hdmax2::estimate_OIE(X=X, C=res_step1$mod1$U, m = m = mediators, Y=Y, boots = 100 )
 median(res_oie)
 boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
 ```
@@ -350,7 +347,7 @@ res_step1 = hdmax2::run_AS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
                  K = 5,
-                 X_type = "continuous",
+                 X_type = "univariate",
                  Y_type = "continuous", # even if it is binary
                  #Y_type = "binary",
                  M_type = "methylation",
@@ -374,9 +371,8 @@ head(res_step1$mod2$zscores)
 head(res_step1$mod2$gif)
 
 # max2 test results
-head(res_step1$max2$pval)
-head(res_step1$max2$eta0)
-head(res_step1$max2$qval)
+head(res_step1$max2)
+
 ```
 
 
@@ -384,8 +380,9 @@ head(res_step1$max2$qval)
 
 ```{r}
 ##Selecting mediators
-FDR=0.1
-mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
+# FDR=0.1
+# mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
+mediators = M[,names(sort(res_step1$max2)[1:10])]
 mediators
 ```
 
@@ -396,10 +393,9 @@ mediators
 res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
                             X = X,
                             Y = Y,
-                            M = M,
+                            m = mediators,
                             U = res_step1$mod1$U,
-                            sims = 100, 
-                            FDR = FDR, 
+                            sims = 100,
                             mod2_type = "linear")
 
 ##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.

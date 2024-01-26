@@ -20,8 +20,8 @@
 ##' Each column corresponds to a distinct explanatory variable (Outcome).
 ##' Explanatory variables must be encoded as numeric variables.
 ##' @param M_type type of potential mediators matrix "methylation", "transcriptome"
-##' @param X_type type of exposition "binary", "continuous", "categorial"
-##' @param Y_type type of outcome "binary', "continuous", "survival"
+##' @param X_type type of exposition "univariate"
+##' @param Y_type type of outcome "binary', "continuous"
 ##' @param K an integer for the number of latent factors in the regression model.
 ##' @param conf set of covariable, must be numeric. No NAs allowed
 ##' @param diagnostic.plot if TRUE the histogram of the p-values together
@@ -51,9 +51,6 @@
 ##'    
 ##'  - pval, results of max2 test
 ##'  
-##'  - eta0, for each test, the local false discovery rate (FDR) parameter
-##'  
-##'  - qval, results of max2 test
 ##'  
 ##' @details
 ##' The response variable matrix Y and the explanatory variable are centered.
@@ -82,10 +79,10 @@
 ##' X_matrix = sample_hdmax2_data$X_binary
 ##' Y_matrix = sample_hdmax2_data$Y_time
 ##' M_matrix = sample_hdmax2_data$M
-##' res <- runAS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "binary", Y_type = "continuous", K = 5)
+##' res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5)
 ##'
 ##' 
-runAS = function(X_matrix,
+run_AS = function(X_matrix,
                  Y_matrix,
                  M_matrix, 
                  K,
@@ -99,7 +96,7 @@ runAS = function(X_matrix,
                  ) {
   res = list()
   
-    if(X_type=="continuous"){
+    if(X_type=="univariate"){
     #regression 1: M ~ X
     mod.lfmm1 = LEA::lfmm2(input = M_matrix, 
                            env = X_matrix, 
@@ -134,38 +131,7 @@ runAS = function(X_matrix,
   }
   
 
-  if(X_type=="binary"){
-    mod.lfmm1 = LEA::lfmm2(input = M_matrix, 
-                           env = X_matrix, 
-                           K=5,
-                           effect.sizes = effect.sizes)
-    res_ewas1 = LEA::lfmm2.test(mod.lfmm1, 
-                                input = M_matrix, 
-                                env = X_matrix,
-                                genomic.control = genomic.control)
-    pval1 = as.double(res_ewas1$pvalues)
-    names(pval1) = colnames(M_matrix)
-    length(pval1)
-    U1 = mod.lfmm1@U
-    V1 = mod.lfmm1@V
-    effect.sizes1 = mod.lfmm1@B
-    lambda1 = mod.lfmm1@lambda
-    
-    zscores1 = res_ewas1$zscores
-    fscores1 = res_ewas1$fscores
-    #adj_rsquared1 = res_ewas1$adj.r.squared
-    gif1 = res_ewas1$gif
-    reg1 = list(pval1,
-                U1, 
-                V1, 
-                effect.sizes1, 
-                lambda1, 
-                zscores1,
-                fscores1,
-                #adj_rsquared1 = res_ewas1$adj.r.squared
-                gif1)
-    names(reg1) = c("pval","U","V","effect.sizes","lambda","zscores","fscores","gif")
-  }
+  
   
   res[[1]] = reg1
   
@@ -245,42 +211,14 @@ runAS = function(X_matrix,
    }
   
   
-  if(Y_type=="surv_Cox"){
-    #Y = survival::Surv(OT, status)
-    #regression 2: Y ~ M +X
-    p = ncol(M)
-    pval2 = c()
-    for (j in 1:p) {
-      #cox_model = survival::coxph(Y ~ M[,j] + X)
-      cox_model = survival::coxph(Y ~ M[,j] + X + U1)
-      pval2 = c(pval2, summary(cox_model)$coefficients[1,5])
-      # beta_est = c(beta_est, summary(cox_model)$coefficients)
-    }
-    names(pval2)=  colnames(M_matrix)
-    reg2 = list(pval2#,
-                # effect.sizes2,
-                # zscores2,
-                # fscores2,
-                # #adj_rsquared2 = res_ewas2$adj.r.squared
-                # gif2)
-    )
-    names(reg2) = c("pval") #, "effect.sizes", "zscores", "fscores", "gif")
-    
-  }
-  # TODO transform pval in calibrated pval  
-  
-  # TODO
-  # if(Y_type=="surv_AG"){
-  #}
-  
   res[[2]] = reg2
   
   # max2 test
   max2_pval <- apply(cbind(pval1, pval2), 1, max)^2
-  eta0 <- fdrtool::pval.estimate.eta0(max2_pval, diagnostic.plot = diagnostic.plot)
-  qval <- fdrtool::fdrtool(max2_pval,statistic = "pvalue", plot = F, verbose = F)$qval
-  max2 = list(max2_pval, eta0, qval)
-  names(max2) = c("pval", "eta0", "qval")
+  # eta0 <- fdrtool::pval.estimate.eta0(max2_pval, diagnostic.plot = diagnostic.plot)
+  # qval <- fdrtool::fdrtool(max2_pval,statistic = "pvalue", plot = F, verbose = F)$qval
+  max2 = max2_pval#list(max2_pval, eta0, qval)
+  #names(max2) = c("pval")#, "eta0", "qval")
   res[[3]] = max2
   
   names(res) <- c("mod1", "mod2", "max2")
