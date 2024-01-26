@@ -17,7 +17,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
-)
+  )
 ```
 
 Comparison mediation results (mediators and effects) computed with hdmax2 old and new version.
@@ -27,15 +27,10 @@ Comparison mediation results (mediators and effects) computed with hdmax2 old an
 For this first use case we used *binary exposition* and *continuous outcome*, we analyzed 100 samples and 500 potential mediators.
 
 ```{r}
-#load("example_hdmax2.data")
-
-#load("../../../results/git_thema/results/20240111_new_hdmax2/R/sample_hdmax2_data.RData")
-
 load("../data/sample_hdmax2_data.RData")
-X = data$X_binary
-Y = data$Y_time
-M = data$M
-
+X = sample_hdmax2_data$X_binary
+Y = sample_hdmax2_data$Y_time
+M = sample_hdmax2_data$M
 ```
 ***
 
@@ -58,30 +53,35 @@ res_step1 = runAS(X_matrix = X ,
                  conf = NULL,
                  diagnostic.plot = F,
                  genomic.control = T)
+res_step1$mod1$pval[1:5]
+res_step1$max2$qval[1:5]
 ```
 
 #### Old
 
 ```{r}
-library(hdmax2)
+source("../R/hdmax2.R")
 res_mEWAS = mEWAS(X =X, Y=Y, M =M, K=5)
+res_mEWAS$pValue[1:5,1]
+
 res_max2 = max2(pval1=res_mEWAS$pValue[,1], pval2 =res_mEWAS$pValue[,2])
+res_max2$qval[1:5]
 ```
 
 ```{r}
 ##Selecting mediators
 FDR=0.1
 mediators_new = res_step1$max2$qval[res_step1$max2$qval<= FDR]
-mediators_new
+(sort(mediators_new))
 length(mediators_new)
 mediators_old = res_max2$qval[res_max2$qval<=FDR]
-mediators_old
+(sort(mediators_old))
 length(mediators_old)
-intersect_mediators= intersect(names(mediators_new), names(mediators_old))
+intersect_mediators = intersect(names(mediators_new), names(mediators_old))
 recover_runAS_mEWAS = length(intersect_mediators)/length(mediators_old)
 ratio_runAS_mEWAS = length(mediators_new)/length(mediators_old)
 recover_runAS_mEWAS
-ratio_runAS_mEWAS 
+ratio_runAS_mEWAS
 ```
 
 
@@ -89,9 +89,9 @@ ratio_runAS_mEWAS
 ### Mediators individual indirect effects estimation
 
 #### New
-```{r}
-source("../R/acme_mediation.R")
-res_med1 = acme_mediation(qval = res_step1$max2$qval,
+```{r, eval = F}
+
+res_med1 = hdmax2::acme_mediation(qval = res_step1$max2$qval,
                             X = X,
                             Y = Y,
                             M = M,
@@ -102,8 +102,8 @@ res_med1 = acme_mediation(qval = res_step1$max2$qval,
 
 
 
-```{r}
-res_med2 = acme_mediation(qval = res_max2$qval,
+```{r, eval = F}
+res_med2 = hdmax2::acme_mediation(qval = res_max2$qval,
                             X = X,
                             Y = Y,
                             M = M,
@@ -120,7 +120,7 @@ Estimation of average causal mediation effect (ACME)
 
 #### New
 
-```{r}
+```{r, eval = F}
 library(ggplot2)
 
 ggplot(res_med1$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, shape = pval <= 0.05)) +
@@ -138,7 +138,7 @@ ggplot(res_med1$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, 
 
 #### Old
 
-```{r}
+```{r, eval = F}
 
 ggplot(res_med2$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, shape = pval <= 0.05)) +
     geom_vline(xintercept = 0, linetype = "dashed") +
@@ -192,9 +192,9 @@ For this second use case we used **continuous exposition** and **continuous outc
 #load("../../../results/git_thema/results/20240111_new_hdmax2/R/sample_hdmax2_data.RData")
 
 load("../data/sample_hdmax2_data.RData")
-X = data$X_continuous
-Y = data$Y_time
-M = data$M
+X = sample_hdmax2_data$X_continuous
+Y = sample_hdmax2_data$Y_time
+M = sample_hdmax2_data$M
 
 ```
 ***
@@ -223,7 +223,7 @@ res_step1 = runAS(X_matrix = X ,
 #### Old
 
 ```{r}
-library(hdmax2)
+source("../R/hdmax2.R")
 res_mEWAS = mEWAS(X =X, Y=Y, M =M, K=5)
 res_max2 = max2(pval1=res_mEWAS$pValue[,1], pval2 =res_mEWAS$pValue[,2])
 ```
@@ -232,12 +232,12 @@ res_max2 = max2(pval1=res_mEWAS$pValue[,1], pval2 =res_mEWAS$pValue[,2])
 ##Selecting mediators
 FDR=0.1
 mediators_new = res_step1$max2$qval[res_step1$max2$qval<= FDR]
-mediators_new
+(sort(mediators_new))
 length(mediators_new)
 mediators_old = res_max2$qval[res_max2$qval<=FDR]
-mediators_old
+(sort(mediators_old))
 length(mediators_old)
-intersect_mediators= intersect(names(mediators_new), names(mediators_old))
+intersect_mediators = intersect(names(mediators_new), names(mediators_old))
 recover_runAS_mEWAS = length(intersect_mediators)/length(mediators_old)
 ratio_runAS_mEWAS = length(mediators_new)/length(mediators_old)
 recover_runAS_mEWAS
@@ -250,9 +250,9 @@ ratio_runAS_mEWAS
 
 #### New
 
-```{r}
+```{r, eval = F}
 source("../R/acme_mediation.R")
-res_med1 = acme_mediation(qval = res_step1$max2$qval,
+res_med1 = hdmax2::acme_mediation(qval = res_step1$max2$qval,
                             X = X,
                             Y = Y,
                             M = M,
@@ -264,8 +264,8 @@ res_med1 = acme_mediation(qval = res_step1$max2$qval,
 
 #### Old
 
-```{r}
-res_med2 = acme_mediation(qval = res_max2$qval,
+```{r, eval = F}
+res_med2 = hdmax2::acme_mediation(qval = res_max2$qval,
                             X = X,
                             Y = Y,
                             M = M,
@@ -283,7 +283,7 @@ Estimation of average causal mediation effect (ACME)
 
 #### New
 
-```{r}
+```{r, eval = F}
 library(ggplot2)
 
 ggplot(res_med1$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, shape = pval <= 0.05)) +
@@ -301,7 +301,7 @@ ggplot(res_med1$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, 
 
 #### Old
 
-```{r}
+```{r, eval = F}
 
 ggplot(res_med2$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, shape = pval <= 0.05)) +
     geom_vline(xintercept = 0, linetype = "dashed") +
@@ -324,7 +324,7 @@ ggplot(res_med2$ACME, aes(est, stats::reorder(feat, est), color = pval <= 0.05, 
 
 
 
-```{r, eval =FALSE}
+```{r, eval = FALSE}
 source("../R/oie_estimation.R")
 m = M[,names(sort(mediators_new))]
 res_oie =oie_estimation(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )

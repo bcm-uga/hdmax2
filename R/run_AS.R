@@ -94,7 +94,8 @@ runAS = function(X_matrix,
                  M_type,
                  conf = NULL,
                  diagnostic.plot = F ,
-                 genomic.control = T
+                 genomic.control = T,
+                 effect.sizes = T
                  ) {
   res = list()
   
@@ -102,7 +103,8 @@ runAS = function(X_matrix,
     #regression 1: M ~ X
     mod.lfmm1 = LEA::lfmm2(input = M_matrix, 
                            env = X_matrix, 
-                           K=5)
+                           K=5,
+                           effect.sizes = effect.sizes)
     res_ewas1 = LEA::lfmm2.test(mod.lfmm1, 
                                 input = M_matrix, 
                                 env = X_matrix,
@@ -135,7 +137,8 @@ runAS = function(X_matrix,
   if(X_type=="binary"){
     mod.lfmm1 = LEA::lfmm2(input = M_matrix, 
                            env = X_matrix, 
-                           K=5)
+                           K=5,
+                           effect.sizes = effect.sizes)
     res_ewas1 = LEA::lfmm2.test(mod.lfmm1, 
                                 input = M_matrix, 
                                 env = X_matrix,
@@ -173,7 +176,8 @@ runAS = function(X_matrix,
   if(Y_type=="continuous"){
     mod.lfmm2 = LEA::lfmm2(input = M_matrix, 
                            env = cbind(X_matrix, Y_matrix, conf), 
-                           K=5)
+                           K=5,
+                           effect.sizes = effect.sizes)
     res_ewas2 = LEA::lfmm2.test(mod.lfmm2, 
                                 input = M_matrix, 
                                 env = cbind(X_matrix, Y_matrix, conf),
@@ -208,7 +212,8 @@ runAS = function(X_matrix,
    if(Y_type=="binary"){
   mod.lfmm2 = LEA::lfmm2(input = M_matrix, 
                          env = cbind(X_matrix, Y_matrix, conf), 
-                         K=5)
+                         K=5,
+                         effect.sizes = effect.sizes)
   res_ewas2 = LEA::lfmm2.test(mod.lfmm2, 
                               input = M_matrix, 
                               env = cbind(X_matrix, Y_matrix, conf),
