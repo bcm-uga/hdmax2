@@ -21,7 +21,7 @@
 ##' 
 ##'
 
-oie_estimation <- function(X, m, Y, C, boots = 100) {
+estimate_OIE <- function(X, m, Y, C, boots = 100) {
   
   # bootstrap
   acme_sum <- matrix(nrow = 1, ncol = boots)

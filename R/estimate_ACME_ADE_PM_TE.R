@@ -51,25 +51,26 @@
 ##' X_matrix = sample_hdmax2_data$X_binary
 ##' Y_matrix = sample_hdmax2_data$Y_time
 ##' M_matrix = sample_hdmax2_data$M
-##' res <- runAS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "binary", Y_type = "continuous", K = 5)
+##' res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5)
+##' m = M_matrix[,names(sort(res$max2)[1:10])] 
 ##'
-##' res <- acme_mediation(qval = res$max2$qval,
+##' res <- estimate_ACME_ADE_PM_TE(qval = res$max2$qval,
 ##'                             X = X_matrix,
 ##'                             Y = Y_matrix,
-##'                             M = M_matrix,
-##'                             U = res$mod1$U, sims = 3,
-##'                             FDR = 0.1,
+##'                             m = m,
+##'                             U = res$mod1$U, 
+##'                             sims = 3,
 ##'                             mod2_type="linear")
 ##'
 ##'
 
-acme_mediation <- function(qval, X, Y, M, covar = NULL, U = NULL, FDR = 0.1, sims = 3, mod2_type="linear", ...) {
+estimate_ACME_ADE_PM_TE <- function(qval, X, Y, m, covar = NULL, U = NULL, sims = 3, mod2_type="linear", ...) {
   
-  if (is.null(colnames(M))) {
-    colnames(M) <- 1:ncol(M)
+  if (is.null(colnames(m))) {
+    colnames(m) <- 1:ncol(m)
   }
   
-  M <- M[, qval <= FDR]
+  M = m
   
   
   # from package mediation
