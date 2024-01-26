@@ -95,11 +95,11 @@ factoextra::fviz_screeplot(res_pca, ncp=10)
 
 The screeplot indicates around 5 main components in the data. We will use $K = 5$ latent factors in subsequent analyses.
 
-The **runAS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$.
+The **run_AS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$.
 
 ```{r}
 # step 1 association studies + max2
-res_step1 = hdmax2::runAS(X_matrix = X ,
+res_step1 = hdmax2::run_AS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
                  K = 5,
@@ -125,7 +125,7 @@ The function estimates for each regression:
 
 It also estimate results of *max²*  test which identifying potential CpG mediators:
 combining the significance values *pvalues*.
-This rejects the null-hypothesis that either the effect of exposure on potential mediators or the effect of potential mediators on outcome is null. *runAS* function also provides results from max² test:
+This rejects the null-hypothesis that either the effect of exposure on potential mediators or the effect of potential mediators on outcome is null. *run_AS* function also provides results from max² test:
 
 - *p-value* of each test
 
@@ -170,10 +170,10 @@ mediators
 
 ### Mediators individual indirect effects estimation
 
-The function **acme_mediation** estimate the individual indirect effect of mediators
+The function **estimate_ACME_ADE_PM_TE** estimate the individual indirect effect of mediators
 ```{r}
 ## selected mediators effects estimation
-res_med = hdmax2::acme_mediation(qval = res_step1$max2$qval,
+res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
                             X = X,
                             Y = Y,
                             M = M,
@@ -212,7 +212,7 @@ $$
 ```{r}
 ## OIE estimation and boxplot
 m = M[,names(sort(mediators))]
-res_oie = hdmax2::oie_estimation(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )
+res_oie = hdmax2::estimate_OIE(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )
 median(res_oie)
 boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
 ```
@@ -243,7 +243,7 @@ M = sample_hdmax2_data$M
 
 ```{r}
 # step 1 association studies + max2
-res_step1 = hdmax2::runAS(X_matrix = X ,
+res_step1 = hdmax2::run_AS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
                  K = 5,
@@ -290,7 +290,7 @@ mediators
 
 ```{r}
 ## selected mediators effects estimation
-res_med = hdmax2::acme_mediation(qval = res_step1$max2$qval,
+res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
                          X = X,
                          Y = Y,
                          M = M,
@@ -322,7 +322,7 @@ hdmax2::plot_summary_ACME(ACME = res_med$ACME)
 
 ```{r, eval = F}
 m = M[,names(sort(mediators))]
-res_oie = hdmax2::oie_estimation(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )
+res_oie = hdmax2::estimate_OIE(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )
 median(res_oie)
 boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
 ```
@@ -346,7 +346,7 @@ M = sample_hdmax2_data$M
 
 ```{r}
 # step 1 association studies + max2
-res_step1 = hdmax2::runAS(X_matrix = X ,
+res_step1 = hdmax2::run_AS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
                  K = 5,
@@ -393,7 +393,7 @@ mediators
 
 
 ```{r}
-res_med = hdmax2::acme_mediation(qval = res_step1$max2$qval,
+res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
                             X = X,
                             Y = Y,
                             M = M,
@@ -419,115 +419,3 @@ head(res_med$TE)
 ## mediators ACME plots 
 hdmax2::plot_summary_ACME(ACME = res_med$ACME)
 ```
-
-
-
-
-
-
-## Fourth use case 
-
-For this fourth use case we used **continuous exposition** and **survival outcome**, we analyzed 100 samples and 500 potential mediators.
-
-```{r}
-X = sample_hdmax2_data$X_continuous
-Y = sample_hdmax2_data$Y_coxSurv
-M = sample_hdmax2_data$M
-```
-***
-
-### Evaluating associations between exposure, mediators and outcome
-
-
-```{r}
-# step 1 association studies + max2
-res_step1 = hdmax2::runAS(X_matrix = X ,
-                 Y_matrix = Y,
-                 M_matrix = M, 
-                 K = 5,
-                 X_type = "continuous",
-                 Y_type = "surv_Cox",
-                 #Y_type = "binary",
-                 M_type = "methylation",
-                 conf = NULL,
-                 diagnostic.plot = F)
-```
-
-
-
-```{r, eval = T}
-# first regression
-head(res_step1$mod1$pval)
-head(res_step1$mod1$effect.sizes)
-head(res_step1$mod1$zscores)
-head(res_step1$mod1$gif)
-
-# second regression
-head(res_step1$mod2$pval)
-head(res_step1$mod2$effect.sizes)
-head(res_step1$mod2$zscores)
-head(res_step1$mod2$gif)
- 
-# max2 test results
-head(res_step1$max2$pval)
-head(res_step1$max2$eta0)
-head(res_step1$max2$qval)
-```
-
-
-
-
-```{r}
-##Selecting mediators
-FDR=0.5
-mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
-mediators
-```
-
-### Mediators individual indirect effects estimation
-
-
-```{r}
-res_med = hdmax2::acme_mediation(qval = res_step1$max2$qval,
-                            X = X,
-                            Y = Y,
-                            M = M,
-                            U = res_step1$mod1$U,
-                            sims = 100, 
-                            FDR = FDR, 
-                            mod2_type = "surv_Cox")
-
-##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
-```
-
-
-
-```{r}
-# ACME, ADE, PM, TE estimation with CI
-head(res_med$ACME)
-head(res_med$ADE)
-head(res_med$PM)
-head(res_med$TE)
-```
-
-
-```{r}
-## mediators ACME plots 
-hdmax2::plot_summary_ACME(ACME = res_med$ACME)
-```
-
-### Mediators Overall Indirect Effect (OIE) estimation
-
-```{r, eval = F}
-m = M[,names(sort(mediators))]
-# res_oie = hdmax2::oie_estimation(X=X, C=res_step1$mod1$U, m = m, Y=Y, boots = 100 )
-# median(res_oie)
-
-res_oie = hdmax2::oie_estimation(X=X, C=NULL, m = m, Y=Y, boots = 100 )
-median(res_oie)
-boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
-```
-
-
-
-
