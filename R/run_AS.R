@@ -20,7 +20,7 @@
 ##' Each column corresponds to a distinct explanatory variable (Outcome).
 ##' Explanatory variables must be encoded as numeric variables.
 ##' @param M_type type of potential mediators matrix "methylation", "transcriptome"
-##' @param X_type type of exposition "univariate"
+##' @param X_type type of exposition "univariate", "multivariate"
 ##' @param Y_type type of outcome "binary', "continuous"
 ##' @param K an integer for the number of latent factors in the regression model.
 ##' @param conf set of covariable, must be numeric. No NAs allowed
@@ -90,9 +90,9 @@ run_AS = function(X_matrix,
                  Y_type,
                  M_type,
                  conf = NULL,
-                 diagnostic.plot = F ,
-                 genomic.control = T,
-                 effect.sizes = T
+                 diagnostic.plot = FALSE ,
+                 genomic.control = TRUE,
+                 effect.sizes = TRUE
                  ) {
   res = list()
   
@@ -102,11 +102,11 @@ run_AS = function(X_matrix,
                            env = X_matrix, 
                            K=5,
                            effect.sizes = effect.sizes)
-    res_ewas1 = LEA::lfmm2.test(mod.lfmm1, 
+    res_reg1 = LEA::lfmm2.test(mod.lfmm1, 
                                 input = M_matrix, 
                                 env = X_matrix,
                                 genomic.control = genomic.control)
-    pval1 = as.double(res_ewas1$pvalues)
+    pval1 = as.double(res_reg1$pvalues)
     names(pval1) = colnames(M_matrix)
     length(pval1)
     U1 = mod.lfmm1@U
@@ -114,10 +114,10 @@ run_AS = function(X_matrix,
     effect.sizes1 = mod.lfmm1@B
     lambda1 = mod.lfmm1@lambda
     
-    zscores1 = res_ewas1$zscores
-    fscores1 = res_ewas1$fscores
-    #adj_rsquared1 = res_ewas1$adj.r.squared
-    gif1 = res_ewas1$gif
+    zscores1 = res_reg1$zscores
+    fscores1 = res_reg1$fscores
+    #adj_rsquared1 = res_reg1$adj.r.squared
+    gif1 = res_reg1$gif
     reg1 = list(pval1,
                 U1, 
                 V1, 
@@ -125,7 +125,7 @@ run_AS = function(X_matrix,
                 lambda1, 
                 zscores1,
                 fscores1,
-                #adj_rsquared1 = res_ewas1$adj.r.squared
+                #adj_rsquared1 = res_reg1$adj.r.squared
                 gif1)
     names(reg1) = c("pval","U","V","effect.sizes","lambda","zscores","fscores","gif")
   }
@@ -136,7 +136,7 @@ run_AS = function(X_matrix,
   res[[1]] = reg1
   
   ## TODO  
-  # if(X_type=="categorial")
+  # if(X_type=="multivariate")
   #     #else ...
   
   if(Y_type=="continuous"){
@@ -144,12 +144,12 @@ run_AS = function(X_matrix,
                            env = cbind(X_matrix, Y_matrix, conf), 
                            K=5,
                            effect.sizes = effect.sizes)
-    res_ewas2 = LEA::lfmm2.test(mod.lfmm2, 
+    res_reg2 = LEA::lfmm2.test(mod.lfmm2, 
                                 input = M_matrix, 
                                 env = cbind(X_matrix, Y_matrix, conf),
                                 genomic.control = genomic.control,
-                                full = T)
-    pval2 = as.double(res_ewas2$pvalues)
+                                full = FALSE)
+    pval2 = as.double(res_reg2$pvalues[2,])
     names(pval2) = colnames(M_matrix)
     length(pval2)
     U2 = mod.lfmm2@U
@@ -157,10 +157,10 @@ run_AS = function(X_matrix,
     effect.sizes2 = mod.lfmm2@B
     lambda2 = mod.lfmm2@lambda
     
-    zscores2 = res_ewas2$zscores
-    fscores2 = res_ewas2$fscores
-    #adj_rsquared2 = res_ewas2$adj.r.squared
-    gif2 = res_ewas2$gif
+    zscores2 = res_reg2$zscores
+    fscores2 = res_reg2$fscores
+    #adj_rsquared2 = res_reg2$adj.r.squared
+    gif2 = res_reg2$gif
     reg2 = list(pval2,
                 U2, 
                 V2, 
@@ -168,7 +168,7 @@ run_AS = function(X_matrix,
                 lambda2, 
                 zscores2,
                 fscores2,
-                #adj_rsquared2 = res_ewas2$adj.r.squared
+                #adj_rsquared2 = res_reg2$adj.r.squared
                 gif2)
     names(reg2) = c("pval", "U", "V", "effect.sizes", "lambda", "zscores", "fscores", "gif")
   }
@@ -180,13 +180,13 @@ run_AS = function(X_matrix,
                          env = cbind(X_matrix, Y_matrix, conf), 
                          K=5,
                          effect.sizes = effect.sizes)
-  res_ewas2 = LEA::lfmm2.test(mod.lfmm2, 
+  res_reg2 = LEA::lfmm2.test(mod.lfmm2, 
                               input = M_matrix, 
                               env = cbind(X_matrix, Y_matrix, conf),
                               genomic.control = genomic.control,
-                              full = F,
-                              linear = F)
-  pval2 = as.double(res_ewas2$pvalues)
+                              full = FALSE,
+                              linear = FALSE)
+  pval2 = as.double(res_reg2$pvalues[,2])
   names(pval2) = colnames(M_matrix)
   length(pval2)
   U2 = mod.lfmm2@U
@@ -194,10 +194,10 @@ run_AS = function(X_matrix,
   effect.sizes2 = mod.lfmm2@B
   lambda2 = mod.lfmm2@lambda
   
-  zscores2 = res_ewas2$zscores
-  fscores2 = res_ewas2$fscores
-  #adj_rsquared2 = res_ewas2$adj.r.squared
-  gif2 = res_ewas2$gif
+  zscores2 = res_reg2$zscores
+  fscores2 = res_reg2$fscores
+  #adj_rsquared2 = res_reg2$adj.r.squared
+  gif2 = res_reg2$gif
   reg2 = list(pval2,
               U2, 
               V2, 
@@ -205,7 +205,7 @@ run_AS = function(X_matrix,
               lambda2, 
               zscores2,
               fscores2,
-              #adj_rsquared2 = res_ewas2$adj.r.squared
+              #adj_rsquared2 = res_reg2$adj.r.squared
               gif2)
   names(reg2) = c("pval", "U", "V", "effect.sizes", "lambda", "zscores", "fscores", "gif")
    }

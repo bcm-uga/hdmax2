@@ -4,7 +4,7 @@
 \alias{estimate_OIE}
 \title{Overall Indirect Effect for a set of mediator}
 \usage{
-estimate_OIE(X, m, Y, C, boots = 100)
+estimate_OIE(X, m, Y, C, boots = 100, mod2_type = "linear")
 }
 \arguments{
 \item{X}{exposure}

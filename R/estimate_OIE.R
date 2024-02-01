@@ -21,7 +21,7 @@
 ##' 
 ##'
 
-estimate_OIE <- function(X, m, Y, C, boots = 100) {
+estimate_OIE <- function(X, m, Y, C, boots = 100, mod2_type= "linear") {
   
   # bootstrap
   acme_sum <- matrix(nrow = 1, ncol = boots)
@@ -29,12 +29,19 @@ estimate_OIE <- function(X, m, Y, C, boots = 100) {
   for (i in 1:ncol(acme_sum)) {
     samp <- sample(length(X), replace = T)
     
+    if(mod2_type=="logistic"){
+      dat.1 <- data.frame(X, m, C)
+      mod1 <- glm(Y[samp] ~ ., data = dat.1[samp, ])
+      B <- as.data.frame(summary(mod1)$coeff[3:(ncol(m) + 2), ])
+    }
+      
+    if(mod2_type=="linear"){
     # effet B m -> Y
     dat.1 <- data.frame(X, m, C)
     mod1 <- lm(Y[samp] ~ ., data = dat.1[samp, ])
     B <- as.data.frame(summary(mod1)$coeff[3:(ncol(m) + 2), ])
     #B <- as.data.frame(summary(mod1)$coeff[3:10, ])
-    
+    }
     # effet A X -> M
     mod2 <- lm(m[samp, ] ~ X[samp] + C[samp, ])
     A <- t(sapply(summary(mod2), function(x) x$coeff[2, ]))

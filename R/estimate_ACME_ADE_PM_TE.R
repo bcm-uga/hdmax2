@@ -19,7 +19,7 @@
 ##' @param sims number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 ##' 10000 is recommended.
 ##' @param covar covariables
-##' @param mod2_type second regression type "linear", "survCox"
+##' @param mod2_type second regression type "linear", "logistic", "surv_Cox"
 ##' @param ... argument of the mediate function from the mediation package
 ##'
 ##' @return
@@ -98,9 +98,13 @@ estimate_ACME_ADE_PM_TE <- function(qval, X, Y, m, covar = NULL, U = NULL, sims 
     mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
     }
     
-    if(mod2_type=="surv_Cox"){
-    mod2 = survival::survreg(Y ~ X + Mi , dist='exponential', data = dat.y)
+    if(mod2_type=="logistic"){
+      mod2 <- stats::glm(Y ~ X + Mi + ., data = dat.y)
     }
+    
+    # if(mod2_type=="surv_Cox"){
+    # mod2 = survival::survreg(Y ~ X + Mi , dist='exponential', data = dat.y)
+    # }
     
     
     # # for linear models
