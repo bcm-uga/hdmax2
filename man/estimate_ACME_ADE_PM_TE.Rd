@@ -34,7 +34,7 @@ Explanatory variables must be encoded as numeric variables.}
 \item{sims}{number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 10000 is recommended.}
 
-\item{mod2_type}{second regression type "linear", "survCox"}
+\item{mod2_type}{second regression type "linear", "logistic", "surv_Cox"}
 
 \item{...}{argument of the mediate function from the mediation package}
 

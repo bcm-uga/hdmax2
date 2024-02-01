@@ -13,9 +13,9 @@ run_AS(
   Y_type,
   M_type,
   conf = NULL,
-  diagnostic.plot = F,
-  genomic.control = T,
-  effect.sizes = T
+  diagnostic.plot = FALSE,
+  genomic.control = TRUE,
+  effect.sizes = TRUE
 )
 }
 \arguments{
@@ -32,7 +32,7 @@ Response variables must be encoded as numeric. No NAs allowed.}
 
 \item{K}{an integer for the number of latent factors in the regression model.}
 
-\item{X_type}{type of exposition "univariate"}
+\item{X_type}{type of exposition "univariate", "multivariate"}
 
 \item{Y_type}{type of outcome "binary', "continuous"}
 
