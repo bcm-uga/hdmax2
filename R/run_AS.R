@@ -27,7 +27,7 @@
 ##' @param diagnostic.plot if TRUE the histogram of the p-values together
 ##' with the estimate of eta0 null line is plotted.
 ##' Useful to visually check the fit of the estimated proportion of null p-values.
-##' @param genomic.control correctef pvalue with genomic inflation factor
+##' @param genomic.control correct pvalue with genomic inflation factor
 ##' @return an object with the following attributes 
 ##'   for each association study:
 ##'
@@ -100,7 +100,7 @@ run_AS = function(X_matrix,
     #regression 1: M ~ X
     mod.lfmm1 = LEA::lfmm2(input = M_matrix, 
                            env = X_matrix, 
-                           K=K,
+                           K = K,
                            effect.sizes = effect.sizes)
     res_reg1 = LEA::lfmm2.test(mod.lfmm1, 
                                 input = M_matrix, 
@@ -129,20 +129,49 @@ run_AS = function(X_matrix,
                 gif1)
     names(reg1) = c("pval","U","V","effect.sizes","lambda","zscores","fscores","gif")
   }
-  
 
+
+   if(X_type=="multivariate"){
+  mod.lfmm1 = lfmm2_v2(input = M_matrix, 
+                         env = X_matrix, 
+                         K = K,
+                         effect.sizes = FALSE)
+  res_reg1 = lfmm2_v2.test(mod.lfmm1, 
+                             input = M_matrix, 
+                             env = X_matrix,
+                             full = TRUE,
+                             covar = NULL,
+                             genomic.control = genomic.control)
+  pval1 = as.double(res_reg1$pvalues)
+  names(pval1) = colnames(M_matrix)
+  length(pval1)
+  U1 = mod.lfmm1@U
+  V1 = mod.lfmm1@V
+  effect.sizes1 = mod.lfmm1@B
+  lambda1 = mod.lfmm1@lambda
   
-  
-  res[[1]] = reg1
-  
-  ## TODO  
-  # if(X_type=="multivariate")
-  #     #else ...
+  zscores1 = res_reg1$zscores
+  fscores1 = res_reg1$fscores
+  #adj_rsquared1 = res_reg1$adj.r.squared
+  gif1 = res_reg1$gif
+  reg1 = list(pval1,
+              U1, 
+              V1, 
+              effect.sizes1,
+              lambda1, 
+              zscores1,
+              fscores1,
+              #adj_rsquared1 = res_reg1$adj.r.squared
+              gif1)
+  names(reg1) = c("pval","U","V","effect.sizes","lambda","zscores","fscores","gif")
+  }
+
+  res[[1]] = reg1  
   
   if(Y_type=="continuous"){
     mod.lfmm2 = LEA::lfmm2(input = M_matrix, 
                            env = cbind(X_matrix, Y_matrix, conf), 
-                           K=K,
+                           K = K,
                            effect.sizes = effect.sizes)
     res_reg2 = LEA::lfmm2.test(mod.lfmm2, 
                                 input = M_matrix, 
@@ -178,7 +207,7 @@ run_AS = function(X_matrix,
    if(Y_type=="binary"){
   mod.lfmm2 = LEA::lfmm2(input = M_matrix, 
                          env = cbind(X_matrix, Y_matrix, conf), 
-                         K=K,
+                         K = K,
                          effect.sizes = effect.sizes)
   res_reg2 = LEA::lfmm2.test(mod.lfmm2, 
                               input = M_matrix, 

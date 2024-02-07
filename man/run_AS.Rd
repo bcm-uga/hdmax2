@@ -44,7 +44,7 @@ Response variables must be encoded as numeric. No NAs allowed.}
 with the estimate of eta0 null line is plotted.
 Useful to visually check the fit of the estimated proportion of null p-values.}
 
-\item{genomic.control}{correctef pvalue with genomic inflation factor}
+\item{genomic.control}{correct pvalue with genomic inflation factor}
 }
 \value{
 an object with the following attributes

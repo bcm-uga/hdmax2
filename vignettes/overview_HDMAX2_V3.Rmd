@@ -66,12 +66,13 @@ To install the latest version of **hdmax2**, use the github repository
 ```
 
 ***
-# Starting with hdmax2
+
 
 
 Data set is produce from transcription, methylation and patients meta data of PDAC (Pancreatic Ductal AdenoCarcinoma) TCGA data. 
 
-## First use case 
+# First use case  *univariate binary exposition* and *continuous outcome*
+
 
 For this first use case we used *univariate binary exposition* and *continuous outcome*, we analyzed 100 samples and 500 potential mediators.
 
@@ -84,13 +85,16 @@ M = as.matrix(sample_hdmax2_data$M)
 ```
 ***
 
-### Evaluating associations between exposure, mediators and outcome
+## Evaluating associations between exposure, mediators and outcome
 
 In order to estimate how many latent factors can be inferred from the potential mediators matrix, we performed a principal component analysis (PCA). 
 
 ```{r}
 res_pca = FactoMineR::PCA(M, graph = F)
 factoextra::fviz_screeplot(res_pca, ncp=10)
+
+#pca conclusion
+K=5
 ```
 
 The screeplot indicates around 5 main components in the data. We will use $K = 5$ latent factors in subsequent analyses.
@@ -102,7 +106,7 @@ The **run_AS** function is applied to estimate the effects of exposure $X$ on a 
 res_step1 = hdmax2::run_AS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
-                 K = 5,
+                 K = K,
                  X_type = "univariate",
                  Y_type = "continuous",
                  M_type = "methylation",
@@ -154,7 +158,7 @@ head(res_step1$max2)
 
 ***
 
-In this example, we will consider FDR levels <10%.
+In this example, we will consider the 10 first selected mediators.
 
 
 ```{r}
@@ -168,7 +172,7 @@ head(mediators_top10)
 
 ```
 
-### Mediators individual indirect effects estimation
+## Mediators individual indirect effects estimation
 
 The function **estimate_ACME_ADE_PM_TE** estimate the individual indirect effect of mediators
 ```{r}
@@ -200,7 +204,7 @@ head(res_med$TE)
 hdmax2::plot_summary_ACME(ACME = res_med$ACME)
 ```
 
-### Mediators Overall Indirect Effect (OIE) estimation
+## Mediators Overall Indirect Effect (OIE) estimation
 
 A novelty of HDMAX2 is to evaluate an overall (cumulated) indirect effect for all CpGs or AMRs identified in Step 3. The overall indirect effect (OIE) was estimated in a model including m mediator variables as follows:
 
@@ -256,13 +260,7 @@ boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "b
 
 
 
-
-
-
-
-
-
-## Second use case 
+# Use case 2  **univariate continuous exposition** and **continuous outcome**
 
 For this second use case we used **univariate continuous exposition** and **continuous outcome**, we analyzed 100 samples and 500 potential mediators.
 
@@ -273,7 +271,7 @@ M = sample_hdmax2_data$M
 ```
 ***
 
-### Evaluating associations between exposure, mediators and outcome
+## Evaluating associations between exposure, mediators and outcome
 
 
 ```{r}
@@ -281,7 +279,7 @@ M = sample_hdmax2_data$M
 res_step1 = hdmax2::run_AS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
-                 K = 5,
+                 K = K,
                  X_type = "univariate",
                  Y_type = "continuous",
                  M_type = "methylation",
@@ -320,7 +318,7 @@ mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
 head(mediators_top10)
 ```
 
-### Mediators individual indirect effects estimation
+## Mediators individual indirect effects estimation
 
 
 ```{r}
@@ -352,7 +350,7 @@ head(res_med$TE)
 hdmax2::plot_summary_ACME(ACME = res_med$ACME)
 ```
 
-### Mediators Overall Indirect Effect (OIE) estimation
+## Mediators Overall Indirect Effect (OIE) estimation
 
 ```{r, eval = T}
 
@@ -365,7 +363,7 @@ boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "b
 
 
 
-## third use case 
+# Use case 3 **continuous exposition** and **binary outcome**
 
 For this second use case we used **continuous exposition** and **binary outcome**, we analyzed 100 samples and 500 potential mediators.
 
@@ -376,7 +374,7 @@ M = sample_hdmax2_data$M
 ```
 ***
 
-### Evaluating associations between exposure, mediators and outcome
+## Evaluating associations between exposure, mediators and outcome
 
 
 ```{r}
@@ -384,7 +382,7 @@ M = sample_hdmax2_data$M
 res_step1 = hdmax2::run_AS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
-                 K = 5,
+                 K = K,
                  X_type = "univariate",
                  #Y_type = "continuous", # even if it is binary
                  Y_type = "binary",
@@ -424,7 +422,7 @@ mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
 head(mediators_top10)
 ```
 
-### Mediators individual indirect effects estimation
+## Mediators individual indirect effects estimation
 
 
 ```{r}
@@ -455,7 +453,7 @@ hdmax2::plot_summary_ACME(ACME = res_med$ACME)
 ```
 
 
-### Mediators Overall Indirect Effect (OIE) estimation
+## Mediators Overall Indirect Effect (OIE) estimation
 
 ```{r, eval = T}
 
@@ -465,3 +463,84 @@ plot(density(res_oie))
 boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
 ```
 
+
+# Use case 4 **categorial exposition** and **binary outcome**
+
+
+```{r}
+load("../data/sample_RA.data.RData")
+X = as.matrix(RA.data$X_one_hot)
+Y = as.matrix(RA.data$Y)
+M = as.matrix(RA.data$M)
+
+```
+
+```{r}
+# step 1 association studies + max2
+res_step1 = hdmax2::run_AS(X_matrix = X ,
+                 Y_matrix = Y,
+                 M_matrix = M, 
+                 K = K,
+                 X_type = "multivariate",
+                 Y_type = "continuous", #even it is binary
+                 M_type = "methylation",
+                 conf = NULL,
+                 diagnostic.plot = F)
+
+```
+
+```{r, eval = T}
+# first regression
+head(res_step1$mod1$pval)
+head(res_step1$mod1$effect.sizes)
+head(res_step1$mod1$zscores)
+head(res_step1$mod1$gif)
+
+# second regression
+head(res_step1$mod2$pval)
+head(res_step1$mod2$effect.sizes)
+#head(res_step1$mod2$zscores)
+head(res_step1$mod2$gif)
+
+# max2 test results
+head(res_step1$max2)
+
+```
+
+```{r}
+##Selecting mediators
+# FDR=0.1
+# mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
+mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
+head(mediators_top10)
+```
+
+## Mediators individual indirect effects estimation
+
+
+```{r}
+res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
+                            X = X,
+                            Y = Y,
+                            m = mediators_top10,
+                            U = res_step1$mod1$U,
+                            sims = 100,
+                            mod2_type = "logistic")
+
+##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
+```
+
+
+```{r}
+# ACME, ADE, PM, TE estimation with CI
+head(res_med$ACME)
+head(res_med$ADE)
+head(res_med$PM)
+head(res_med$TE)
+```
+
+
+```{r}
+## mediators ACME plots 
+hdmax2::plot_summary_ACME(ACME = res_med$ACME)
+```
