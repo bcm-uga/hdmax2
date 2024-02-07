@@ -2,6 +2,10 @@
 
 export(estimate_ACME_ADE_PM_TE)
 export(estimate_OIE)
+export(lfmm2_v2)
+export(lfmm2_v2.test)
 export(plot_summary_ACME)
+export(read.lfmm)
 export(run_AS)
+import(LEA)
 import(ggplot2)
