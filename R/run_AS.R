@@ -100,7 +100,7 @@ run_AS = function(X_matrix,
     #regression 1: M ~ X
     mod.lfmm1 = LEA::lfmm2(input = M_matrix, 
                            env = X_matrix, 
-                           K=5,
+                           K=K,
                            effect.sizes = effect.sizes)
     res_reg1 = LEA::lfmm2.test(mod.lfmm1, 
                                 input = M_matrix, 
@@ -142,7 +142,7 @@ run_AS = function(X_matrix,
   if(Y_type=="continuous"){
     mod.lfmm2 = LEA::lfmm2(input = M_matrix, 
                            env = cbind(X_matrix, Y_matrix, conf), 
-                           K=5,
+                           K=K,
                            effect.sizes = effect.sizes)
     res_reg2 = LEA::lfmm2.test(mod.lfmm2, 
                                 input = M_matrix, 
@@ -178,7 +178,7 @@ run_AS = function(X_matrix,
    if(Y_type=="binary"){
   mod.lfmm2 = LEA::lfmm2(input = M_matrix, 
                          env = cbind(X_matrix, Y_matrix, conf), 
-                         K=5,
+                         K=K,
                          effect.sizes = effect.sizes)
   res_reg2 = LEA::lfmm2.test(mod.lfmm2, 
                               input = M_matrix, 
