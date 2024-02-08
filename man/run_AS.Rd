@@ -12,7 +12,7 @@ run_AS(
   X_type,
   Y_type,
   M_type,
-  conf = NULL,
+  covar,
   diagnostic.plot = FALSE,
   genomic.control = TRUE,
   effect.sizes = TRUE
@@ -38,7 +38,7 @@ Response variables must be encoded as numeric. No NAs allowed.}
 
 \item{M_type}{type of potential mediators matrix "methylation", "transcriptome"}
 
-\item{conf}{set of covariable, must be numeric. No NAs allowed}
+\item{covar}{set of covariable, must be numeric. No NAs allowed}
 
 \item{diagnostic.plot}{if TRUE the histogram of the p-values together
 with the estimate of eta0 null line is plotted.
@@ -100,7 +100,9 @@ library(hdmax2)
 X_matrix = sample_hdmax2_data$X_binary
 Y_matrix = sample_hdmax2_data$Y_time
 M_matrix = sample_hdmax2_data$M
-res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5)
+age = as.matrix(sample_hdmax2_data$age)
+gender = as.matrix(sample_hdmax2_data$gender)
+res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5, covar= cbind(age, gender))
 
 
 }
