@@ -4,11 +4,9 @@
 \alias{estimate_ACME_ADE_PM_TE}
 \title{Estimate effects for a set of mediation markers}
 \usage{
-estimate_ACME_ADE_PM_TE(qval, X, Y, m, covar, U, sims = 3, mod2_type, ...)
+estimate_ACME_ADE_PM_TE(X, Y, m, covar, U, sims = 3, mod2_type, ...)
 }
 \arguments{
-\item{qval}{set of qValues from max2 function}
-
 \item{X}{Exposure. An explanatory variable matrix with n rows and d columns.
 Each column corresponds to a distinct explanatory variable (Exposure).
 Explanatory variables must be encoded as numeric variables.}
@@ -73,8 +71,7 @@ gender = as.matrix(sample_hdmax2_data$gender)
 res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5, covar = cbind (age, gender))
 m = M_matrix[,names(sort(res$max2)[1:10])] 
 
-res <- estimate_ACME_ADE_PM_TE(qval = res$max2$qval,
-                            X = X_matrix,
+res <- estimate_ACME_ADE_PM_TE(X = X_matrix,
                             Y = Y_matrix,
                             m = m,
                             covar = cbind (age, gender),

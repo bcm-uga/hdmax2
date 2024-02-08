@@ -15,7 +15,7 @@ run_AS(
   covar,
   diagnostic.plot = FALSE,
   genomic.control = TRUE,
-  effect.sizes = TRUE
+  effect.sizes = FALSE
 )
 }
 \arguments{
@@ -52,8 +52,6 @@ for each association study:
 \itemize{
 \item U, scores matrix for the K latent factors.
 \item V, latent factors loadings
-\item effect.sizes , the effect size matrix for the exposure X and the outcome Y.
-\item lambda , use in ridge lfmm
 \item gif, Genomic inflation factor for X and Y, expressing the deviation of the distribution of the observed test statistic compared to the distribution of the expected test statistic
 \item pValue, estimation of the effects of X and Y on the matrix M.
 \item zscore, a score matrix for the exposure X and the outcome Y.
