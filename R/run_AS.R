@@ -23,7 +23,7 @@
 ##' @param X_type type of exposition "univariate", "multivariate"
 ##' @param Y_type type of outcome "binary', "continuous"
 ##' @param K an integer for the number of latent factors in the regression model.
-##' @param conf set of covariable, must be numeric. No NAs allowed
+##' @param covar set of covariable, must be numeric. No NAs allowed
 ##' @param diagnostic.plot if TRUE the histogram of the p-values together
 ##' with the estimate of eta0 null line is plotted.
 ##' Useful to visually check the fit of the estimated proportion of null p-values.
@@ -35,9 +35,6 @@
 ##'  
 ##'  - V, latent factors loadings
 ##'
-##'  - effect.sizes , the effect size matrix for the exposure X and the outcome Y.
-##'  
-##'  - lambda , use in ridge lfmm
 ##'  
 ##'  - gif, Genomic inflation factor for X and Y, expressing the deviation of the distribution of the observed test statistic compared to the distribution of the expected test statistic
 ##'  
@@ -79,7 +76,9 @@
 ##' X_matrix = sample_hdmax2_data$X_binary
 ##' Y_matrix = sample_hdmax2_data$Y_time
 ##' M_matrix = sample_hdmax2_data$M
-##' res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5)
+##' age = as.matrix(sample_hdmax2_data$age)
+##' gender = as.matrix(sample_hdmax2_data$gender)
+##' res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5, covar= cbind(age, gender))
 ##'
 ##' 
 run_AS = function(X_matrix,
@@ -89,165 +88,124 @@ run_AS = function(X_matrix,
                  X_type,
                  Y_type,
                  M_type,
-                 conf = NULL,
+                 covar,
                  diagnostic.plot = FALSE ,
                  genomic.control = TRUE,
-                 effect.sizes = TRUE
+                 effect.sizes = FALSE
                  ) {
   res = list()
   
     if(X_type=="univariate"){
     #regression 1: M ~ X
-    mod.lfmm1 = LEA::lfmm2(input = M_matrix, 
+    mod.lfmm1 = lfmm2_med(input = M_matrix, 
                            env = X_matrix, 
                            K = K,
                            effect.sizes = effect.sizes)
-    res_reg1 = LEA::lfmm2.test(mod.lfmm1, 
+    res_reg1 = lfmm2_med_test(mod.lfmm1, 
                                 input = M_matrix, 
                                 env = X_matrix,
+                                covar = covar,
                                 genomic.control = genomic.control)
     pval1 = as.double(res_reg1$pvalues)
     names(pval1) = colnames(M_matrix)
-    length(pval1)
-    U1 = mod.lfmm1@U
-    V1 = mod.lfmm1@V
-    effect.sizes1 = mod.lfmm1@B
-    lambda1 = mod.lfmm1@lambda
-    
+    U1 = mod.lfmm1$U
+    V1 = mod.lfmm1$V
     zscores1 = res_reg1$zscores
     fscores1 = res_reg1$fscores
-    #adj_rsquared1 = res_reg1$adj.r.squared
+    adj_rsquared1 = res_reg1$adj.r.squared
     gif1 = res_reg1$gif
     reg1 = list(pval1,
                 U1, 
                 V1, 
-                effect.sizes1,
-                lambda1, 
                 zscores1,
                 fscores1,
-                #adj_rsquared1 = res_reg1$adj.r.squared
+                adj_rsquared1,
                 gif1)
-    names(reg1) = c("pval","U","V","effect.sizes","lambda","zscores","fscores","gif")
+    names(reg1) = c("pval","U","V","zscores","fscores", "adj_rsquared", "gif")
   }
 
 
    if(X_type=="multivariate"){
-  mod.lfmm1 = lfmm2_v2(input = M_matrix, 
+  mod.lfmm1 = lfmm2_med(input = M_matrix, 
                          env = X_matrix, 
                          K = K,
-                         effect.sizes = FALSE)
-  res_reg1 = lfmm2_v2.test(mod.lfmm1, 
+                         effect.sizes = effect.sizes)
+  res_reg1 = lfmm2_med_test(mod.lfmm1, 
                              input = M_matrix, 
                              env = X_matrix,
                              full = TRUE,
-                             covar = NULL,
+                             covar = covar,
                              genomic.control = genomic.control)
   pval1 = as.double(res_reg1$pvalues)
   names(pval1) = colnames(M_matrix)
-  length(pval1)
-  U1 = mod.lfmm1@U
-  V1 = mod.lfmm1@V
-  effect.sizes1 = mod.lfmm1@B
-  lambda1 = mod.lfmm1@lambda
-  
+  U1 = mod.lfmm1$U
+  V1 = mod.lfmm1$V
   zscores1 = res_reg1$zscores
   fscores1 = res_reg1$fscores
-  #adj_rsquared1 = res_reg1$adj.r.squared
+  adj_rsquared1 = res_reg1$adj.r.squared
   gif1 = res_reg1$gif
   reg1 = list(pval1,
               U1, 
               V1, 
-              effect.sizes1,
-              lambda1, 
               zscores1,
               fscores1,
-              #adj_rsquared1 = res_reg1$adj.r.squared
+              adj_rsquared1, 
               gif1)
-  names(reg1) = c("pval","U","V","effect.sizes","lambda","zscores","fscores","gif")
+  names(reg1) = c("pval","U","V","zscores","fscores", "adj_rsquared","gif")
   }
 
   res[[1]] = reg1  
   
   if(Y_type=="continuous"){
-    mod.lfmm2 = LEA::lfmm2(input = M_matrix, 
-                           env = cbind(X_matrix, Y_matrix, conf), 
-                           K = K,
-                           effect.sizes = effect.sizes)
-    res_reg2 = LEA::lfmm2.test(mod.lfmm2, 
+    res_reg2 = lfmm2_med_test(mod.lfmm1, 
                                 input = M_matrix, 
-                                env = cbind(X_matrix, Y_matrix, conf),
+                                env = cbind(X_matrix, Y_matrix),
+                                covar = covar,
                                 genomic.control = genomic.control,
                                 full = FALSE)
     pval2 = as.double(res_reg2$pvalues[2,])
     names(pval2) = colnames(M_matrix)
-    length(pval2)
-    U2 = mod.lfmm2@U
-    V2 = mod.lfmm2@V
-    effect.sizes2 = mod.lfmm2@B
-    lambda2 = mod.lfmm2@lambda
-    
     zscores2 = res_reg2$zscores
     fscores2 = res_reg2$fscores
-    #adj_rsquared2 = res_reg2$adj.r.squared
+    adj_rsquared2 = res_reg2$adj.r.squared
     gif2 = res_reg2$gif
     reg2 = list(pval2,
-                U2, 
-                V2, 
-                effect.sizes2, 
-                lambda2, 
                 zscores2,
                 fscores2,
-                #adj_rsquared2 = res_reg2$adj.r.squared
+                adj_rsquared2,
                 gif2)
-    names(reg2) = c("pval", "U", "V", "effect.sizes", "lambda", "zscores", "fscores", "gif")
+    names(reg2) = c("pval", "zscores", "fscores", "adj_rsquared", "gif")
   }
     
   
   
    if(Y_type=="binary"){
-  mod.lfmm2 = LEA::lfmm2(input = M_matrix, 
-                         env = cbind(X_matrix, Y_matrix, conf), 
-                         K = K,
-                         effect.sizes = effect.sizes)
-  res_reg2 = LEA::lfmm2.test(mod.lfmm2, 
+    res_reg2 = lfmm2_med_test(mod.lfmm1, 
                               input = M_matrix, 
-                              env = cbind(X_matrix, Y_matrix, conf),
+                              env = cbind(X_matrix, Y_matrix),
                               genomic.control = genomic.control,
+                              covar = covar,
                               full = FALSE,
                               linear = FALSE)
   pval2 = as.double(res_reg2$pvalues[,2])
   names(pval2) = colnames(M_matrix)
-  length(pval2)
-  U2 = mod.lfmm2@U
-  V2 = mod.lfmm2@V
-  effect.sizes2 = mod.lfmm2@B
-  lambda2 = mod.lfmm2@lambda
-  
   zscores2 = res_reg2$zscores
   fscores2 = res_reg2$fscores
-  #adj_rsquared2 = res_reg2$adj.r.squared
+  adj_rsquared2 = res_reg2$adj.r.squared
   gif2 = res_reg2$gif
   reg2 = list(pval2,
-              U2, 
-              V2, 
-              effect.sizes2, 
-              lambda2, 
               zscores2,
               fscores2,
-              #adj_rsquared2 = res_reg2$adj.r.squared
+              adj_rsquared2, 
               gif2)
-  names(reg2) = c("pval", "U", "V", "effect.sizes", "lambda", "zscores", "fscores", "gif")
+  names(reg2) = c("pval", "zscores", "fscores", "adj_rsquared", "gif")
    }
-  
-  
+
   res[[2]] = reg2
   
   # max2 test
   max2_pval <- apply(cbind(pval1, pval2), 1, max)^2
-  # eta0 <- fdrtool::pval.estimate.eta0(max2_pval, diagnostic.plot = diagnostic.plot)
-  # qval <- fdrtool::fdrtool(max2_pval,statistic = "pvalue", plot = F, verbose = F)$qval
-  max2 = max2_pval#list(max2_pval, eta0, qval)
-  #names(max2) = c("pval")#, "eta0", "qval")
+  max2 = max2_pval
   res[[3]] = max2
   
   names(res) <- c("mod1", "mod2", "max2")

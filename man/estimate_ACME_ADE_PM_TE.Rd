@@ -4,17 +4,7 @@
 \alias{estimate_ACME_ADE_PM_TE}
 \title{Estimate effects for a set of mediation markers}
 \usage{
-estimate_ACME_ADE_PM_TE(
-  qval,
-  X,
-  Y,
-  m,
-  covar = NULL,
-  U = NULL,
-  sims = 3,
-  mod2_type = "linear",
-  ...
-)
+estimate_ACME_ADE_PM_TE(qval, X, Y, m, covar, U, sims = 3, mod2_type, ...)
 }
 \arguments{
 \item{qval}{set of qValues from max2 function}
@@ -78,13 +68,16 @@ data(sample_hdmax2_data)
 X_matrix = sample_hdmax2_data$X_binary
 Y_matrix = sample_hdmax2_data$Y_time
 M_matrix = sample_hdmax2_data$M
-res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5)
+age = as.matrix(sample_hdmax2_data$age)
+gender = as.matrix(sample_hdmax2_data$gender)
+res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5, covar = cbind (age, gender))
 m = M_matrix[,names(sort(res$max2)[1:10])] 
 
 res <- estimate_ACME_ADE_PM_TE(qval = res$max2$qval,
                             X = X_matrix,
                             Y = Y_matrix,
                             m = m,
+                            covar = cbind (age, gender),
                             U = res$mod1$U, 
                             sims = 3,
                             mod2_type="linear")

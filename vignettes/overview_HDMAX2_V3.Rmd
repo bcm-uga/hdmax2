@@ -81,7 +81,8 @@ load("../data/sample_hdmax2_data.RData")
 X = as.matrix(sample_hdmax2_data$X_binary)
 Y = as.matrix(sample_hdmax2_data$Y_time)
 M = as.matrix(sample_hdmax2_data$M)
-
+age = as.matrix(sample_hdmax2_data$age)
+gender = as.matrix(sample_hdmax2_data$gender)
 ```
 ***
 
@@ -110,7 +111,7 @@ res_step1 = hdmax2::run_AS(X_matrix = X ,
                  X_type = "univariate",
                  Y_type = "continuous",
                  M_type = "methylation",
-                 conf = NULL,
+                 covar = cbind(age, gender),
                  diagnostic.plot = F)
 ```
 
@@ -181,6 +182,7 @@ res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
                             X = X,
                             Y = Y,
                             m = mediators_top10,
+                            covar = cbind(age, gender),
                             U = res_step1$mod1$U,
                             sims = 100, 
                             mod2_type = "linear")
@@ -221,39 +223,6 @@ median(res_oie)
 plot(density(res_oie))
 boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
 
-
-# # oie for each level of probes selection
-# oie = NULL
-# for (i in c(2:60)) {
-# m = M[,names(sort(res_step1$max2)[1:i])]
-# X=X
-# C=res_step1$mod1$U 
-# m = m
-# Y=Y
-# # effet B m -> Y
-# dat.1 <- data.frame(X, m, C)
-# mod1 <- lm(Y ~ ., data = dat.1)
-# B <- as.data.frame(summary(mod1)$coeff[3:(ncol(m) + 2), ])
-# 
-# # effet A X -> M
-# mod2 <- lm(m ~ X + C)
-# A <- t(sapply(summary(mod2), function(x) x$coeff[2, ]))
-# A <- data.frame(CpG = rownames(A), A)
-# # A <- separate(A, CpG, c("0", "CpG"), " ")[, -1]
-# 
-# colnames(B) <- c("B", "B_sd", "B_tv", "B_pv")
-# colnames(A)[2:5] <- c("A", "A_sd", "A_tv", "A_pv")
-# 
-# ab <- cbind(A, B)
-# rownames(ab) <- NULL
-# 
-# # effet A*B
-# ab$AB <- ab$A * ab$B
-# 
-# oie =c(oie, sum(ab$AB))
-# }
-# 
-# plot(oie~c(2:60), type = "l", ylim = c(-1,0) )
 ```
 
 
@@ -267,7 +236,7 @@ For this second use case we used **univariate continuous exposition** and **cont
 ```{r}
 X = sample_hdmax2_data$X_continuous
 Y = sample_hdmax2_data$Y_time
-M = sample_hdmax2_data$M
+
 ```
 ***
 
@@ -283,7 +252,7 @@ res_step1 = hdmax2::run_AS(X_matrix = X ,
                  X_type = "univariate",
                  Y_type = "continuous",
                  M_type = "methylation",
-                 conf = NULL,
+                 covar  = cbind(age, gender),
                  diagnostic.plot = F)
 ```
 
@@ -327,6 +296,7 @@ res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
                          X = X,
                          Y = Y,
                          m = mediators_top10,
+                         covar = cbind(age, gender),
                          U = res_step1$mod1$U,
                          sims = 100,
                          mod2_type = "linear")
@@ -370,24 +340,23 @@ For this second use case we used **continuous exposition** and **binary outcome*
 ```{r}
 X = sample_hdmax2_data$X_continuous
 Y = sample_hdmax2_data$Y_binary
-M = sample_hdmax2_data$M
+
 ```
 ***
 
 ## Evaluating associations between exposure, mediators and outcome
 
 
-```{r}
+```{r, warning=FALSE}
 # step 1 association studies + max2
 res_step1 = hdmax2::run_AS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
                  K = K,
                  X_type = "univariate",
-                 #Y_type = "continuous", # even if it is binary
                  Y_type = "binary",
                  M_type = "methylation",
-                 conf = NULL,
+                 covar = cbind(age, gender),
                  diagnostic.plot = F)
 ```
 
@@ -430,6 +399,7 @@ res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
                             X = X,
                             Y = Y,
                             m = mediators_top10,
+                            covar = cbind(age, gender),
                             U = res_step1$mod1$U,
                             sims = 100,
                             mod2_type = "logistic")
@@ -456,7 +426,6 @@ hdmax2::plot_summary_ACME(ACME = res_med$ACME)
 ## Mediators Overall Indirect Effect (OIE) estimation
 
 ```{r, eval = T}
-
 res_oie = hdmax2::estimate_OIE(X=X, C=res_step1$mod1$U, m = mediators_top10, Y=Y, boots = 100, mod2_type= "logistic")
 median(res_oie)
 plot(density(res_oie))
@@ -472,19 +441,25 @@ load("../data/sample_RA.data.RData")
 X = as.matrix(RA.data$X_one_hot)
 Y = as.matrix(RA.data$Y)
 M = as.matrix(RA.data$M)
+age = as.matrix(RA.data$age)
+gender = as.matrix(RA.data$gender)
+
+dim(M)
+# fast test
+M = M[,1:500]
 
 ```
 
-```{r}
+```{r, warning=FALSE}
 # step 1 association studies + max2
 res_step1 = hdmax2::run_AS(X_matrix = X ,
                  Y_matrix = Y,
                  M_matrix = M, 
                  K = K,
                  X_type = "multivariate",
-                 Y_type = "continuous", #even it is binary
+                 Y_type = "binary",
                  M_type = "methylation",
-                 conf = NULL,
+                 covar = cbind(gender, age),
                  diagnostic.plot = F)
 
 ```
@@ -517,30 +492,99 @@ head(mediators_top10)
 
 ## Mediators individual indirect effects estimation
 
+### First category = current smoking
 
 ```{r}
+# cat 1 = "current"
+
 res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
-                            X = X,
+                            X = X[,1],
                             Y = Y,
                             m = mediators_top10,
+                            covar = cbind(age, gender),
                             U = res_step1$mod1$U,
                             sims = 100,
                             mod2_type = "logistic")
 
 ##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
-```
-
-
-```{r}
-# ACME, ADE, PM, TE estimation with CI
-head(res_med$ACME)
-head(res_med$ADE)
-head(res_med$PM)
-head(res_med$TE)
-```
-
-
-```{r}
 ## mediators ACME plots 
 hdmax2::plot_summary_ACME(ACME = res_med$ACME)
+
+
+res_oie = hdmax2::estimate_OIE(X=X[,1], C=res_step1$mod1$U, m = mediators_top10, Y=Y, boots = 100 )
+median(res_oie)
+plot(density(res_oie))
+boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
+
+```
+### Second category = ex smoker 
+
+```{r}
+# cat 2 = "ex"
+
+res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
+                            X = X[,2],
+                            Y = Y,
+                            m = mediators_top10,
+                            covar = cbind(age, gender),
+                            U = res_step1$mod1$U,
+                            sims = 100,
+                            mod2_type = "logistic")
+
+##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
+## mediators ACME plots 
+hdmax2::plot_summary_ACME(ACME = res_med$ACME)
+
+res_oie = hdmax2::estimate_OIE(X=X[,2], C=res_step1$mod1$U, m = mediators_top10, Y=Y, boots = 100 )
+median(res_oie)
+plot(density(res_oie))
+boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
+
+```
+### Third category = non smoker 
+
+```{r}
+# cat 3 = "never"
+
+res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
+                            X = X[,3],
+                            Y = Y,
+                            m = mediators_top10,
+                            covar = cbind(age, gender),
+                            U = res_step1$mod1$U,
+                            sims = 100,
+                            mod2_type = "logistic")
+
+##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
+## mediators ACME plots 
+hdmax2::plot_summary_ACME(ACME = res_med$ACME)
+
+
+res_oie = hdmax2::estimate_OIE(X=X[,3], C=res_step1$mod1$U, m = mediators_top10, Y=Y, boots = 100 )
+median(res_oie)
+plot(density(res_oie))
+boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
+```
+
+### Fourth category = occasional smoker
+```{r}
+# cat 4 = "occasional"
+
+res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
+                            X = X[,4],
+                            Y = Y,
+                            m = mediators_top10,
+                            covar = cbind(age, gender),
+                            U = res_step1$mod1$U,
+                            sims = 100,
+                            mod2_type = "logistic")
+
+##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
+## mediators ACME plots 
+hdmax2::plot_summary_ACME(ACME = res_med$ACME)
+
+res_oie = hdmax2::estimate_OIE(X=X[,4], C=res_step1$mod1$U, m = mediators_top10, Y=Y, boots = 100 )
+median(res_oie)
+plot(density(res_oie))
+boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
 ```

@@ -8,7 +8,7 @@ lfmm2_v2.test(
   object,
   input,
   env,
-  covar = NULL,
+  covar,
   full = FALSE,
   genomic.control = TRUE,
   linear = TRUE,

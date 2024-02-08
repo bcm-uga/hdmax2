@@ -5,7 +5,6 @@
 ##' (indirect effect), average direct effects, proportions mediated,
 ##' and total effect.
 ##'
-##' @param qval set of qValues from max2 function
 ##' @param M a response variable matrix with n rows and p columns.
 ##' Response variables must be encoded as numeric. No NAs allowed.
 ##' @param X Exposure. An explanatory variable matrix with n rows and d columns.
@@ -51,20 +50,22 @@
 ##' X_matrix = sample_hdmax2_data$X_binary
 ##' Y_matrix = sample_hdmax2_data$Y_time
 ##' M_matrix = sample_hdmax2_data$M
-##' res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5)
+##' age = as.matrix(sample_hdmax2_data$age)
+##' gender = as.matrix(sample_hdmax2_data$gender)
+##' res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5, covar = cbind (age, gender))
 ##' m = M_matrix[,names(sort(res$max2)[1:10])] 
 ##'
-##' res <- estimate_ACME_ADE_PM_TE(qval = res$max2$qval,
-##'                             X = X_matrix,
+##' res <- estimate_ACME_ADE_PM_TE(X = X_matrix,
 ##'                             Y = Y_matrix,
 ##'                             m = m,
+##'                             covar = cbind (age, gender),
 ##'                             U = res$mod1$U, 
 ##'                             sims = 3,
 ##'                             mod2_type="linear")
 ##'
 ##'
 
-estimate_ACME_ADE_PM_TE <- function(qval, X, Y, m, covar = NULL, U = NULL, sims = 3, mod2_type="linear", ...) {
+estimate_ACME_ADE_PM_TE <- function(X, Y, m, covar, U , sims = 3, mod2_type, ...) {
   
   if (is.null(colnames(m))) {
     colnames(m) <- 1:ncol(m)
