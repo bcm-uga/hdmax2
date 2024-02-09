@@ -108,10 +108,10 @@ estimate_ACME_ADE_PM_TE <- function(X, Y, m, covar, U , sims = 3, mod2_type, ...
     # }
     
     
-    # # for linear models
-    # xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
-    # my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
-    # 
+    # for linear models
+    xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
+    my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
+
     
     
     med <- mediation::mediate(mod1, mod2, sims = sims, treat = "X", mediator = "Mi", ...)
