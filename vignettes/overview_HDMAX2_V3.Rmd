@@ -520,12 +520,13 @@ multi_mediators_top10[[xcat]] = mediators_top10_temp
 
 res_med = hdmax2::multi_estimate_ACME_ADE_PM_TE(X_cat= X_cat , Y= Y , multi_mediators_top10= multi_mediators_top10, covar= cbind(age, gender) , U=res_step1$mod1$U , sims = 3, mod2_type = "logistic")
 
-
-#layout(matrix(1:(2+dim(X_cat)[2]),1, byrow=TRUE), respect=TRUE)
+# layout_mat = rbind(matrix(1:(2+dim(X_cat)[2]),1, byrow=TRUE),
+#                    matrix((3+dim(X_cat)[2]):(6+dim(X_cat)[2]),1), byrow=TRUE)
+layout(matrix(1, 1:dim(X_cat)[2]), respect = TRUE)
 for(xcat in (1:dim(X_cat)[2])){
+  layout(matrix(1:3,1, byrow= TRUE), respect = TRUE)
 hdmax2::plot_summary_ACME(ACME = res_med[[xcat]]$ACME)
 res_oie = hdmax2::estimate_OIE(X=X_cat[,xcat], C=res_step1$mod1$U, m = multi_mediators_top10[[xcat]], Y=Y, boots = 100 )
-median(res_oie)
 plot(density(res_oie))
 boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
 }
