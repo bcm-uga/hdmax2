@@ -77,12 +77,16 @@ Data set is produce from transcription, methylation and patients meta data of PD
 For this first use case we used *univariate binary exposition* and *continuous outcome*, we analyzed 100 samples and 500 potential mediators.
 
 ```{r}
-load("../data/sample_hdmax2_data.RData")
-X = as.matrix(sample_hdmax2_data$X_binary)
-Y = as.matrix(sample_hdmax2_data$Y_time)
-M = as.matrix(sample_hdmax2_data$M)
-age = as.matrix(sample_hdmax2_data$age)
-gender = as.matrix(sample_hdmax2_data$gender)
+load("../data/simu_data.RData")
+X_continuous = as.matrix(simu_data$X_continuous)
+X_binary = as.matrix(simu_data$X_binary)
+X_categorial = as.matrix(simu_data$X_categorial)
+Y_continuous = as.matrix(simu_data$Y_continuous)
+Y_binary = as.matrix(simu_data$Y_binary)
+M = as.matrix(simu_data$M)
+age = as.matrix(simu_data$age)
+gender = as.matrix(simu_data$gender)
+
 ```
 ***
 
@@ -104,16 +108,19 @@ The **run_AS** function is applied to estimate the effects of exposure $X$ on a 
 
 ```{r}
 # step 1 association studies + max2
-res_step1 = hdmax2::run_AS(X_matrix = X ,
-                 Y_matrix = Y,
+res_step1 = hdmax2::run_AS(X_matrix = X_binary ,
+                 Y_matrix = Y_continuous,
                  M_matrix = M, 
                  K = K,
-                 X_type = "continuous/binary",
+                 X_type = "binary",
                  Y_type = "continuous",
                  M_type = "methylation",
                  multivariate = FALSE,
                  covar = cbind(age, gender),
                  diagnostic.plot = F)
+# max2 test results
+head(res_step1$max2)
+
 ```
 
 The function estimates for each regression:
@@ -136,28 +143,6 @@ This rejects the null-hypothesis that either the effect of exposure on potential
 - *p-value* of each test
 
 
-
-
-
-```{r}
-# first regression
-head(res_step1$mod1$pval)
-head(res_step1$mod1$effect.sizes)
-head(res_step1$mod1$zscores)
-head(res_step1$mod1$gif)
-
-# second regression
-head(res_step1$mod2$pval)
-head(res_step1$mod2$effect.sizes)
-#head(res_step1$mod2$zscores)
-head(res_step1$mod2$gif)
-
-# max2 test results
-head(res_step1$max2)
-
-```
-
-
 ***
 
 In this example, we will consider the 10 first selected mediators.
@@ -165,9 +150,6 @@ In this example, we will consider the 10 first selected mediators.
 
 ```{r}
 ##Selecting mediators
-# FDR=0.1
-# mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
-
 ## top 10 selecting mediators
 mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
 head(mediators_top10)
@@ -176,17 +158,16 @@ head(mediators_top10)
 
 ## Mediators individual indirect effects estimation
 
-The function **estimate_ACME_ADE_PM_TE** estimate the individual indirect effect of mediators
+The function **estimate_effect** estimate the individual indirect effect of mediators
 ```{r}
 ## selected mediators effects estimation
-res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
-                            X = X,
-                            Y = Y,
-                            m = mediators_top10,
-                            covar = cbind(age, gender),
-                            U = res_step1$mod1$U,
-                            sims = 100, 
-                            mod2_type = "linear")
+res_step2 = hdmax2::estimate_effect(X = X_binary,
+                                    Y = Y_continuous,
+                                    m = mediators_top10,
+                                    covar = cbind(age, gender),
+                                    U = res_step1$mod1$U,
+                                    sims = 100, 
+                                    mod2_type = "linear")
 
 ##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
 ```
@@ -195,16 +176,10 @@ Estimation of average causal mediation effect (ACME) is the indirect effect. Oth
 
 ```{r}
 # ACME, ADE, PM, TE estimation with CI
-head(res_med$ACME)
-head(res_med$ADE)
-head(res_med$PM)
-head(res_med$TE)
-```
-
-
-```{r}
-## mediators ACME plots 
-hdmax2::plot_summary_ACME(ACME = res_med$ACME)
+head(res_step2$ACME)
+head(res_step2$ADE)
+head(res_step2$PM)
+head(res_step2$TE)
 ```
 
 ## Mediators Overall Indirect Effect (OIE) estimation
@@ -215,15 +190,9 @@ $$
 y_i = cx_i + \sum_{j=1}^{m} b_jm_{ij}+ \sum_{k=1}^{K} v_k u_{ik} + \epsilon_i
 $$
 
-
 ```{r}
-## OIE estimation and boxplot
-
-res_oie = hdmax2::estimate_OIE(X=X, C=res_step1$mod1$U, m = mediators_top10, Y=Y, boots = 100 )
-median(res_oie)
-plot(density(res_oie))
-boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
-
+## mediators ACME plots 
+hdmax2::plot_hdmax2(res_step2, N_med = 10)
 ```
 
 
@@ -234,57 +203,29 @@ boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "b
 
 For this second use case we used **univariate continuous exposition** and **continuous outcome**, we analyzed 100 samples and 500 potential mediators.
 
-```{r}
-X = sample_hdmax2_data$X_continuous
-Y = sample_hdmax2_data$Y_time
-
-```
-***
-
 ## Evaluating associations between exposure, mediators and outcome
 
 
 ```{r}
 # step 1 association studies + max2
-res_step1 = hdmax2::run_AS(X_matrix = X ,
-                 Y_matrix = Y,
-                 M_matrix = M, 
-                 K = K,
-                 X_type = "continuous/binary",
-                 Y_type = "continuous",
-                 M_type = "methylation",
-                 multivariate = FALSE,
-                 covar  = cbind(age, gender),
-                 diagnostic.plot = F)
-```
-
-
-
-```{r, eval=T}
-# first regression
-head(res_step1$mod1$pval)
-head(res_step1$mod1$effect.sizes)
-head(res_step1$mod1$zscores)
-head(res_step1$mod1$gif)
-
-# second regression
-head(res_step1$mod2$pval)
-head(res_step1$mod2$effect.sizes)
-#head(res_step1$mod2$zscores)
-head(res_step1$mod2$gif)
- 
+res_step1 = hdmax2::run_AS(X_matrix = X_continuous ,
+                           Y_matrix = Y_continuous,
+                           M_matrix = M, 
+                           K = K,
+                           X_type = "continuous",
+                           Y_type = "continuous",
+                           M_type = "methylation",
+                           multivariate = FALSE,
+                           covar  = cbind(age, gender),
+                           diagnostic.plot = F)
 # max2 test results
 head(res_step1$max2)
 
 ```
 
 
-
-
 ```{r}
 ##Selecting mediators
-# FDR=0.1
-# mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
 mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
 head(mediators_top10)
 ```
@@ -294,14 +235,15 @@ head(mediators_top10)
 
 ```{r}
 ## selected mediators effects estimation
-res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
-                         X = X,
-                         Y = Y,
-                         m = mediators_top10,
-                         covar = cbind(age, gender),
-                         U = res_step1$mod1$U,
-                         sims = 100,
-                         mod2_type = "linear")
+res_step2 = hdmax2::estimate_effect(
+  X = X_continuous,
+  Y = Y_continuous,
+  m = mediators_top10,
+  covar = cbind(age, gender),
+  U = res_step1$mod1$U,
+  sims = 100,
+  mod2_type = "linear"
+)
 
 ##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
 ```
@@ -310,27 +252,18 @@ res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
 
 ```{r}
 # ACME, ADE, PM, TE estimation with CI
-head(res_med$ACME)
-head(res_med$ADE)
-head(res_med$PM)
-head(res_med$TE)
+head(res_step2$ACME)
+head(res_step2$ADE)
+head(res_step2$PM)
+head(res_step2$TE)
 ```
 
 
 ```{r}
 ## mediators ACME plots 
-hdmax2::plot_summary_ACME(ACME = res_med$ACME)
+hdmax2::plot_hdmax2(res_step2, N_med = 10)
 ```
 
-## Mediators Overall Indirect Effect (OIE) estimation
-
-```{r, eval = T}
-
-res_oie = hdmax2::estimate_OIE(X=X, C=res_step1$mod1$U, m = mediators_top10, Y=Y, boots = 100 )
-median(res_oie)
-plot(density(res_oie))
-boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
-```
 
 
 
@@ -339,57 +272,31 @@ boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "b
 
 For this second use case we used **continuous exposition** and **binary outcome**, we analyzed 100 samples and 500 potential mediators.
 
-```{r}
-X = sample_hdmax2_data$X_continuous
-Y = sample_hdmax2_data$Y_binary
 
-```
-***
 
 ## Evaluating associations between exposure, mediators and outcome
 
 
 ```{r, warning=FALSE}
 # step 1 association studies + max2
-res_step1 = hdmax2::run_AS(X_matrix = X ,
-                 Y_matrix = Y,
+res_step1 = hdmax2::run_AS(X_matrix = X_continuous ,
+                 Y_matrix = Y_binary,
                  M_matrix = M, 
                  K = K,
-                 X_type = "continuous/binary",
+                 X_type = "continuous",
                  Y_type = "binary",
                  M_type = "methylation",
                  multivariate = FALSE,
                  covar = cbind(age, gender),
                  diagnostic.plot = F)
-```
-
-
-
-```{r, eval = T}
-# first regression
-head(res_step1$mod1$pval)
-head(res_step1$mod1$effect.sizes)
-head(res_step1$mod1$zscores)
-head(res_step1$mod1$gif)
-
-# second regression
-head(res_step1$mod2$pval)
-head(res_step1$mod2$effect.sizes)
-#head(res_step1$mod2$zscores)
-head(res_step1$mod2$gif)
-
 # max2 test results
 head(res_step1$max2)
-
 ```
-
 
 
 
 ```{r}
 ##Selecting mediators
-# FDR=0.1
-# mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]
 mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
 head(mediators_top10)
 ```
@@ -398,78 +305,46 @@ head(mediators_top10)
 
 
 ```{r}
-res_med = hdmax2::estimate_ACME_ADE_PM_TE(qval = res_step1$max2$qval,
-                            X = X,
-                            Y = Y,
+res_step2 = hdmax2::estimate_effect(
+                            X = X_continuous,
+                            Y = Y_binary,
                             m = mediators_top10,
                             covar = cbind(age, gender),
                             U = res_step1$mod1$U,
                             sims = 100,
                             mod2_type = "logistic")
-
+# max2 test results
+head(res_step1$max2)
 ##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
 ```
 
 
 ```{r}
 # ACME, ADE, PM, TE estimation with CI
-head(res_med$ACME)
-head(res_med$ADE)
-head(res_med$PM)
-head(res_med$TE)
+head(res_step2$ACME)
+head(res_step2$ADE)
+head(res_step2$PM)
+head(res_step2$TE)
 ```
 
 
 ```{r}
 ## mediators ACME plots 
-hdmax2::plot_summary_ACME(ACME = res_med$ACME)
+hdmax2::plot_summary_ACME(ACME = res_step2$ACME)
 ```
 
-
-## Mediators Overall Indirect Effect (OIE) estimation
-
-```{r, eval = T}
-res_oie = hdmax2::estimate_OIE(X=X, C=res_step1$mod1$U, m = mediators_top10, Y=Y, boots = 100, mod2_type= "logistic")
-median(res_oie)
-plot(density(res_oie))
-boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
-```
 
 
 # Use case 4 **categorial exposition** and **binary outcome**
 
 
-```{r}
-load("../data/sample_RA.data.RData")
-X_cat = as.matrix(RA.data$X_one_hot)
-Y = as.matrix(RA.data$Y)
-M = as.matrix(RA.data$M)
-age = as.matrix(RA.data$age)
-gender = as.matrix(RA.data$gender)
 
-dim(M)
-# fast test
-M = M[,1:500]
-
-# X_matrix = X_cat
-# Y_matrix = Y
-# M_matrix = M
-# K =5
-# X_type = "categorial"
-# Y_type = "binary"
-# M_type = "methylation"
-# multivariate = FALSE
-# covar = cbind(gender, age)
-# diagnostic.plot = FALSE
-# genomic.control = TRUE
-# effect.sizes = FALSE
-```
 #### first option univariate
 
 ```{r, warning=FALSE}
 # step 1 association studies + max2
-res_step1 = hdmax2::run_AS(X_matrix = X_cat ,
-                 Y_matrix = Y,
+res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
+                 Y_matrix = Y_binary,
                  M_matrix = M, 
                  K = K,
                  X_type = "categorial",
@@ -477,7 +352,6 @@ res_step1 = hdmax2::run_AS(X_matrix = X_cat ,
                  M_type = "methylation",
                  covar = cbind(gender, age),
                  diagnostic.plot = F)
-
 
 ```
 
@@ -498,8 +372,8 @@ head(mediators_top10)
 
 ### multimediate results
 ```{r, warning = FALSE}
-res_step1 = hdmax2::run_AS(X_matrix = X_cat ,
-                 Y_matrix = Y,
+res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
+                 Y_matrix = Y_binary,
                  M_matrix = M, 
                  K = K,
                  X_type = "categorial",
@@ -508,28 +382,31 @@ res_step1 = hdmax2::run_AS(X_matrix = X_cat ,
                  multivariate = TRUE,
                  covar = cbind(gender, age),
                  diagnostic.plot = F)
+# max2 test results
+head(res_step1$max2)
+```
 
+```{r}
+# ACME, ADE, PM, TE estimation with CI
+head(res_step2$ACME)
+head(res_step2$ADE)
+head(res_step2$PM)
+head(res_step2$TE)
+```
 
+```{r}
+res_step2 = hdmax2::estimate_effect(
+                            X = X_continuous,
+                            Y = Y_binary,
+                            m = mediators_top10,
+                            covar = cbind(age, gender),
+                            U = res_step1$mod1$U,
+                            sims = 100,
+                            mod2_type = "logistic")
 
-multi_mediators_top10 =list()
-for (xcat in (1:dim(X_cat)[2])){
-mediators_top10_temp = M[,names(sort(res_step1$max2[xcat,])[1:10])]
-multi_mediators_top10[[xcat]] = mediators_top10_temp
-}
+```
 
-
-res_med = hdmax2::multi_estimate_ACME_ADE_PM_TE(X_cat= X_cat , Y= Y , multi_mediators_top10= multi_mediators_top10, covar= cbind(age, gender) , U=res_step1$mod1$U , sims = 3, mod2_type = "logistic")
-
-# layout_mat = rbind(matrix(1:(2+dim(X_cat)[2]),1, byrow=TRUE),
-#                    matrix((3+dim(X_cat)[2]):(6+dim(X_cat)[2]),1), byrow=TRUE)
-layout(matrix(1, 1:dim(X_cat)[2]), respect = TRUE)
-for(xcat in (1:dim(X_cat)[2])){
-  layout(matrix(1:3,1, byrow= TRUE), respect = TRUE)
-hdmax2::plot_summary_ACME(ACME = res_med[[xcat]]$ACME)
-res_oie = hdmax2::estimate_OIE(X=X_cat[,xcat], C=res_step1$mod1$U, m = multi_mediators_top10[[xcat]], Y=Y, boots = 100 )
-plot(density(res_oie))
-boxplot(res_oie, horizontal =F, main = "OIE estimation 100 bootstraps", col = "blue")
-}
-
-
+```{r}
+## mediators ACME plots 
+hdmax2::plot_hdmax2(res_step2, N_med = 10)
 ```

@@ -18,6 +18,7 @@
 ##' @param sims number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 ##' 10000 is recommended.
 ##' @param covar covariables
+##' @param boots number of bootstrap
 ##' @param mod2_type second regression type "linear", "logistic", "surv_Cox"
 ##' @param ... argument of the mediate function from the mediation package
 ##'
@@ -43,36 +44,18 @@
 ##' @export
 ##' @author 
 ##' @examples 
-##'
-##' library(hdmax2)
-##' data(sample_hdmax2_data)
-##' # Example 1
-##' X_matrix = sample_hdmax2_data$X_binary
-##' Y_matrix = sample_hdmax2_data$Y_time
-##' M_matrix = sample_hdmax2_data$M
-##' age = as.matrix(sample_hdmax2_data$age)
-##' gender = as.matrix(sample_hdmax2_data$gender)
-##' res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "continuous/binary", Y_type = "continuous", multivariate = FALSE, K = 5, covar = cbind (age, gender))
-##' m = M_matrix[,names(sort(res$max2)[1:10])] 
-##'
-##' res <- estimate_ACME_ADE_PM_TE(X = X_matrix,
-##'                             Y = Y_matrix,
-##'                             m = m,
-##'                             covar = cbind (age, gender),
-##'                             U = res$mod1$U, 
-##'                             sims = 3,
-##'                             mod2_type="linear")
-##'
-##'
 
-estimate_ACME_ADE_PM_TE <- function(X, Y, m, covar, U , sims = 3, mod2_type, ...) {
+
+estimate_effect <- function(X, Y, m, covar, U , boots = 100, sims = 3,  mod2_type= "linear", ...) {
   
   if (is.null(colnames(m))) {
     colnames(m) <- 1:ncol(m)
   }
   
   M = m
+  covar = cbind(covar, U)
   
+  ### Compute ACME, ADE, PM and TE from package mediation
   
   # from package mediation
   ACME <- matrix(ncol = 4, nrow = ncol(M))
@@ -86,8 +69,8 @@ estimate_ACME_ADE_PM_TE <- function(X, Y, m, covar, U , sims = 3, mod2_type, ...
   
   for (i in 1:ncol(M)) {
     
-    dat.x <- data.frame(X = X, Mi = M[, i], covar = cbind(covar, U))
-    dat.y <- data.frame(X = X, Mi = M[, i], covar = cbind(covar, U), Y = Y)
+    dat.x <- data.frame(X = X, Mi = M[, i], covar = covar)
+    dat.y <- data.frame(X = X, Mi = M[, i], covar = covar, Y = Y)
     
     # ici cas de deux reg lineaires pour les deux associations
     # TODO refaire pour les autres regressions
@@ -96,7 +79,7 @@ estimate_ACME_ADE_PM_TE <- function(X, Y, m, covar, U , sims = 3, mod2_type, ...
     mod1 <- stats::lm(Mi ~ X + ., data = dat.x)
     
     if(mod2_type=="linear"){
-    mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
+      mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
     }
     
     if(mod2_type=="logistic"){
@@ -111,7 +94,7 @@ estimate_ACME_ADE_PM_TE <- function(X, Y, m, covar, U , sims = 3, mod2_type, ...
     # for linear models
     xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
     my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
-
+    
     
     
     med <- mediation::mediate(mod1, mod2, sims = sims, treat = "X", mediator = "Mi", ...)
@@ -143,11 +126,68 @@ estimate_ACME_ADE_PM_TE <- function(X, Y, m, covar, U , sims = 3, mod2_type, ...
   xm$feat <- colnames(M)
   my$feat <- colnames(M)
   
-  return(list(ACME = ACME,
+  ### Compute OIE by bootstrap
+  
+  # bootstrap
+  acme_sum <- matrix(nrow = 1, ncol = boots)
+  
+  for (i in 1:ncol(acme_sum)) {
+    samp <- sample(length(X), replace = T)
+    
+    if(mod2_type=="logistic"){
+      dat.1 <- data.frame(X, m, covar = covar)
+      mod1 <- glm(Y[samp] ~ ., data = dat.1[samp, ])
+      B <- as.data.frame(summary(mod1)$coeff[3:(ncol(m) + 2), ])
+    }
+    
+    if(mod2_type=="linear"){
+      # effet B m -> Y
+      dat.1 <- data.frame(X, m, covar = covar)
+      mod1 <- lm(Y[samp] ~ ., data = dat.1[samp, ])
+      B <- as.data.frame(summary(mod1)$coeff[3:(ncol(m) + 2), ])
+      #B <- as.data.frame(summary(mod1)$coeff[3:10, ])
+    }
+    # effet A X -> M
+    mod2 <- lm(m[samp, ] ~ X[samp] + covar[samp, ])
+    A <- t(sapply(summary(mod2), function(x) x$coeff[2, ]))
+    A <- data.frame(feat = rownames(A), A)
+    # A <- separate(A, CpG, c("0", "CpG"), " ")[, -1]
+    
+    colnames(B) <- c("B", "B_sd", "B_tv", "B_pv")
+    colnames(A)[2:5] <- c("A", "A_sd", "A_tv", "A_pv")
+    
+    ab <- cbind(A, B)
+    rownames(ab) <- NULL
+    
+    # effet A*B
+    ab$AB <- ab$A * ab$B
+    
+    acme_sum[i] <- sum(ab$AB)
+  }
+  
+  ### Compute ODE and OTE for the given model
+  
+  mod_total_effect = lm(Y~X+covar)
+  ote = mod_total_effect$coefficients
+
+  mod_direct_effect = lm(Y~X+mediators_top10+covar)
+  ode = mod_direct_effect$coefficients
+  
+  obj = list(ACME = ACME,
               ADE = ADE,
               PM = PM,
               TE = TE,
               xm = xm,
-              my = my))
+              my = my,
+              oie = as.vector(acme_sum),
+              oie_med = median(as.vector(acme_sum)),
+              oie_sd = sd(as.vector(acme_sum)),
+			  ote = ote,
+			  ode = ode
+              )
+	
+  class(obj) = "hdmax2"
+   
+  return(obj)
   
 }

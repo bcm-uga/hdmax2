@@ -68,19 +68,7 @@
 ##' @export
 ##' @author Florence Pittion
 ##' @examples 
-##' 
-##' data(sample_hdmax2_data)
-##' library(hdmax2)
-##' 
-##' # Example 1
-##' X_matrix = sample_hdmax2_data$X_binary
-##' Y_matrix = sample_hdmax2_data$Y_time
-##' M_matrix = sample_hdmax2_data$M
-##' age = as.matrix(sample_hdmax2_data$age)
-##' gender = as.matrix(sample_hdmax2_data$gender)
-##' res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "continuous/binary", Y_type = "continuous", K = 5, multivariate = FALSE, covar= cbind(age, gender))
-##'
-##' 
+
 run_AS = function(X_matrix,
                   Y_matrix,
                   M_matrix, 
@@ -96,7 +84,7 @@ run_AS = function(X_matrix,
 ) {
   res = list()
   
-  if(X_type=="continuous/binary"){
+  if(X_type=="continuous"){
     #regression 1: M ~ X
     mod.lfmm1 = lfmm2_med(input = M_matrix, 
                           env = X_matrix, 
@@ -125,8 +113,39 @@ run_AS = function(X_matrix,
     names(reg1) = c("pval","U","V","zscores","fscores", "adj_rsquared", "gif")
   }
   
+  if(X_type=="binary"){
+    #transfo X binary in continuous for lm
+    X_matrix = as.numeric(X_matrix)
+    #regression 1: M ~ X
+    mod.lfmm1 = lfmm2_med(input = M_matrix, 
+                          env = X_matrix, 
+                          K = K,
+                          effect.sizes = effect.sizes)
+    res_reg1 = lfmm2_med_test(mod.lfmm1, 
+                              input = M_matrix, 
+                              env = X_matrix,
+                              covar = covar,
+                              genomic.control = genomic.control)
+    pval1 = as.double(res_reg1$pvalues)
+    names(pval1) = colnames(M_matrix)
+    U1 = mod.lfmm1$U
+    V1 = mod.lfmm1$V
+    zscores1 = res_reg1$zscores
+    fscores1 = res_reg1$fscores
+    adj_rsquared1 = res_reg1$adj.r.squared
+    gif1 = res_reg1$gif
+    reg1 = list(pval1,
+                U1, 
+                V1, 
+                zscores1,
+                fscores1,
+                adj_rsquared1,
+                gif1)
+    names(reg1) = c("pval","U","V","zscores","fscores", "adj_rsquared", "gif")
+  }
   
   if(X_type=="categorial"){
+    X_matrix = one_hot(as.data.table(X_matrix))
     if(multivariate){
       mod.lfmm1 = lfmm2_med(input = M_matrix, 
                             env = X_matrix, 
@@ -213,6 +232,7 @@ run_AS = function(X_matrix,
   
   
   if(Y_type=="binary"){
+    Y_matrix = as.numeric(Y_matrix)
     res_reg2 = lfmm2_med_test(mod.lfmm1, 
                               input = M_matrix, 
                               env = cbind(X_matrix, Y_matrix),
