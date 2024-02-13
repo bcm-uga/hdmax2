@@ -78,34 +78,35 @@
 ##' M_matrix = sample_hdmax2_data$M
 ##' age = as.matrix(sample_hdmax2_data$age)
 ##' gender = as.matrix(sample_hdmax2_data$gender)
-##' res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5, covar= cbind(age, gender))
+##' res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "continuous/binary", Y_type = "continuous", K = 5, multivariate = FALSE, covar= cbind(age, gender))
 ##'
 ##' 
 run_AS = function(X_matrix,
-                 Y_matrix,
-                 M_matrix, 
-                 K,
-                 X_type,
-                 Y_type,
-                 M_type,
-                 covar,
-                 diagnostic.plot = FALSE ,
-                 genomic.control = TRUE,
-                 effect.sizes = FALSE
-                 ) {
+                  Y_matrix,
+                  M_matrix, 
+                  K,
+                  X_type,
+                  Y_type,
+                  M_type,
+                  covar,
+                  multivariate = FALSE,
+                  diagnostic.plot = FALSE ,
+                  genomic.control = TRUE,
+                  effect.sizes = FALSE
+) {
   res = list()
   
-    if(X_type=="univariate"){
+  if(X_type=="continuous/binary"){
     #regression 1: M ~ X
     mod.lfmm1 = lfmm2_med(input = M_matrix, 
-                           env = X_matrix, 
-                           K = K,
-                           effect.sizes = effect.sizes)
+                          env = X_matrix, 
+                          K = K,
+                          effect.sizes = effect.sizes)
     res_reg1 = lfmm2_med_test(mod.lfmm1, 
-                                input = M_matrix, 
-                                env = X_matrix,
-                                covar = covar,
-                                genomic.control = genomic.control)
+                              input = M_matrix, 
+                              env = X_matrix,
+                              covar = covar,
+                              genomic.control = genomic.control)
     pval1 = as.double(res_reg1$pvalues)
     names(pval1) = colnames(M_matrix)
     U1 = mod.lfmm1$U
@@ -123,46 +124,78 @@ run_AS = function(X_matrix,
                 gif1)
     names(reg1) = c("pval","U","V","zscores","fscores", "adj_rsquared", "gif")
   }
-
-
-   if(X_type=="multivariate"){
-  mod.lfmm1 = lfmm2_med(input = M_matrix, 
-                         env = X_matrix, 
-                         K = K,
-                         effect.sizes = effect.sizes)
-  res_reg1 = lfmm2_med_test(mod.lfmm1, 
-                             input = M_matrix, 
-                             env = X_matrix,
-                             full = TRUE,
-                             covar = covar,
-                             genomic.control = genomic.control)
-  pval1 = as.double(res_reg1$pvalues)
-  names(pval1) = colnames(M_matrix)
-  U1 = mod.lfmm1$U
-  V1 = mod.lfmm1$V
-  zscores1 = res_reg1$zscores
-  fscores1 = res_reg1$fscores
-  adj_rsquared1 = res_reg1$adj.r.squared
-  gif1 = res_reg1$gif
-  reg1 = list(pval1,
-              U1, 
-              V1, 
-              zscores1,
-              fscores1,
-              adj_rsquared1, 
-              gif1)
-  names(reg1) = c("pval","U","V","zscores","fscores", "adj_rsquared","gif")
+  
+  
+  if(X_type=="categorial"){
+    if(multivariate){
+      mod.lfmm1 = lfmm2_med(input = M_matrix, 
+                            env = X_matrix, 
+                            K = K,
+                            effect.sizes = effect.sizes)
+      res_reg1 = lfmm2_med_test(mod.lfmm1, 
+                                input = M_matrix, 
+                                env = X_matrix,
+                                full = FALSE,
+                                covar = covar,
+                                genomic.control = genomic.control)
+      pval1 = as.matrix(res_reg1$pvalues)
+      names(pval1) = colnames(M_matrix)
+      U1 = mod.lfmm1$U
+      V1 = mod.lfmm1$V
+      zscores1 = res_reg1$zscores
+      fscores1 = res_reg1$fscores
+      adj_rsquared1 = res_reg1$adj.r.squared
+      gif1 = res_reg1$gif
+      reg1 = list(pval1,
+                  U1, 
+                  V1, 
+                  zscores1,
+                  fscores1,
+                  adj_rsquared1, 
+                  gif1)
+      names(reg1) = c("pval","U","V","zscores","fscores", "adj_rsquared","gif")
+    } 
+    if (!multivariate) {
+      
+      mod.lfmm1 = lfmm2_med(input = M_matrix, 
+                            env = X_matrix, 
+                            K = K,
+                            effect.sizes = effect.sizes)
+      res_reg1 = lfmm2_med_test(mod.lfmm1, 
+                                input = M_matrix, 
+                                env = X_matrix,
+                                full = TRUE,
+                                covar = covar,
+                                genomic.control = genomic.control)
+      pval1 = as.double(res_reg1$pvalues)
+      names(pval1) = colnames(M_matrix)
+      U1 = mod.lfmm1$U
+      V1 = mod.lfmm1$V
+      zscores1 = res_reg1$zscores
+      fscores1 = res_reg1$fscores
+      adj_rsquared1 = res_reg1$adj.r.squared
+      gif1 = res_reg1$gif
+      reg1 = list(pval1,
+                  U1, 
+                  V1, 
+                  zscores1,
+                  fscores1,
+                  adj_rsquared1, 
+                  gif1)
+      names(reg1) = c("pval","U","V","zscores","fscores", "adj_rsquared","gif")
+      
+    }
   }
-
+  
   res[[1]] = reg1  
   
   if(Y_type=="continuous"){
     res_reg2 = lfmm2_med_test(mod.lfmm1, 
-                                input = M_matrix, 
-                                env = cbind(X_matrix, Y_matrix),
-                                covar = covar,
-                                genomic.control = genomic.control,
-                                full = FALSE)
+                              input = M_matrix, 
+                              env = cbind(X_matrix, Y_matrix),
+                              covar = covar,
+                              genomic.control = genomic.control,
+                              full = FALSE)
     pval2 = as.double(res_reg2$pvalues[2,])
     names(pval2) = colnames(M_matrix)
     zscores2 = res_reg2$zscores
@@ -176,10 +209,10 @@ run_AS = function(X_matrix,
                 gif2)
     names(reg2) = c("pval", "zscores", "fscores", "adj_rsquared", "gif")
   }
-    
   
   
-   if(Y_type=="binary"){
+  
+  if(Y_type=="binary"){
     res_reg2 = lfmm2_med_test(mod.lfmm1, 
                               input = M_matrix, 
                               env = cbind(X_matrix, Y_matrix),
@@ -187,28 +220,40 @@ run_AS = function(X_matrix,
                               covar = covar,
                               full = FALSE,
                               linear = FALSE)
-  pval2 = as.double(res_reg2$pvalues[,2])
-  names(pval2) = colnames(M_matrix)
-  zscores2 = res_reg2$zscores
-  fscores2 = res_reg2$fscores
-  adj_rsquared2 = res_reg2$adj.r.squared
-  gif2 = res_reg2$gif
-  reg2 = list(pval2,
-              zscores2,
-              fscores2,
-              adj_rsquared2, 
-              gif2)
-  names(reg2) = c("pval", "zscores", "fscores", "adj_rsquared", "gif")
-   }
-
+    pval2 = as.double(res_reg2$pvalues[,2])
+    names(pval2) = colnames(M_matrix)
+    zscores2 = res_reg2$zscores
+    fscores2 = res_reg2$fscores
+    adj_rsquared2 = res_reg2$adj.r.squared
+    gif2 = res_reg2$gif
+    reg2 = list(pval2,
+                zscores2,
+                fscores2,
+                adj_rsquared2, 
+                gif2)
+    names(reg2) = c("pval", "zscores", "fscores", "adj_rsquared", "gif")
+  }
+  
   res[[2]] = reg2
   
   # max2 test
+  if (multivariate){
+    max2 = c()
+    for (x in 1:dim(pval1)[1]){
+    max2_pval <- apply(cbind(pval1[x,], pval2), 1, max)^2
+    max2 = rbind(max2, max2_pval)
+    #rownames(max2) = colnames(X)
+    }
+    rownames(max2) = colnames(X_matrix)
+    colnames(max2) = colnames(M_matrix)
+    
+  }else {
   max2_pval <- apply(cbind(pval1, pval2), 1, max)^2
   max2 = max2_pval
+  }
   res[[3]] = max2
   
   names(res) <- c("mod1", "mod2", "max2")
   return(res)
- 
+  
 }

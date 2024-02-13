@@ -43,37 +43,21 @@
 ##' @export
 ##' @author 
 ##' @examples 
-##'
-##' library(hdmax2)
-##' data(sample_hdmax2_data)
-##' # Example 1
-##' X_matrix = sample_hdmax2_data$X_binary
-##' Y_matrix = sample_hdmax2_data$Y_time
-##' M_matrix = sample_hdmax2_data$M
-##' age = as.matrix(sample_hdmax2_data$age)
-##' gender = as.matrix(sample_hdmax2_data$gender)
-##' res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "continuous/binary", Y_type = "continuous", multivariate = FALSE, K = 5, covar = cbind (age, gender))
-##' m = M_matrix[,names(sort(res$max2)[1:10])] 
-##'
-##' res <- estimate_ACME_ADE_PM_TE(X = X_matrix,
-##'                             Y = Y_matrix,
-##'                             m = m,
-##'                             covar = cbind (age, gender),
-##'                             U = res$mod1$U, 
-##'                             sims = 3,
-##'                             mod2_type="linear")
-##'
-##'
 
-estimate_ACME_ADE_PM_TE <- function(X, Y, m, covar, U , sims = 3, mod2_type, ...) {
+
+multi_estimate_ACME_ADE_PM_TE <- function(X_cat , Y, multi_mediators_top10, covar, U , sims = 3, mod2_type, ...) {
   
-  if (is.null(colnames(m))) {
-    colnames(m) <- 1:ncol(m)
-  }
+  # if (is.null(colnames(m))) {
+  #   colnames(m) <- 1:ncol(m)
+  # }
   
-  M = m
+  res_meds = list()
+  for (xcat in (1:dim(X_cat)[2])){
   
-  
+  M = multi_mediators_top10[[xcat]]
+  X = X_cat[,xcat]
+  # X = X[,1]
+  # length(X)
   # from package mediation
   ACME <- matrix(ncol = 4, nrow = ncol(M))
   ADE <- matrix(ncol = 4, nrow = ncol(M))
@@ -96,7 +80,7 @@ estimate_ACME_ADE_PM_TE <- function(X, Y, m, covar, U , sims = 3, mod2_type, ...
     mod1 <- stats::lm(Mi ~ X + ., data = dat.x)
     
     if(mod2_type=="linear"){
-    mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
+      mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
     }
     
     if(mod2_type=="logistic"){
@@ -111,10 +95,10 @@ estimate_ACME_ADE_PM_TE <- function(X, Y, m, covar, U , sims = 3, mod2_type, ...
     # for linear models
     xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
     my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
-
     
     
-    med <- mediation::mediate(mod1, mod2, sims = sims, treat = "X", mediator = "Mi", ...)
+    
+    med <- mediation::mediate(mod1, mod2, sims = sims, treat = "X", mediator = "Mi")
     
     ACME[i, ] <- c(med$d0, med$d0.ci[1], med$d0.ci[2], med$d0.p)
     ADE[i, ] <- c(med$z0, med$z0.ci[1], med$z0.ci[2], med$z0.p)
@@ -143,11 +127,13 @@ estimate_ACME_ADE_PM_TE <- function(X, Y, m, covar, U , sims = 3, mod2_type, ...
   xm$feat <- colnames(M)
   my$feat <- colnames(M)
   
-  return(list(ACME = ACME,
+  res_med = list(ACME = ACME,
               ADE = ADE,
               PM = PM,
               TE = TE,
               xm = xm,
-              my = my))
-  
+              my = my)
+  res_meds[[xcat]] = res_med
+  }
+  return(res_meds)
 }

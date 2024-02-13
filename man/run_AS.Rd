@@ -13,6 +13,7 @@ run_AS(
   Y_type,
   M_type,
   covar,
+  multivariate = FALSE,
   diagnostic.plot = FALSE,
   genomic.control = TRUE,
   effect.sizes = FALSE
@@ -100,7 +101,7 @@ Y_matrix = sample_hdmax2_data$Y_time
 M_matrix = sample_hdmax2_data$M
 age = as.matrix(sample_hdmax2_data$age)
 gender = as.matrix(sample_hdmax2_data$gender)
-res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "univariate", Y_type = "continuous", K = 5, covar= cbind(age, gender))
+res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "continuous/binary", Y_type = "continuous", K = 5, multivariate = FALSE, covar= cbind(age, gender))
 
 
 }
