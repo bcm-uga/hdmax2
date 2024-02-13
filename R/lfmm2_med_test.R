@@ -23,7 +23,7 @@ lfmm2_med_test= function(object,
                          family=binomial(link = "logit"))
 {
   ## check object
-  if (class(object)!="lfmm2"){stop("not lfmm2")}
+  if (class(object)!="lfmm2"){stop("the object is not lfmm2 type")}
   ## Check input matrix   
   ## LEA  
   if (is.character(input)){

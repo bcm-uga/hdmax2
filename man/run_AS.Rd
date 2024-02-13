@@ -90,21 +90,6 @@ increase efficiency and power - see Benjamini and Hochberg (1995, 2000) and Stor
 We use the fdrtool package to transform pValues into qValues,
 which allows us to control the FDR.
 }
-\examples{
-
-data(sample_hdmax2_data)
-library(hdmax2)
-
-# Example 1
-X_matrix = sample_hdmax2_data$X_binary
-Y_matrix = sample_hdmax2_data$Y_time
-M_matrix = sample_hdmax2_data$M
-age = as.matrix(sample_hdmax2_data$age)
-gender = as.matrix(sample_hdmax2_data$gender)
-res <- run_AS(X_matrix = X_matrix , Y_matrix = Y_matrix, M_matrix = M_matrix, X_type = "continuous/binary", Y_type = "continuous", K = 5, multivariate = FALSE, covar= cbind(age, gender))
-
-
-}
 \author{
 Florence Pittion
 }
