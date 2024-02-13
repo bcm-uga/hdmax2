@@ -80,7 +80,7 @@ For this first use case we used *univariate binary exposition* and *continuous o
 load("../data/simu_data.RData")
 X_continuous = as.matrix(simu_data$X_continuous)
 X_binary = as.matrix(simu_data$X_binary)
-X_categorial = as.matrix(simu_data$X_categorial)
+X_categorial = simu_data$X_categorial
 Y_continuous = as.matrix(simu_data$Y_continuous)
 Y_binary = as.matrix(simu_data$Y_binary)
 M = as.matrix(simu_data$M)
@@ -192,7 +192,7 @@ $$
 
 ```{r}
 ## mediators ACME plots 
-hdmax2::plot_hdmax2(res_step2, N_med = 10)
+hdmax2::plot(res_step2, N_med = 10)
 ```
 
 
@@ -261,7 +261,7 @@ head(res_step2$TE)
 
 ```{r}
 ## mediators ACME plots 
-hdmax2::plot_hdmax2(res_step2, N_med = 10)
+hdmax2::plot(res_step2, N_med = 10)
 ```
 
 
@@ -330,7 +330,7 @@ head(res_step2$TE)
 
 ```{r}
 ## mediators ACME plots 
-hdmax2::plot_summary_ACME(ACME = res_step2$ACME)
+hdmax2::plot(res_step2, N_med = 10)
 ```
 
 
@@ -383,7 +383,9 @@ res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
                  covar = cbind(gender, age),
                  diagnostic.plot = F)
 # max2 test results
-head(res_step1$max2)
+#head(res_step1$max2)
+# View(res_step1$max2)
+# res_step1$max2[1,]
 ```
 
 ```{r}
@@ -395,8 +397,14 @@ head(res_step2$TE)
 ```
 
 ```{r}
+mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
+head(mediators_top10)
+X_categorial = droplevels(X_categorial)
+X_categorial = mltools::one_hot(data.table::as.data.table(X_categorial))
+rownames(X_categorial)= rownames(M)
+    
 res_step2 = hdmax2::estimate_effect(
-                            X = X_continuous,
+                            X = X_categorial[,1],
                             Y = Y_binary,
                             m = mediators_top10,
                             covar = cbind(age, gender),
@@ -408,5 +416,5 @@ res_step2 = hdmax2::estimate_effect(
 
 ```{r}
 ## mediators ACME plots 
-hdmax2::plot_hdmax2(res_step2, N_med = 10)
+hdmax2::plot(res_step2, N_med = 10)
 ```

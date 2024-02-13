@@ -3,7 +3,7 @@
 export(estimate_effect)
 export(lfmm2_med)
 export(lfmm2_med_test)
-export(plot_hdmax2)
+export(plot)
 export(plot_summary_ACME)
 export(read_lfmm)
 export(run_AS)

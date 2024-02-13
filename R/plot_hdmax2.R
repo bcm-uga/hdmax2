@@ -18,7 +18,7 @@
 ##'
 
 
-plot_hdmax2 <- function(res_step2, N_med = 10) {
+plot <- function(object, N_med = 10) {
  
   
   
@@ -28,7 +28,7 @@ plot_hdmax2 <- function(res_step2, N_med = 10) {
   
 	#Plot the ACME of the model
 	
-	p_ACME <- ggplot2::ggplot(res_step2$ACME, aes(est, stats::reorder(feat, est), color = est <= 0, shape = pval <= 0.05)) +
+	p_ACME <- ggplot2::ggplot(object$ACME, aes(est, stats::reorder(feat, est), color = est <= 0, shape = pval <= 0.05)) +
 	    geom_vline(xintercept = 0, linetype = "dashed") +
 	    geom_errorbarh(aes(xmin = CI_2.5, xmax = CI_97.5)) +
 	    geom_point(size = 2.8) +
@@ -44,7 +44,7 @@ plot_hdmax2 <- function(res_step2, N_med = 10) {
 		
   ##Plot the mediated proportion
   
-  p_PM <- ggplot2::ggplot(res_step2$PM, aes(est, stats::reorder(feat, est), color = est <= 0, shape = pval <= 0.05)) +
+  p_PM <- ggplot2::ggplot(object$PM, aes(est, stats::reorder(feat, est), color = est <= 0, shape = pval <= 0.05)) +
       geom_vline(xintercept = 0, linetype = "dashed") +
       geom_errorbarh(aes(xmin = CI_2.5, xmax = CI_97.5)) +
       geom_point(size = 2.8) +
@@ -59,9 +59,9 @@ plot_hdmax2 <- function(res_step2, N_med = 10) {
 	  
   ##Plot the overall effects
   
-  df_effect = data.frame(OIE = res_step2$oie_med,
-                         ODE =  res_step2$ode[2],
-                         OTE =  res_step2$ote[2] )
+  df_effect = data.frame(OIE = object$oie_med,
+                         ODE =  object$ode[2],
+                         OTE =  object$ote[2] )
   df_effect_long <- reshape(df_effect, direction = "long", varying = 1:3, v.names = "value", timevar = "variable", times = c("OIE", "ODE", "OTE"))
 
   p_effects <- ggplot2::ggplot(df_effect_long, aes(x = variable, y = value, group = 1)) +
@@ -81,10 +81,10 @@ plot_hdmax2 <- function(res_step2, N_med = 10) {
 
   ##Plot the effect size
   
-  df = data.frame( mediator = res_step2$xm$feat,
-                   step1 = res_step2$xm$Estimate,
-                         step2 = res_step2$my$Estimate,
-                   ACME = res_step2$ACME$est)
+  df = data.frame( mediator = object$xm$feat,
+                   step1 = object$xm$Estimate,
+                         step2 = object$my$Estimate,
+                   ACME = object$ACME$est)
   df = dplyr::arrange(df, desc(ACME))
   df$mediator <- factor(df$mediator, levels = df$mediator)
 
@@ -110,8 +110,10 @@ plot_hdmax2 <- function(res_step2, N_med = 10) {
 
 	 #patchwork::combined_plot <- (p_ACME + p_PM) / (p_effects + p_es) 
 	 
-	 plot_final = gridExtra::grid.arrange(p_ACME + p_PM, p_effects + p_es, ncol = 2)
+	plot_final = gridExtra::grid.arrange(p_ACME, p_PM, p_effects, p_es, ncol = 2)
 	 
-	 return(plot_final)
+	 #return(plot_final)
+  
+  
 
 }  
