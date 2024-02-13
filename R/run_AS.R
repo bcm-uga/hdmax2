@@ -145,7 +145,9 @@ run_AS = function(X_matrix,
   }
   
   if(X_type=="categorial"){
-    X_matrix = one_hot(as.data.table(X_matrix))
+    X_matrix = droplevels(X_matrix)
+    X_matrix = mltools::one_hot(data.table::as.data.table(X_matrix))
+    
     if(multivariate){
       mod.lfmm1 = lfmm2_med(input = M_matrix, 
                             env = X_matrix, 
@@ -186,7 +188,7 @@ run_AS = function(X_matrix,
                                 full = TRUE,
                                 covar = covar,
                                 genomic.control = genomic.control)
-      pval1 = as.double(res_reg1$pvalues)
+      pval1 = res_reg1$pvalues
       names(pval1) = colnames(M_matrix)
       U1 = mod.lfmm1$U
       V1 = mod.lfmm1$V
@@ -209,6 +211,7 @@ run_AS = function(X_matrix,
   res[[1]] = reg1  
   
   if(Y_type=="continuous"){
+    Y_matrix = as.numeric(Y_matrix)
     res_reg2 = lfmm2_med_test(mod.lfmm1, 
                               input = M_matrix, 
                               env = cbind(X_matrix, Y_matrix),
