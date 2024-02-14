@@ -383,9 +383,8 @@ res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
                  covar = cbind(gender, age),
                  diagnostic.plot = F)
 # max2 test results
-#head(res_step1$max2)
-# View(res_step1$max2)
-# res_step1$max2[1,]
+head(res_step1$max2[1,])
+
 ```
 
 ```{r}
@@ -397,12 +396,15 @@ head(res_step2$TE)
 ```
 
 ```{r}
+# first variable category selected mediators 
 mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
 head(mediators_top10)
-dim(mediators_top10)
-dim(X_categorial)
+
+# one hot encoding
 X_categorial = droplevels(X_categorial)
 X_categorial = mltools::one_hot(data.table::as.data.table(X_categorial))
+
+# first variable category extraction
 X_cat_var1 = as.double(as.matrix(X_categorial[,1]))
 
     
