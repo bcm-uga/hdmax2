@@ -399,12 +399,15 @@ head(res_step2$TE)
 ```{r}
 mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
 head(mediators_top10)
+dim(mediators_top10)
+dim(X_categorial)
 X_categorial = droplevels(X_categorial)
 X_categorial = mltools::one_hot(data.table::as.data.table(X_categorial))
-rownames(X_categorial)= rownames(M)
+X_cat_var1 = as.double(as.matrix(X_categorial[,1]))
+
     
 res_step2 = hdmax2::estimate_effect(
-                            X = X_categorial[,1],
+                            X = X_cat_var1,
                             Y = Y_binary,
                             m = mediators_top10,
                             covar = cbind(age, gender),
