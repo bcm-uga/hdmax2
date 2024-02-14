@@ -16,5 +16,5 @@ an object with the following attributes
 read lfmm
 }
 \author{
-Florence Pittion
+Olivier Francois
 }

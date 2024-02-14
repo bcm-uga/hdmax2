@@ -271,9 +271,6 @@ AMR_build <- function(res, methylation, nb_cpg = 2) {
 ##' and total effect.
 ##'
 ##' @param AMR a matrix of DMRs from the result AMR_mean of AMR_build function.
-##' @param M a response variable matrix with n rows and p columns.
-##' Each column corresponds to a beta-normalized methylation profile.
-##' Response variables must be encoded as numeric. No NAs allowed.
 ##' @param X Exposure. An explanatory variable matrix with n rows and d columns.
 ##' Each column corresponds to a distinct explanatory variable (Exposure).
 ##' Explanatory variables must be encoded as numeric variables.

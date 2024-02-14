@@ -2,7 +2,7 @@
 % Please edit documentation in R/lfmm2_med.R
 \name{lfmm2_med}
 \alias{lfmm2_med}
-\title{lfmm2 function}
+\title{lfmm2 adapted function for hdmax2 from LEA::lfmm2}
 \usage{
 lfmm2_med(input, env, K, lambda = 1e-05, effect.sizes = FALSE)
 }
@@ -13,7 +13,7 @@ lfmm2_med(input, env, K, lambda = 1e-05, effect.sizes = FALSE)
 
 \item{K}{latent factor number}
 
-\item{lambda}{ridge penalyzation parameter}
+\item{lambda}{ridge penalization parameter}
 
 \item{effect.sizes}{true or false to obtain effect sizes}
 }
@@ -21,7 +21,14 @@ lfmm2_med(input, env, K, lambda = 1e-05, effect.sizes = FALSE)
 an object with the following attributes
 }
 \description{
-lfmm2 function
+lfmm2 adapted function for hdmax2 from LEA::lfmm2
+}
+\examples{
+data(simu_data)
+mod.lfmm1 = lfmm2_med(input = simu_data$M, 
+env = simu_data$X_binary, 
+K = 5,
+effect.sizes = FALSE)
 }
 \author{
 Florence Pittion

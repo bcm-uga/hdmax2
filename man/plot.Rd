@@ -2,26 +2,46 @@
 % Please edit documentation in R/plot_hdmax2.R
 \name{plot}
 \alias{plot}
-\title{Summary plot for ACME}
+\title{Summary plot for HDMAX2
+This function draw a summary plot of hdmax2}
 \usage{
 plot(object, N_med = 10)
 }
 \arguments{
-\item{N_med}{number of selected mediators}
+\item{object}{the table of ACME from the wrap_mediation() function}
 
-\item{res_step2}{the table of ACME from the wrap_mediation() function}
+\item{N_med}{number of selected mediators}
 }
 \value{
-Summary plot for ACME
+Summary plot for ACME, PM, OIE, effects interpretation
 }
 \description{
-This function draw a summary plot of ACME (average causal mediation effect)
+Summary plot for HDMAX2
+This function draw a summary plot of hdmax2
 }
 \examples{
+data(simu_data)
+res_step1 = run_AS(X_matrix = simu_data$X_binary ,
+Y_matrix = simu_data$Y_continuous,
+M_matrix = simu_data$M, 
+K = 5,
+X_type = "binary",
+Y_type = "continuous",
+M_type = "methylation",
+multivariate = FALSE,
+covar = cbind(simu_data$age, simu_data$gender),
+diagnostic.plot = F)
 
-# see wrap_mediation example
-
+mediators_top10 = simu_data$M[,names(sort(res_step1$max2)[1:10])]
+res_step2 = estimate_effect(X = simu_data$X_binary,
+Y = simu_data$Y_continuous,
+m = mediators_top10,
+covar = cbind(simu_data$age, simu_data$gender),
+U = res_step1$mod1$U,
+sims = 100, 
+mod2_type = "linear")
+plot(res_step2, N_med = 10)
 }
 \author{
-Basile Jumentier
+Florence Pittion, Magali Richard
 }

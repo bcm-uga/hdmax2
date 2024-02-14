@@ -1,4 +1,4 @@
-##' lfmm2_test adapted function for hdmax2
+##' lfmm2_test adapted function for hdmax2 from LEA::lfmm2.test
 ##' @param object lfmm2Class object
 ##' @param input a response variable matrix with n rows and p columns
 ##' @param env An explanatory variable matrix with n rows and d columns.
@@ -6,12 +6,24 @@
 ##' @param genomic.control correct pvalue with genomic inflation factor
 ##' @param linear true or false (else is logistic)
 ##' @param family of logistic reg
-##' @param full include covariables true or false
+##' @param full compute partial regression FALSE/TRUE
 ##' @return an object with the following attributes 
-##' @details
 ##' @export
 ##' @author Florence Pittion
 ##' @examples 
+##' data(simu_data)
+##' 
+##' mod.lfmm1 = lfmm2_med(input = simu_data$M, 
+##' env = simu_data$X_binary, 
+##' K = 5,
+##' effect.sizes = FALSE)
+##' 
+##' res_reg1 = lfmm2_med_test(mod.lfmm1, 
+##' input = simu_data$M, 
+##' env = simu_data$X_binary,
+##' covar = cbind(simu_data$age, simu_data$gender),
+##' genomic.control = TRUE)
+##' 
 
 lfmm2_med_test= function(object, 
                          input,

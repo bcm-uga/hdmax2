@@ -1,16 +1,21 @@
-##' lfmm2 function
+##' lfmm2 adapted function for hdmax2 from LEA::lfmm2
 ##' @param input a response variable matrix with n rows and p columns
 ##' @param env An explanatory variable matrix with n rows and d columns.
 ##' @param K latent factor number
-##' @param lambda ridge penalyzation parameter
+##' @param lambda ridge penalization parameter
 ##' @param effect.sizes true or false to obtain effect sizes
 ##' @return an object with the following attributes 
-##' @details
-##' @export 
+##' @export
 ##' @author Florence Pittion
-##' @examples 
+##' @examples
+##' data(simu_data)
+##' mod.lfmm1 = lfmm2_med(input = simu_data$M, 
+##' env = simu_data$X_binary, 
+##' K = 5,
+##' effect.sizes = FALSE)
 
-lfmm2_med <- function(input,
+
+lfmm2_med = function(input,
                   env, 
                   K, 
                   lambda = 1e-5,
