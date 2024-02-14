@@ -25,6 +25,9 @@ Explanatory variables must be encoded as numeric variables.}
 Each column corresponds to a distinct explanatory variable (Outcome).
 Explanatory variables must be encoded as numeric variables.}
 
+\item{m}{a response variable matrix with n rows and p columns corresponding to mediators selected at step1.
+Response variables must be encoded as numeric. No NAs allowed.}
+
 \item{covar}{covariables}
 
 \item{U}{set of latent factors from runAS function (need include covariable)}
@@ -37,11 +40,6 @@ Explanatory variables must be encoded as numeric variables.}
 \item{mod2_type}{second regression type "linear", "logistic", "surv_Cox"}
 
 \item{...}{argument of the mediate function from the mediation package}
-
-\item{M}{a response variable matrix with n rows and p columns.
-Response variables must be encoded as numeric. No NAs allowed.}
-
-\item{FDR}{FDR threshold to pass markers in mediation analysis}
 }
 \value{
 Tables of results of mediation analyzes for markers with a Q-value below the FDR threshold.
@@ -69,4 +67,29 @@ and total effect.
 We use the mediate function of the mediation package on the set of markers having Q-value lower
 than the FDR threshold. It estimates their indirect effects and
 tests their significance.
+}
+\examples{
+data(simu_data)
+res_step1 = run_AS(X_matrix = simu_data$X_binary ,
+Y_matrix = simu_data$Y_continuous,
+M_matrix = simu_data$M, 
+K = 5,
+X_type = "binary",
+Y_type = "continuous",
+M_type = "methylation",
+multivariate = FALSE,
+covar = cbind(simu_data$age, simu_data$gender),
+diagnostic.plot = F)
+
+mediators_top10 = simu_data$M[,names(sort(res_step1$max2)[1:10])]
+res_step2 = estimate_effect(X = simu_data$X_binary,
+Y = simu_data$Y_continuous,
+m = mediators_top10,
+covar = cbind(simu_data$age, simu_data$gender),
+U = res_step1$mod1$U,
+sims = 100, 
+mod2_type = "linear")
+}
+\author{
+Florence Pittion
 }

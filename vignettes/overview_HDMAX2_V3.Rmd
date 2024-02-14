@@ -107,9 +107,9 @@ K=5
 ```
 The screeplot indicates around 5 main components in the data. We will use $K = 5$ latent factors in subsequent analyses.
 
-# First use case  *univariate binary exposure* and *continuous outcome*
+# First use case  *binary exposure* and *continuous outcome*
 
-## Evaluating associations between exposure, mediators and outcome
+### Evaluating associations between exposure, mediators and outcome
 
 The **run_AS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$.
 
@@ -161,7 +161,7 @@ head(mediators_top10)
 
 ```
 
-## Mediators individual indirect effects estimation and Overall Indirect effect estimation.
+### Mediators individual indirect effect estimation and Overall Indirect Effect estimation.
 
 The function **estimate_effect** estimate the individual indirect effect of mediators.
 
@@ -198,7 +198,7 @@ head(res_step2$TE)
 
 
 
-We propose a set of plots wich include:
+We propose a set of plots which include:
 
 - Forest plot of mediators ACME
 
@@ -218,10 +218,10 @@ hdmax2::plot(res_step2, N_med = 10)
 
 
 
-# Use case 2  **univariate continuous exposure** and **continuous outcome**
+# Use case 2  **continuous exposure** and **continuous outcome**
 
 
-## Evaluating associations between exposure, mediators and outcome
+### Evaluating associations between exposure, mediators and outcome
 
 
 ```{r}
@@ -248,7 +248,7 @@ mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
 head(mediators_top10)
 ```
 
-## Mediators individual indirect effects estimation and Overall Indirect effect estimation.
+### Mediators individual indirect effect estimation and Overall Indirect Effect estimation.
 
 
 ```{r}
@@ -289,7 +289,7 @@ hdmax2::plot(res_step2, N_med = 10)
 # Use case 3 **continuous exposure** and **binary outcome**
 
 
-## Evaluating associations between exposure, mediators and outcome
+### Evaluating associations between exposure, mediators and outcome
 
 
 ```{r, warning=FALSE}
@@ -316,7 +316,7 @@ mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
 head(mediators_top10)
 ```
 
-## Mediators individual indirect effects estimation
+### Mediators individual indirect effect estimation and Overall Indirect Effect estimation.
 
 
 ```{r}
@@ -354,7 +354,7 @@ hdmax2::plot(res_step2, N_med = 10)
 
 
 
-## First option a single pvalue results via partial regression
+### First option a single pvalue results via partial regressions
 
 ```{r, warning=FALSE}
 # step 1 association studies + max2
@@ -386,7 +386,7 @@ For this case we can't propose effect estimation (TODO expliquer pourquoi)
 
 
 
-### Second option multimediate results, pvalu and mediators selection for each category of the exposure
+### Second option multimediate results, pvalue and mediators selection for each category of the exposure
 
 ```{r, warning = FALSE}
 res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
@@ -424,6 +424,7 @@ X_categorial = mltools::one_hot(data.table::as.data.table(X_categorial))
 # first variable category extraction
 X_cat_var1 = as.double(as.matrix(X_categorial[,1]))
 
+## TODO return error message if X = multiple categories
     
 res_step2 = hdmax2::estimate_effect(
                             X = X_cat_var1,

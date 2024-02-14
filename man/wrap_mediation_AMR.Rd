@@ -21,10 +21,6 @@ Explanatory variables must be encoded as numeric variables.}
 
 \item{sims}{number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 10000 is recommended.}
-
-\item{M}{a response variable matrix with n rows and p columns.
-Each column corresponds to a beta-normalized methylation profile.
-Response variables must be encoded as numeric. No NAs allowed.}
 }
 \value{
 Tables of results of mediation analyzes for markers with a Q-value below the FDR threshold.

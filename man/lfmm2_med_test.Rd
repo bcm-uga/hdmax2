@@ -2,7 +2,7 @@
 % Please edit documentation in R/lfmm2_med_test.R
 \name{lfmm2_med_test}
 \alias{lfmm2_med_test}
-\title{lfmm2_test adapted function for hdmax2}
+\title{lfmm2_test adapted function for hdmax2 from LEA::lfmm2.test}
 \usage{
 lfmm2_med_test(
   object,
@@ -24,7 +24,7 @@ lfmm2_med_test(
 
 \item{covar}{covariables}
 
-\item{full}{include covariables true or false}
+\item{full}{compute partial regression FALSE/TRUE}
 
 \item{genomic.control}{correct pvalue with genomic inflation factor}
 
@@ -36,7 +36,22 @@ lfmm2_med_test(
 an object with the following attributes
 }
 \description{
-lfmm2_test adapted function for hdmax2
+lfmm2_test adapted function for hdmax2 from LEA::lfmm2.test
+}
+\examples{
+data(simu_data)
+
+mod.lfmm1 = lfmm2_med(input = simu_data$M, 
+env = simu_data$X_binary, 
+K = 5,
+effect.sizes = FALSE)
+
+res_reg1 = lfmm2_med_test(mod.lfmm1, 
+input = simu_data$M, 
+env = simu_data$X_binary,
+covar = cbind(simu_data$age, simu_data$gender),
+genomic.control = TRUE)
+
 }
 \author{
 Florence Pittion

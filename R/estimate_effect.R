@@ -5,7 +5,7 @@
 ##' (indirect effect), average direct effects, proportions mediated,
 ##' and total effect.
 ##'
-##' @param M a response variable matrix with n rows and p columns.
+##' @param m a response variable matrix with n rows and p columns corresponding to mediators selected at step1.
 ##' Response variables must be encoded as numeric. No NAs allowed.
 ##' @param X Exposure. An explanatory variable matrix with n rows and d columns.
 ##' Each column corresponds to a distinct explanatory variable (Exposure).
@@ -14,7 +14,6 @@
 ##' Each column corresponds to a distinct explanatory variable (Outcome).
 ##' Explanatory variables must be encoded as numeric variables.
 ##' @param U set of latent factors from runAS function (need include covariable)
-##' @param FDR FDR threshold to pass markers in mediation analysis
 ##' @param sims number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 ##' 10000 is recommended.
 ##' @param covar covariables
@@ -42,8 +41,28 @@
 ##' tests their significance.
 ##'
 ##' @export
-##' @author 
+##' @author Florence Pittion
 ##' @examples 
+##' data(simu_data)
+##' res_step1 = run_AS(X_matrix = simu_data$X_binary ,
+##' Y_matrix = simu_data$Y_continuous,
+##' M_matrix = simu_data$M, 
+##' K = 5,
+##' X_type = "binary",
+##' Y_type = "continuous",
+##' M_type = "methylation",
+##' multivariate = FALSE,
+##' covar = cbind(simu_data$age, simu_data$gender),
+##' diagnostic.plot = F)
+##' 
+##' mediators_top10 = simu_data$M[,names(sort(res_step1$max2)[1:10])]
+##' res_step2 = estimate_effect(X = simu_data$X_binary,
+##' Y = simu_data$Y_continuous,
+##' m = mediators_top10,
+##' covar = cbind(simu_data$age, simu_data$gender),
+##' U = res_step1$mod1$U,
+##' sims = 100, 
+##' mod2_type = "linear")
 
 
 estimate_effect <- function(X, Y, m, covar, U , boots = 100, sims = 3,  mod2_type= "linear", ...) {

@@ -1,12 +1,12 @@
 ##' read lfmm
 ##' @param input.file input file in lfmm object
-##' @return an object with the following attributes 
-##' @details
+##' @return an object with the following attributes
 ##' @export
-##' @author Florence Pittion
+##' @author Olivier Francois
 ##' @examples 
 
-read_lfmm <- function(input.file) {
+
+read_lfmm = function(input.file) {
   
   # test arguments
   if(missing(input.file))

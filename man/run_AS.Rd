@@ -33,13 +33,15 @@ Response variables must be encoded as numeric. No NAs allowed.}
 
 \item{K}{an integer for the number of latent factors in the regression model.}
 
-\item{X_type}{type of exposition "univariate", "multivariate"}
+\item{X_type}{type of exposition "continuous", "binary", "categorial"}
 
 \item{Y_type}{type of outcome "binary', "continuous"}
 
 \item{M_type}{type of potential mediators matrix "methylation", "transcriptome"}
 
 \item{covar}{set of covariable, must be numeric. No NAs allowed}
+
+\item{multivariate}{choose if for categorial exposure categories treated a single variate or compute in partiel regression (full=TRUE)}
 
 \item{diagnostic.plot}{if TRUE the histogram of the p-values together
 with the estimate of eta0 null line is plotted.
@@ -51,12 +53,13 @@ Useful to visually check the fit of the estimated proportion of null p-values.}
 an object with the following attributes
 for each association study:
 \itemize{
-\item U, scores matrix for the K latent factors.
-\item V, latent factors loadings
+\item U, scores matrix for the K latent factors, only available for first regression
+\item V, latent factors loadings, , only available for first regression
 \item gif, Genomic inflation factor for X and Y, expressing the deviation of the distribution of the observed test statistic compared to the distribution of the expected test statistic
 \item pValue, estimation of the effects of X and Y on the matrix M.
 \item zscore, a score matrix for the exposure X and the outcome Y.
 \item fscore, a score matrix for the exposure X and the outcome Y.
+\item adj_rsquared
 
 results of max2 test:
 \item pval, results of max2 test
@@ -68,8 +71,8 @@ the effects of exposures and outcomes on a response matrix.
 applied to estimate the effects of exposure $X$ on a matrix $M$
 of potential mediators, and the effect of each marker on outcome $Y$.
 It uses the covariables matrix $conf$ and $K$ latent factors.
-Compute the squared maximum of two series of P-values
 Test all possible markers to determine potential mediators in the exposure-outcome association.
+Then compute the squared maximum of two series of P-values with $max2$ test
 It computes the squared maximum of two series of P-values from the association studie.
 This rejects the null-hypothesis that either the effect of X on M, or the effect of M on Y is null.
 }
@@ -80,15 +83,22 @@ with the eigenvalues of a PCA.
 Possibility of calibrating the scores and pValues by the GIF (Genomic Inflation Factor).
 See LEA package for more information.
 Max2 test The P-value is computed for each markers following this formula
-
 \deqn{pV = max(pVal1, pVal2)^2}
-
-This quantity eta0, i.e. the proportion eta0 of null p-values in a given vector of p-values,
-is an important parameter when controlling the false discovery rate (FDR).
-A conservative choice is eta0 = 1 but a choice closer to the true value will
-increase efficiency and power - see Benjamini and Hochberg (1995, 2000) and Storey (2002) for details.
-We use the fdrtool package to transform pValues into qValues,
-which allows us to control the FDR.
+}
+\examples{
+data(simu_data)
+res_step1 = run_AS(X_matrix = simu_data$X_binary ,
+Y_matrix = simu_data$Y_continuous,
+M_matrix = simu_data$M, 
+K = 5,
+X_type = "binary",
+Y_type = "continuous",
+M_type = "methylation",
+multivariate = FALSE,
+covar = cbind(simu_data$age, simu_data$gender),
+diagnostic.plot = F)
+# max2 test results
+head(res_step1$max2)
 }
 \author{
 Florence Pittion
