@@ -5,7 +5,8 @@
 ##' @param lambda ridge penalization parameter
 ##' @param effect.sizes true or false to obtain effect sizes
 ##' @return an object with the following attributes 
-##' @export
+##' @export 
+##' @export read_lfmm
 ##' @author Florence Pittion
 ##' @examples
 ##' data(simu_data)
@@ -24,7 +25,7 @@ lfmm2_med = function(input,
   ## Check input response matrix 
   ## LEA  
   if (is.character(input)){
-    Y <- read.lfmm(input)
+    Y <- read_lfmm(input)
     lst.unique <- unique(as.numeric(Y))
     if (9 %in% lst.unique){
       stop("'input' file contains missing data (9's). Use the 'impute()' function to impute them.")
@@ -48,7 +49,7 @@ lfmm2_med = function(input,
   ## Check independent/covariate env matrix  
   ## LEA 
   if (is.character(env)){
-    X <- read.env(env)
+    X <- read_env(env)
     if (anyNA(X)){
       stop("'env' file contains missing data (NA).")
     }
