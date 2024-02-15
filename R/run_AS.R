@@ -58,7 +58,6 @@
 ##' See LEA package for more information.
 ##' Max2 test The P-value is computed for each markers following this formula
 ##' \deqn{pV = max(pVal1, pVal2)^2}
-##' 
 ##' @export
 ##' @author Florence Pittion
 ##' @examples 
