@@ -27,6 +27,7 @@
 ##' with the estimate of eta0 null line is plotted.
 ##' Useful to visually check the fit of the estimated proportion of null p-values.
 ##' @param genomic.control correct pvalue with genomic inflation factor
+##' @param effect.sizes if effect sizes from lfmm are needed
 ##' @return an object with the following attributes 
 ##'   for each association study:
 ##'
