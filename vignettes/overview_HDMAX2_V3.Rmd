@@ -413,7 +413,101 @@ hdmax2::plot(res_step2, N_med = 10)
 ```
 
 
-# Use case  **categorial exposure** and **binary outcome**
+# Use case 5  **categorial exposure** and **binary outcome**
+
+## without covar
+
+
+
+### First option a single pvalue results via partial regressions
+
+```{r, warning=FALSE}
+# step 1 association studies + max2
+res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
+                 Y_matrix = Y_binary,
+                 M_matrix = M, 
+                 K = K,
+                 X_type = "categorial",
+                 Y_type = "binary",
+                 M_type = "methylation",
+                 covar = NULL,
+                 diagnostic.plot = F)
+
+```
+
+
+
+```{r}
+##Selecting mediators
+
+mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
+head(mediators_top10)
+
+
+# pas possible de calculer les effets dans cette configuration juste une list de mediateurs
+```
+
+For this case we can't propose effect estimation (TODO expliquer pourquoi)
+
+
+
+### Second option multimediate results, pvalue and mediators selection for each category of the exposure
+
+```{r, warning = FALSE}
+res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
+                 Y_matrix = Y_binary,
+                 M_matrix = M, 
+                 K = K,
+                 X_type = "categorial",
+                 Y_type = "binary",
+                 M_type = "methylation",
+                 multivariate = TRUE,
+                 covar = NULL,
+                 diagnostic.plot = F)
+# max2 test results
+head(res_step1$max2[1,])
+
+```
+
+```{r}
+# ACME, ADE, PM, TE estimation with CI
+head(res_step2$ACME)
+head(res_step2$ADE)
+head(res_step2$PM)
+head(res_step2$TE)
+```
+
+```{r}
+# first variable category selected mediators 
+mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
+head(mediators_top10)
+
+# one hot encoding
+X_categorial = droplevels(X_categorial)
+X_categorial = mltools::one_hot(data.table::as.data.table(X_categorial))
+
+# first variable category extraction
+X_cat_var1 = as.double(as.matrix(X_categorial[,1]))
+
+## TODO return error message if X = multiple categories
+    
+res_step2 = hdmax2::estimate_effect(
+                            X = X_cat_var1,
+                            Y = Y_binary,
+                            m = mediators_top10,
+                            covar = NULL,
+                            U = res_step1$mod1$U,
+                            sims = 100,
+                            mod2_type = "logistic")
+
+```
+
+```{r}
+## mediators ACME plots 
+hdmax2::plot(res_step2, N_med = 10)
+```
+
+## with covar
 
 
 
@@ -460,7 +554,7 @@ res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
                  Y_type = "binary",
                  M_type = "methylation",
                  multivariate = TRUE,
-                 covar = cbind(gender, age),
+                 covar = cbind(age, gender),
                  diagnostic.plot = F)
 # max2 test results
 head(res_step1$max2[1,])
