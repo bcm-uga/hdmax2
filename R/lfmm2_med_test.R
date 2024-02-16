@@ -132,19 +132,34 @@ lfmm2_med_test= function(object,
     
     ## All p-values returned    
     if (linear){
-      mod_lm <- lm(Y ~ ., data = data.frame(X, covar,  object$U)) 
-      sm <- summary(mod_lm)
-      p_value <- sapply(sm, FUN = function(x) x$coeff[2:(d + 1), 4])
-      z_score <- as.matrix(sapply(sm, FUN = function(x) x$coeff[2:(d + 1), 3]))
+      if(is.null(covar)){
+        mod_lm <- lm(Y ~ ., data = data.frame(X, object$U)) 
+        sm <- summary(mod_lm)
+        p_value <- sapply(sm, FUN = function(x) x$coeff[2:(d + 1), 4])
+        z_score <- as.matrix(sapply(sm, FUN = function(x) x$coeff[2:(d + 1), 3]))
+      } else {
+        mod_lm <- lm(Y ~ ., data = data.frame(X, covar, object$U)) 
+        sm <- summary(mod_lm)
+        p_value <- sapply(sm, FUN = function(x) x$coeff[2:(d + 1), 4])
+        z_score <- as.matrix(sapply(sm, FUN = function(x) x$coeff[2:(d + 1), 3]))
+      }
     } else {
-      for (j in 1:p) {
-        mod_glm <- glm(Y[, j] ~ ., data = data.frame(X, covar, object$U), family = family)
-        sm <- summary(mod_glm)
-        p_value <- rbind(p_value, sm$coeff[2:(d + 1), 4])
-        z_score <- rbind(z_score, sm$coeff[2:(d + 1), 3])
+      if(is.null(covar)){
+        for (j in 1:p) {
+          mod_glm <- glm(Y[, j] ~ ., data = data.frame(X, object$U), family = family)
+          sm <- summary(mod_glm)
+          p_value <- rbind(p_value, sm$coeff[2:(d + 1), 4])
+          z_score <- rbind(z_score, sm$coeff[2:(d + 1), 3])
+        }
+      } else {
+        for (j in 1:p) {
+          mod_glm <- glm(Y[, j] ~ ., data = data.frame(X, covar, object$U), family = family)
+          sm <- summary(mod_glm)
+          p_value <- rbind(p_value, sm$coeff[2:(d + 1), 4])
+          z_score <- rbind(z_score, sm$coeff[2:(d + 1), 3])
+        }
       }
     }
-    
   }
   
   

@@ -72,8 +72,12 @@ estimate_effect <- function(X, Y, m, covar, U , boots = 100, sims = 3,  mod2_typ
   }
   
   M = m
-  covar = cbind(covar, U)
   
+  if(is.null(covar)){
+    covars = U
+  } else  {
+    covars = cbind(covar, U)
+  }
   ### Compute ACME, ADE, PM and TE from package mediation
   
   # from package mediation
@@ -88,8 +92,8 @@ estimate_effect <- function(X, Y, m, covar, U , boots = 100, sims = 3,  mod2_typ
   
   for (i in 1:ncol(M)) {
     
-    dat.x <- data.frame(X = X, Mi = M[, i], covar = covar)
-    dat.y <- data.frame(X = X, Mi = M[, i], covar = covar, Y = Y)
+    dat.x <- data.frame(X = X, Mi = M[, i], covars = covars)
+    dat.y <- data.frame(X = X, Mi = M[, i], covars = covars, Y = Y)
     
     # ici cas de deux reg lineaires pour les deux associations
     # TODO refaire pour les autres regressions
@@ -154,20 +158,20 @@ estimate_effect <- function(X, Y, m, covar, U , boots = 100, sims = 3,  mod2_typ
     samp <- sample(length(X), replace = T)
     
     if(mod2_type=="logistic"){
-      dat.1 <- data.frame(X, m, covar = covar)
+      dat.1 <- data.frame(X, m, covars = covars)
       mod1 <- glm(Y[samp] ~ ., data = dat.1[samp, ])
       B <- as.data.frame(summary(mod1)$coeff[3:(ncol(m) + 2), ])
     }
     
     if(mod2_type=="linear"){
       # effet B m -> Y
-      dat.1 <- data.frame(X, m, covar = covar)
+      dat.1 <- data.frame(X, m, covars = covars)
       mod1 <- lm(Y[samp] ~ ., data = dat.1[samp, ])
       B <- as.data.frame(summary(mod1)$coeff[3:(ncol(m) + 2), ])
       #B <- as.data.frame(summary(mod1)$coeff[3:10, ])
     }
     # effet A X -> M
-    mod2 <- lm(m[samp, ] ~ X[samp] + covar[samp, ])
+    mod2 <- lm(m[samp, ] ~ X[samp] + covars[samp, ])
     A <- t(sapply(summary(mod2), function(x) x$coeff[2, ]))
     A <- data.frame(feat = rownames(A), A)
     # A <- separate(A, CpG, c("0", "CpG"), " ")[, -1]
@@ -186,27 +190,27 @@ estimate_effect <- function(X, Y, m, covar, U , boots = 100, sims = 3,  mod2_typ
   
   ### Compute ODE and OTE for the given model
   
-  mod_total_effect = lm(Y~X+covar)
+  mod_total_effect = lm(Y~X+covars)
   ote = mod_total_effect$coefficients
-
-  mod_direct_effect = lm(Y~X+mediators_top10+covar)
+  
+  mod_direct_effect = lm(Y~X+mediators_top10+covars)
   ode = mod_direct_effect$coefficients
   
   obj = list(ACME = ACME,
-              ADE = ADE,
-              PM = PM,
-              TE = TE,
-              xm = xm,
-              my = my,
-              oie = as.vector(acme_sum),
-              oie_med = median(as.vector(acme_sum)),
-              oie_sd = sd(as.vector(acme_sum)),
-			  ote = ote,
-			  ode = ode
-              )
-	
+             ADE = ADE,
+             PM = PM,
+             TE = TE,
+             xm = xm,
+             my = my,
+             oie = as.vector(acme_sum),
+             oie_med = median(as.vector(acme_sum)),
+             oie_sd = sd(as.vector(acme_sum)),
+             ote = ote,
+             ode = ode
+  )
+  
   class(obj) = "hdmax2"
-   
+  
   return(obj)
   
 }
