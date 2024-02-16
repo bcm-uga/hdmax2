@@ -350,7 +350,70 @@ hdmax2::plot(res_step2, N_med = 10)
 
 
 
-# Use case 4 **categorial exposure** and **binary outcome**
+# Use case 3 **binary exposure** and **binary outcome**
+
+
+### Evaluating associations between exposure, mediators and outcome
+
+
+```{r, warning=FALSE}
+# step 1 association studies + max2
+res_step1 = hdmax2::run_AS(X_matrix = X_binary ,
+                 Y_matrix = Y_binary,
+                 M_matrix = M, 
+                 K = K,
+                 X_type = "binary",
+                 Y_type = "binary",
+                 M_type = "methylation",
+                 multivariate = FALSE,
+                 covar = NULL,
+                 diagnostic.plot = F)
+# max2 test results
+head(res_step1$max2)
+```
+
+
+
+```{r}
+##Selecting mediators
+mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
+head(mediators_top10)
+```
+
+### Mediators individual indirect effect estimation and Overall Indirect Effect estimation.
+
+
+```{r}
+res_step2 = hdmax2::estimate_effect(
+                            X = X_binary,
+                            Y = Y_binary,
+                            m = mediators_top10,
+                            covar = NULL,
+                            U = res_step1$mod1$U,
+                            sims = 100,
+                            mod2_type = "logistic")
+# max2 test results
+head(res_step1$max2)
+##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
+```
+
+
+```{r}
+# ACME, ADE, PM, TE estimation with CI
+head(res_step2$ACME)
+head(res_step2$ADE)
+head(res_step2$PM)
+head(res_step2$TE)
+```
+
+
+```{r}
+## mediators ACME plots 
+hdmax2::plot(res_step2, N_med = 10)
+```
+
+
+# Use case  **categorial exposure** and **binary outcome**
 
 
 
