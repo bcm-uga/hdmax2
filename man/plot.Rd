@@ -8,7 +8,7 @@ This function draw a summary plot of hdmax2}
 plot(object, N_med = 10)
 }
 \arguments{
-\item{object}{the table of ACME from the wrap_mediation() function}
+\item{object}{results from hdmax2 step 2}
 
 \item{N_med}{number of selected mediators}
 }
@@ -33,13 +33,10 @@ covar = cbind(simu_data$age, simu_data$gender),
 diagnostic.plot = F)
 
 mediators_top10 = simu_data$M[,names(sort(res_step1$max2)[1:10])]
-res_step2 = estimate_effect(X = simu_data$X_binary,
-Y = simu_data$Y_continuous,
+res_step2 = estimate_effect(object = res_step1,
 m = mediators_top10,
-covar = cbind(simu_data$age, simu_data$gender),
-U = res_step1$mod1$U,
-sims = 100, 
-mod2_type = "linear")
+boots = 100,
+sims = 100)
 plot(res_step2, N_med = 10)
 }
 \author{

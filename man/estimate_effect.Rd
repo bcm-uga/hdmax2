@@ -4,46 +4,23 @@
 \alias{estimate_effect}
 \title{Estimate effects for a set of mediation markers}
 \usage{
-estimate_effect(
-  X,
-  Y,
-  m,
-  covar,
-  U,
-  boots = 100,
-  sims = 3,
-  mod2_type = "linear",
-  ...
-)
+estimate_effect(object, m, boots = 100, sims = 3, multivariate = FALSE)
 }
 \arguments{
-\item{X}{Exposure. An explanatory variable matrix with n rows and d columns.
-Each column corresponds to a distinct explanatory variable (Exposure).
-Explanatory variables must be encoded as numeric variables.}
-
-\item{Y}{Outcome. An explanatory variable matrix with n rows and d columns.
-Each column corresponds to a distinct explanatory variable (Outcome).
-Explanatory variables must be encoded as numeric variables.}
+\item{object}{results from hdmax2 step 2}
 
 \item{m}{a response variable matrix with n rows and p columns corresponding to mediators selected at step1.
 Response variables must be encoded as numeric. No NAs allowed.}
-
-\item{covar}{covariables}
-
-\item{U}{set of latent factors from runAS function (need include covariable)}
 
 \item{boots}{number of bootstrap}
 
 \item{sims}{number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 10000 is recommended.}
 
-\item{mod2_type}{second regression type "linear", "logistic", "surv_Cox"}
-
 \item{...}{argument of the mediate function from the mediation package}
 }
 \value{
-Tables of results of mediation analyzes for markers with a Q-value below the FDR threshold.
-Composition of tables: estimated effect, confidence interval and mediation pValue.
+hdmax2_step2 object
 \itemize{
 \item ACME, estimation of the average causal mediation effect (the indirect effect)
 \item ADE, estimation average direct effect
@@ -55,6 +32,15 @@ Regressions:
 \itemize{
 \item xm, regression X on M
 \item my, regression M on Y
+}
+
+Overall effect
+\itemize{
+\item oie, overall indirect effect
+\item oie_med , oie median
+\item oie_sd , oie standard deviation
+\item ote, overall total effect
+\item ode, overall direct effect
 }
 }
 \description{
@@ -82,13 +68,10 @@ covar = cbind(simu_data$age, simu_data$gender),
 diagnostic.plot = F)
 
 mediators_top10 = simu_data$M[,names(sort(res_step1$max2)[1:10])]
-res_step2 = estimate_effect(X = simu_data$X_binary,
-Y = simu_data$Y_continuous,
+res_step2 = estimate_effect(object = res_step1,
 m = mediators_top10,
-covar = cbind(simu_data$age, simu_data$gender),
-U = res_step1$mod1$U,
-sims = 100, 
-mod2_type = "linear")
+boots = 100,
+sims = 100)
 }
 \author{
 Florence Pittion
