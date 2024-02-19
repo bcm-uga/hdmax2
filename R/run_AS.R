@@ -29,25 +29,33 @@
 ##' @param genomic.control correct pvalue with genomic inflation factor
 ##' @param effect.sizes if effect sizes from lfmm are needed
 ##' @return an object with the following attributes 
-##'   for each association study:
+##' 
+##' for first association study (mod1):
+##'   
+##'  - pValue, estimation of the effects of X and Y on the matrix M.
 ##'
 ##'  - U, scores matrix for the K latent factors, only available for first regression
 ##'  
 ##'  - V, latent factors loadings, , only available for first regression
 ##'  
-##'  - gif, Genomic inflation factor for X and Y, expressing the deviation of the distribution of the observed test statistic compared to the distribution of the expected test statistic
-##'  
-##'  - pValue, estimation of the effects of X and Y on the matrix M.
-##' 
 ##'  - zscore, a score matrix for the exposure X and the outcome Y.
 ##'  
 ##'  - fscore, a score matrix for the exposure X and the outcome Y.
 ##'  
 ##'  - adj_rsquared
-##'
-##'    results of max2 test:
+##'  
+##'  - gif, Genomic inflation factor for X and Y, expressing the deviation of the distribution of the observed test statistic compared to the distribution of the expected test statistic
+##'  
+##'  
+##' for second association study (mod2):
+##'  
+##'  - pValue, zscore, fscore,  adj_rsquared, gif
+##'  
+##' results of max2 test:
 ##'    
 ##'  - pval, results of max2 test
+##'  
+##' input element:  exposition , outcome, matrix  (element and type) and covar
 ##'  
 ##'  
 ##' @details
@@ -282,7 +290,25 @@ run_AS = function(X_matrix,
   }
   res[[3]] = max2
   
-  names(res) <- c("mod1", "mod2", "max2")
+  input = list(
+    X_matrix,
+    Y_matrix,
+    M_matrix, 
+    X_type,
+    Y_type,
+    M_type,
+    covar
+  )
+  
+  names(input) = c("X_matrix", "Y_matrix", "M_matrix", "X_type", "Y_type", "M_type", "covar")
+  
+  
+  res[[4]] = input
+  
+  names(res) <- c("mod1", "mod2", "max2", "input")
+  
+  class(res) = "hdmax2_step1"
   return(res)
+  
   
 }

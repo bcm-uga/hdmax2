@@ -167,13 +167,10 @@ The function **estimate_effect** estimate the individual indirect effect of medi
 
 ```{r}
 ## selected mediators effects estimation
-res_step2 = hdmax2::estimate_effect(X = X_binary,
-                                    Y = Y_continuous,
+res_step2 = hdmax2::estimate_effect(object = res_step1,
                                     m = mediators_top10,
-                                    covar = cbind(age, gender),
-                                    U = res_step1$mod1$U,
-                                    sims = 100, 
-                                    mod2_type = "linear")
+                                     boots = 100,
+                                    sims = 100)
 
 ##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
 ```
@@ -253,15 +250,10 @@ head(mediators_top10)
 
 ```{r}
 ## selected mediators effects estimation
-res_step2 = hdmax2::estimate_effect(
-  X = X_continuous,
-  Y = Y_continuous,
-  m = mediators_top10,
-  covar = cbind(age, gender),
-  U = res_step1$mod1$U,
-  sims = 100,
-  mod2_type = "linear"
-)
+res_step2 = hdmax2::estimate_effect(res_step1,
+                                    m = mediators_top10,
+                                    boots = 100,
+                                    sims = 100)
 
 ##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
 ```
@@ -320,14 +312,10 @@ head(mediators_top10)
 
 
 ```{r}
-res_step2 = hdmax2::estimate_effect(
-                            X = X_continuous,
-                            Y = Y_binary,
-                            m = mediators_top10,
-                            covar = cbind(age, gender),
-                            U = res_step1$mod1$U,
-                            sims = 100,
-                            mod2_type = "logistic")
+res_step2 = hdmax2::estimate_effect(res_step1,
+                                    m = mediators_top10,
+                                    boots = 100,
+                                    sims = 100)
 # max2 test results
 head(res_step1$max2)
 ##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
@@ -384,14 +372,10 @@ head(mediators_top10)
 
 
 ```{r}
-res_step2 = hdmax2::estimate_effect(
-                            X = X_binary,
-                            Y = Y_binary,
-                            m = mediators_top10,
-                            covar = NULL,
-                            U = res_step1$mod1$U,
-                            sims = 100,
-                            mod2_type = "logistic")
+res_step2 = hdmax2::estimate_effect(res_step1,
+                                    m = mediators_top10,
+                                    boots = 100,
+                                    sims = 100)
 # max2 test results
 head(res_step1$max2)
 ##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
@@ -491,14 +475,11 @@ X_cat_var1 = as.double(as.matrix(X_categorial[,1]))
 
 ## TODO return error message if X = multiple categories
     
-res_step2 = hdmax2::estimate_effect(
-                            X = X_cat_var1,
-                            Y = Y_binary,
-                            m = mediators_top10,
-                            covar = NULL,
-                            U = res_step1$mod1$U,
-                            sims = 100,
-                            mod2_type = "logistic")
+res_step2 = hdmax2::estimate_effect(res_step1,
+                                    m = mediators_top10,
+                                    boots = 100,
+                                    sims = 100,
+                                    multivariate = TRUE)
 
 ```
 
@@ -575,22 +556,19 @@ mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
 head(mediators_top10)
 
 # one hot encoding
-X_categorial = droplevels(X_categorial)
-X_categorial = mltools::one_hot(data.table::as.data.table(X_categorial))
-
-# first variable category extraction
-X_cat_var1 = as.double(as.matrix(X_categorial[,1]))
+# X_categorial = droplevels(X_categorial)
+# X_categorial = mltools::one_hot(data.table::as.data.table(X_categorial))
+# 
+# # first variable category extraction
+# X_cat_var1 = as.double(as.matrix(X_categorial[,1]))
 
 ## TODO return error message if X = multiple categories
     
-res_step2 = hdmax2::estimate_effect(
-                            X = X_cat_var1,
-                            Y = Y_binary,
-                            m = mediators_top10,
-                            covar = cbind(age, gender),
-                            U = res_step1$mod1$U,
-                            sims = 100,
-                            mod2_type = "logistic")
+res_step2 = hdmax2::estimate_effect(res_step1,
+                                    m = mediators_top10,
+                                    boots = 100,
+                                    sims = 100,
+                                    multivariate = TRUE)
 
 ```
 

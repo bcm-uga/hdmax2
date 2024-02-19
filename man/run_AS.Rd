@@ -53,19 +53,29 @@ Useful to visually check the fit of the estimated proportion of null p-values.}
 }
 \value{
 an object with the following attributes
-for each association study:
+
+for first association study (mod1):
 \itemize{
+\item pValue, estimation of the effects of X and Y on the matrix M.
 \item U, scores matrix for the K latent factors, only available for first regression
 \item V, latent factors loadings, , only available for first regression
-\item gif, Genomic inflation factor for X and Y, expressing the deviation of the distribution of the observed test statistic compared to the distribution of the expected test statistic
-\item pValue, estimation of the effects of X and Y on the matrix M.
 \item zscore, a score matrix for the exposure X and the outcome Y.
 \item fscore, a score matrix for the exposure X and the outcome Y.
 \item adj_rsquared
+\item gif, Genomic inflation factor for X and Y, expressing the deviation of the distribution of the observed test statistic compared to the distribution of the expected test statistic
+}
+
+for second association study (mod2):
+\itemize{
+\item pValue, zscore, fscore,  adj_rsquared, gif
+}
 
 results of max2 test:
+\itemize{
 \item pval, results of max2 test
 }
+
+input element:  exposition , outcome, matrix  (element and type) and covar
 }
 \description{
 This function uses lfmm (latent factor mixed models) to estimate
