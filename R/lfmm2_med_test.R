@@ -8,6 +8,7 @@
 ##' @param family of logistic reg
 ##' @param full compute partial regression FALSE/TRUE
 ##' @return an object with the following attributes 
+##' @importFrom stats binomial glm lm median pchisq pf prcomp qchisq qf
 ##' @export
 ##' @author Florence Pittion
 ##' @examples 
@@ -40,7 +41,7 @@ lfmm2_med_test= function(object,
   ## LEA  
   if (is.character(input)){
     warning("Reading large input files with 'read.lfmm()' may be slow. See 'data.table::fread()' for fast import.")
-    Y <- read.lfmm(input)
+    Y <- read_lfmm(input)
     lst.unique <- unique(as.numeric(Y))
     if (9 %in% lst.unique){
       stop("'input' file contains missing data (9's). Use the 'impute()' function to impute them.")
@@ -64,7 +65,7 @@ lfmm2_med_test= function(object,
   ## Check independent/covariate matrix  
   ## LEA 
   if (is.character(env)){
-    X <- read.env(env)
+    X <- read_env(env)
     if (anyNA(X)){
       stop("'env' file contains missing data (NA).")
     }

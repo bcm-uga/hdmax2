@@ -6,7 +6,6 @@
 ##' @param effect.sizes true or false to obtain effect sizes
 ##' @return an object with the following attributes 
 ##' @export 
-##' @export read_lfmm
 ##' @author Florence Pittion
 ##' @examples
 ##' data(simu_data)

@@ -161,6 +161,7 @@ run_AS = function(X_matrix,
   if(X_type=="categorial"){
     X_matrix = droplevels(X_matrix)
     X_matrix = mltools::one_hot(data.table::as.data.table(X_matrix))
+    X_matrix = as.matrix(X_matrix)
     
     if(multivariate){
       mod.lfmm1 = lfmm2_med(input = M_matrix, 

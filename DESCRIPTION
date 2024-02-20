@@ -22,7 +22,8 @@ Imports:
     IRanges,
     gridExtra,
     FactoMineR,
-    factoextra
+    factoextra,
+    Smisc
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
