@@ -27,6 +27,7 @@
 ##' sims = 100)
 ##' plot(res_step2, N_med = 10)
 ##' @import ggplot2
+##' @importFrom stats reshape
 
 plot <- function(object, N_med = 10) {
 
@@ -36,9 +37,9 @@ plot <- function(object, N_med = 10) {
   
 	#Plot the ACME of the model
 	
-	p_ACME <- ggplot2::ggplot(object$ACME, aes(est, stats::reorder(feat, est), color = est <= 0, shape = pval <= 0.05)) +
+	p_ACME <- ggplot2::ggplot(object$ACME, aes(object$ACME$est, stats::reorder(object$ACME$feat, object$ACME$est), color = object$ACME$est <= 0, shape = object$ACME$pval <= 0.05)) +
 	    geom_vline(xintercept = 0, linetype = "dashed") +
-	    geom_errorbarh(aes(xmin = CI_2.5, xmax = CI_97.5)) +
+	    geom_errorbarh(aes(xmin = object$ACME$CI_2.5, xmax = object$ACME$CI_97.5)) +
 	    geom_point(size = 2.8) +
 	    theme_bw() +
 	    labs(title = "A. ACME (Average Causal Mediation Effect)", y = "Mediators", x="Est. effect [CI 2.5-97.5]") +
@@ -52,9 +53,9 @@ plot <- function(object, N_med = 10) {
 		
   ##Plot the mediated proportion
   
-  p_PM <- ggplot2::ggplot(object$PM, aes(est, stats::reorder(feat, est), color = est <= 0, shape = pval <= 0.05)) +
+  p_PM <- ggplot2::ggplot(object$PM, aes(object$PM$est, stats::reorder(object$PM$feat, object$PM$est), color = object$PM$est <= 0, shape = object$PM$pval <= 0.05)) +
       geom_vline(xintercept = 0, linetype = "dashed") +
-      geom_errorbarh(aes(xmin = CI_2.5, xmax = CI_97.5)) +
+      geom_errorbarh(aes(xmin = object$PM$CI_2.5, xmax = object$PM$CI_97.5)) +
       geom_point(size = 2.8) +
       theme_bw() +
        labs(title = "B. Proportion Mediated (%)", y = "Mediators", x="Est. proportion [CI 2.5-97.5]") +
@@ -72,7 +73,7 @@ plot <- function(object, N_med = 10) {
                          OTE =  object$ote[2] )
   df_effect_long <- reshape(df_effect, direction = "long", varying = 1:3, v.names = "value", timevar = "variable", times = c("OIE", "ODE", "OTE"))
 
-  p_effects <- ggplot2::ggplot(df_effect_long, aes(x = variable, y = value, group = 1)) +
+  p_effects <- ggplot2::ggplot(df_effect_long, aes(x = df_effect_long$variable, y = df_effect_long$value, group = 1)) +
     geom_line() +
     geom_point(size = 3) +
     geom_label(aes(label = round(value, 2)), label.padding = unit(0.1, "lines")) +
@@ -93,7 +94,7 @@ plot <- function(object, N_med = 10) {
                    step1 = object$xm$Estimate,
                          step2 = object$my$Estimate,
                    ACME = object$ACME$est)
-  df = dplyr::arrange(df, desc(ACME))
+  df = dplyr::arrange(df, dplyr::desc(df$ACME))
   df$mediator <- factor(df$mediator, levels = df$mediator)
 
   df_long <- data.frame(

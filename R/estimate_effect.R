@@ -11,7 +11,7 @@
 ##' @param sims number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 ##' 10000 is recommended.
 ##' @param boots number of bootstrap
-##' @param ... argument of the mediate function from the mediation package
+##' @param multivariate choose if for categorial exposure categories treated a single variate or compute in partiel regression (full=TRUE)
 ##'
 ##' @return hdmax2_step2 object
 ##' 
@@ -37,6 +37,8 @@
 ##' We use the mediate function of the mediation package on the set of markers having Q-value lower
 ##' than the FDR threshold. It estimates their indirect effects and 
 ##' tests their significance.
+##' @importFrom stats glm lm median sd
+##'
 ##'
 ##' @export
 ##' @author Florence Pittion
@@ -71,22 +73,37 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, multivariate = FA
   
   M = m
   
-  if(is.null(object$input$covar)){
-    covars = object$mod1$U
-  } else  {
-    covars = cbind(object$input$covar, object$mod1$U)
-  }
   
-  if(!multivariate){
-  X = object$input$X_matrix
-  }
-  if(multivariate){
-    X = as.matrix(res_step1$input$X_matrix[,1])
-  }
+  ### variables defenition
+  # if(!multivariate) {
+    X = as.matrix(object$input$X_matrix)
+  #}
+  # if (multivariate) {
+  #   ## seule option pour le moment est de prendre la premiere categorie , voir comment le faire pour toutes les categorie
+  #   X = as.matrix(unlist(res_step1$input$X_matrix[,1]))
+  #   X_otherCats = as.data.frame(res_step1$input$X_matrix[, 2:dim(res_step1$input$X_matrix)[2]])
+  # }
   Y = object$input$Y_matrix
   X_type = object$input$X_type
   Y_type = object$input$Y_type
   
+  
+  
+  ### total covariable (covars composition)
+  # if (!multivariate) {
+    if (is.null(object$input$covar)) {
+      covars = object$mod1$U
+    } else  {
+      covars = data.frame(object$input$covar, object$mod1$U)
+     }
+  # }
+  # if (multivariate) {
+  #   if (is.null(object$input$covar)) {
+  #     covars = data.frame(object$mod1$U, X_otherCats)
+  #   } else  {
+  #     covars = data.frame(object$input$covar, object$mod1$U, X_otherCats)
+  #   }
+  # }
   ### Compute ACME, ADE, PM and TE from package mediation
   
   # from package mediation
@@ -99,6 +116,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, multivariate = FA
   xm <- matrix(ncol = 4, nrow = ncol(M))
   my <- matrix(ncol = 4, nrow = ncol(M))
   
+ 
   for (i in 1:ncol(M)) {
     
     dat.x <- data.frame(X = X, Mi = M[, i], covars = covars)
@@ -125,8 +143,9 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, multivariate = FA
     
     # for linear models
     xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
+    #if(Y_type=="binary"){
     my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
-    
+    #}
     
     
     med <- mediation::mediate(mod1, mod2, sims = sims, treat = "X", mediator = "Mi")
@@ -165,7 +184,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, multivariate = FA
   
   for (i in 1:ncol(acme_sum)) {
     samp <- sample(length(X), replace = T)
-    
+    covars = as.matrix(covars)
     
     # effet A X -> M
     mod1 <- lm(m[samp, ] ~ X[samp] + covars[samp, ])
@@ -213,6 +232,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, multivariate = FA
   if(Y_type == "binary") {
     mod_total_effect = glm(Y ~ X + covars)
     ote = mod_total_effect$coefficients
+    
     mod_direct_effect = glm(Y ~ X + mediators_top10 + covars)
     ode = mod_direct_effect$coefficients
   }

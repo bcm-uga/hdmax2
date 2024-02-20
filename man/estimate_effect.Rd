@@ -17,7 +17,7 @@ Response variables must be encoded as numeric. No NAs allowed.}
 \item{sims}{number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 10000 is recommended.}
 
-\item{...}{argument of the mediate function from the mediation package}
+\item{multivariate}{choose if for categorial exposure categories treated a single variate or compute in partiel regression (full=TRUE)}
 }
 \value{
 hdmax2_step2 object
