@@ -1,0 +1,111 @@
+---
+title: "AMR research"
+author: "Florence pittion"
+date: '2024-02-22'
+output:
+  prettydoc::html_pretty:
+    self_contained: true
+    theme: cayman
+    highlight: github
+vignette: >
+  %\VignetteIndexEntry{AMR_demo.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r}
+example_hdmax2= load("../data/example_hdmax2.data")
+```
+***
+
+## Evaluating associations between exposure, mediators and outcome
+
+
+```{r}
+pc <- prcomp(methylation)
+plot(pc$sdev[1:15]^2,
+     xlab = 'Principal Component',
+     ylab = "Explained variance",
+     col = c(rep(1, 3), 2, rep(1, 16)))
+```
+
+
+
+```{r}
+##Epigenome Wide Association Study with both exposure and outcome
+res_step1 = hdmax2::run_AS(X_matrix = exposure ,
+                 Y_matrix = phenotype,
+                 M_matrix = methylation, 
+                 K = 5,
+                 X_type = "binary",
+                 Y_type = "continuous",
+                 M_type = "methylation",
+                 multivariate = FALSE,
+                 covar = covariables,
+                 diagnostic.plot = F)
+```
+
+
+
+
+## Identifying aggregated mediator regions (AMR)
+
+**Identifying AMR**
+
+The function **AMR_search** will identify aggregated methylated regions (AMR) using the max2 P-values. It will compute the P-value and the FDR for each AMR detected.
+
+```{r}
+##Detecting AMR
+res.amr_search = hdmax2::AMR_search(chr = annotation$chr,
+                   start = annotation$start,
+                   end = annotation$end,
+                   pval = res_step1$max2,
+                   cpg = annotation$cpg)
+res.amr_search$res
+
+### RES NULL a priori combp2 ne retourne rien
+
+```
+The function **AMR_build** will build, for each AMR, a vector with the detail of the AMR, and the first components of each PCA for each DMR. Only AMR with a minimal number of CpG are considered.
+
+```{r, eval = FALSE}
+res.arm_build = hdmax2::AMR_build(res.amr_search, methylation = methylation, nb_cpg = 2)
+#List of DMR selected
+res.arm_build$res
+```
+
+```{r, eval = FALSE}
+##CpG in the DMR
+res.arm_build$CpG_for_each_AMR
+```
+
+**Quantifying indirect effects**
+
+The function **wrap_mediation_AMR** is similar to the function **wrap_mediation**.
+```{r, eval = FALSE}
+effect_amr = hdmax2::wrap_mediation_AMR(X = exposure,
+                            Y = phenotype,
+                            AMR = res.arm_build$AMR_mean,
+                            U = res_step1$mod1$U,
+                            sims = 100)
+```
+
+```{r, eval = FALSE}
+##Indirect effect
+effect_amr$ACME
+effect_amr$ADE
+effect_amr$PM
+effect_amr$TE
+effect_amr$xm
+effect_amr$my
+```

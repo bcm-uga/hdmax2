@@ -3,6 +3,7 @@
 export(AMR_build)
 export(AMR_search)
 export(estimate_effect)
+export(estimate_effect_V2)
 export(lfmm2_med)
 export(lfmm2_med_test)
 export(plot)
