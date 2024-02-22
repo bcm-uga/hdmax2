@@ -114,6 +114,8 @@ The screeplot indicates around 5 main components in the data. We will use $K = 5
 The **run_AS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$.
 
 ```{r}
+# plot(Y_continuous, X_binary)
+# summary(lm(Y_continuous~X_binary))
 # step 1 association studies + max2
 res_step1 = hdmax2::run_AS(X_matrix = X_binary ,
                  Y_matrix = Y_continuous,
@@ -405,7 +407,7 @@ hdmax2::plot(res_step2, N_med = 10)
 
 ### First option a single pvalue results via partial regressions
 
-```{r, warning=FALSE, eval = FALSE}
+```{r, warning=FALSE}
 # step 1 association studies + max2
 res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
                  Y_matrix = Y_binary,
@@ -421,7 +423,7 @@ res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
 
 
 
-```{r, eval = FALSE}
+```{r}
 ##Selecting mediators
 
 mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
@@ -437,7 +439,7 @@ For this case we can't propose effect estimation (TODO expliquer pourquoi)
 
 ### Second option multimediate results, pvalue and mediators selection for each category of the exposure
 
-```{r, warning = FALSE, eval = FALSE}
+```{r, warning = FALSE}
 res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
                  Y_matrix = Y_binary,
                  M_matrix = M, 
@@ -453,7 +455,7 @@ head(res_step1$max2[1,])
 
 ```
 
-```{r, eval = FALSE}
+```{r}
 # ACME, ADE, PM, TE estimation with CI
 head(res_step2$ACME)
 head(res_step2$ADE)
@@ -461,7 +463,7 @@ head(res_step2$PM)
 head(res_step2$TE)
 ```
 
-```{r, eval = FALSE}
+```{r}
 # first variable category selected mediators 
 mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
 head(mediators_top10)
@@ -483,7 +485,7 @@ res_step2 = hdmax2::estimate_effect(res_step1,
 
 ```
 
-```{r, eval = FALSE}
+```{r}
 ## mediators ACME plots 
 hdmax2::plot(res_step2, N_med = 10)
 ```
@@ -494,7 +496,7 @@ hdmax2::plot(res_step2, N_med = 10)
 
 ### First option a single pvalue results via partial regressions
 
-```{r, warning=FALSE, eval = FALSE}
+```{r, warning=FALSE}
 # step 1 association studies + max2
 res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
                  Y_matrix = Y_binary,
@@ -510,7 +512,7 @@ res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
 
 
 
-```{r, eval = FALSE}
+```{r}
 ##Selecting mediators
 
 mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
@@ -526,7 +528,7 @@ For this case we can't propose effect estimation (TODO expliquer pourquoi)
 
 ### Second option multimediate results, pvalue and mediators selection for each category of the exposure
 
-```{r, warning = FALSE, eval = FALSE}
+```{r, warning = FALSE}
 res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
                  Y_matrix = Y_binary,
                  M_matrix = M, 
@@ -542,7 +544,7 @@ head(res_step1$max2[1,])
 
 ```
 
-```{r, eval = FALSE}
+```{r}
 # ACME, ADE, PM, TE estimation with CI
 head(res_step2$ACME)
 head(res_step2$ADE)
@@ -550,29 +552,45 @@ head(res_step2$PM)
 head(res_step2$TE)
 ```
 
-```{r, eval = FALSE}
+```{r}
 # first variable category selected mediators 
 mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
 head(mediators_top10)
 
-# one hot encoding
-# X_categorial = droplevels(X_categorial)
-# X_categorial = mltools::one_hot(data.table::as.data.table(X_categorial))
-# 
-# # first variable category extraction
-# X_cat_var1 = as.double(as.matrix(X_categorial[,1]))
-
 ## TODO return error message if X = multiple categories
     
-res_step2 = hdmax2::estimate_effect(res_step1,
+res_step2 =  hdmax2::estimate_effect(res_step1,
                                     m = mediators_top10,
                                     boots = 100,
                                     sims = 100,
-                                    multivariate = TRUE)
+                            multivariate = TRUE)
 
 ```
 
-```{r, eval = FALSE}
+```{r}
+## mediators ACME plots 
+hdmax2::plot(res_step2, N_med = 10)
+```
+
+
+## V2
+
+```{r}
+# first variable category selected mediators 
+mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
+head(mediators_top10)
+
+## TODO return error message if X = multiple categories
+    
+res_step2 =  hdmax2::estimate_effect_V2(res_step1,
+                                    m = mediators_top10,
+                                    boots = 100,
+                                    sims = 100,
+                            multivariate = TRUE)
+
+```
+
+```{r}
 ## mediators ACME plots 
 hdmax2::plot(res_step2, N_med = 10)
 ```

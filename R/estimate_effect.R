@@ -61,6 +61,8 @@
 ##' boots = 100,
 ##' sims = 100)
 
+
+
 estimate_effect <- function(object , m, boots = 100, sims = 3, multivariate = FALSE) {
   
   if (class(object)!="hdmax2_step1"){
@@ -74,15 +76,15 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, multivariate = FA
   M = m
   
   
-  ### variables defenition
-  # if(!multivariate) {
+  ### variables definition
+  if(!multivariate) {
     X = as.matrix(object$input$X_matrix)
-  #}
-  # if (multivariate) {
-  #   ## seule option pour le moment est de prendre la premiere categorie , voir comment le faire pour toutes les categorie
-  #   X = as.matrix(unlist(res_step1$input$X_matrix[,1]))
-  #   X_otherCats = as.data.frame(res_step1$input$X_matrix[, 2:dim(res_step1$input$X_matrix)[2]])
-  # }
+  }
+  if (multivariate) {
+    ## seule option pour le moment est de prendre la premiere categorie , voir comment le faire pour toutes les categorie -1 POUR EVITER LA COLINEARITE
+    X = as.matrix(object$input$X_matrix[,1])
+    X_otherCats = as.data.frame(object$input$X_matrix[, 2:(dim(object$input$X_matrix)[2]-1)])
+  }
   Y = object$input$Y_matrix
   X_type = object$input$X_type
   Y_type = object$input$Y_type
@@ -90,20 +92,20 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, multivariate = FA
   
   
   ### total covariable (covars composition)
-  # if (!multivariate) {
+  if (!multivariate) {
     if (is.null(object$input$covar)) {
-      covars = object$mod1$U
+      covars = data.frame(latent_factors = object$mod1$U)
     } else  {
-      covars = data.frame(object$input$covar, object$mod1$U)
-     }
-  # }
-  # if (multivariate) {
-  #   if (is.null(object$input$covar)) {
-  #     covars = data.frame(object$mod1$U, X_otherCats)
-  #   } else  {
-  #     covars = data.frame(object$input$covar, object$mod1$U, X_otherCats)
-  #   }
-  # }
+      covars = data.frame(obs_covar = object$input$covar, latent_factors = object$mod1$U)
+    }
+  }
+  if (multivariate) {
+    if (is.null(object$input$covar)) {
+      covars = data.frame(latent_factors = object$mod1$U, X_otherCats = X_otherCats)
+    } else  {
+      covars = data.frame(obs_covar = object$input$covar, latent_factors = object$mod1$U, X_otherCats = X_otherCats)
+    }
+  }
   ### Compute ACME, ADE, PM and TE from package mediation
   
   # from package mediation
@@ -119,23 +121,36 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, multivariate = FA
  
   for (i in 1:ncol(M)) {
     
+    # dat.x <- data.frame(X = X, Mi = M[, i], covars = covars)
+    # dat.y <- data.frame(X = X, Mi = M[, i], covars = covars, Y = Y)
+    
     dat.x <- data.frame(X = X, Mi = M[, i], covars = covars)
     dat.y <- data.frame(X = X, Mi = M[, i], covars = covars, Y = Y)
+
     
     # ici cas de deux reg lineaires pour les deux associations
     # TODO refaire pour les autres regressions
     
-    
     mod1 <- stats::lm(Mi ~ X + ., data = dat.x)
+    
+    # mod1 <- stats::lm(Mi ~ X + covars, data = dat.x )
+    # 
+    # if(Y_type=="continuous"){
+    # mod2 <- stats::lm(Y ~ X + Mi + covars , data = dat.y)
+    # }
+    # 
+    # if(Y_type=="binary"){
+    # mod2 <- stats::glm(Y ~ X + Mi + covars , data = dat.y)
+    # }
     
     if(Y_type=="continuous"){
       mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
     }
-    
+
     if(Y_type=="binary"){
       mod2 <- stats::glm(Y ~ X + Mi + ., data = dat.y)
     }
-    
+
     # if(mod2_type=="surv_Cox"){
     # mod2 = survival::survreg(Y ~ X + Mi , dist='exponential', data = dat.y)
     # }
@@ -143,9 +158,12 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, multivariate = FA
     
     # for linear models
     xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
-    #if(Y_type=="binary"){
+    if(Y_type=="continuous"){
     my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
-    #}
+    }
+    if(Y_type=="binary"){
+      my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
+    }
     
     
     med <- mediation::mediate(mod1, mod2, sims = sims, treat = "X", mediator = "Mi")
