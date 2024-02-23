@@ -75,7 +75,8 @@ results of max2 test:
 \item pval, results of max2 test
 }
 
-input element:  exposition , outcome, matrix  (element and type) and covar
+input element:
+exposition , outcome, matrix  (element and type) and covar
 }
 \description{
 This function uses lfmm (latent factor mixed models) to estimate

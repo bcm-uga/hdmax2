@@ -55,7 +55,8 @@
 ##'    
 ##'  - pval, results of max2 test
 ##'  
-##' input element:  exposition , outcome, matrix  (element and type) and covar
+##' input element:  
+##'  exposition , outcome, matrix  (element and type) and covar
 ##'  
 ##'  
 ##' @details
@@ -298,15 +299,16 @@ run_AS = function(X_matrix,
     X_type,
     Y_type,
     M_type,
-    covar
+    covar,
+    multivariate
   )
   
-  names(input) = c("X_matrix", "Y_matrix", "M_matrix", "X_type", "Y_type", "M_type", "covar")
+  names(input) = c("X_matrix", "Y_matrix", "M_matrix", "X_type", "Y_type", "M_type", "covar", "multivariate")
   
   
   res[[4]] = input
   
-  names(res) <- c("mod1", "mod2", "max2", "input")
+  names(res) <- c("modele_1", "modele_2", "max2_pvalues", "input")
   
   class(res) = "hdmax2_step1"
   return(res)

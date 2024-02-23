@@ -33,7 +33,7 @@ knitr::opts_chunk$set(
 Step 1. Evaluating associations between exposure, mediators and outcome, using a latent factor mixed models (LFMMs) to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each marker on outcome $Y$.
 
 $$
- M=Xa^T +U_1V_1^T +E_1
+ M=Xa^T +UV^T+ Cd_1^T +E_1
 $$
 $a$ the vector of effect sizes of exposure on mediators levels,
 $U$ the matrix formed of K latent factors estimated simultaneously with a,
@@ -41,7 +41,7 @@ $V$ loadings associated with the latent factors,
 $E_1$ the matrix of residual errors.
 
 $$
-Y=Xc+Mb^T +U_2V_2^T +E_2 
+Y=Xc+Mb^T +UV^T+ Cd_2^T +E_2 
 $$
 $c$ the direct effect of exposure on outcome,
 $b$ the effect sizes of mediators on outcome,
@@ -51,7 +51,7 @@ $E_2$ the a matrix of errors.
 
 and identifying potential mediators, combining the significance values $P_x$ and $P_y$ to compute a P-value for each mediators with *max²* test.
 $$
-P = max(P_x, P_y)^2
+P = max(P_1, P_2)^2
 $$
 Step 2. Estimation of the individual indirect effects of mediators via the **mediation** package.
 
@@ -416,6 +416,7 @@ res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
                  X_type = "categorial",
                  Y_type = "binary",
                  M_type = "methylation",
+                 multivariate = FALSE,
                  covar = NULL,
                  diagnostic.plot = F)
 
@@ -480,8 +481,7 @@ head(mediators_top10)
 res_step2 = hdmax2::estimate_effect(res_step1,
                                     m = mediators_top10,
                                     boots = 100,
-                                    sims = 100,
-                                    multivariate = TRUE)
+                                    sims = 100)
 
 ```
 
@@ -505,6 +505,7 @@ res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
                  X_type = "categorial",
                  Y_type = "binary",
                  M_type = "methylation",
+                 multivariate = FALSE,
                  covar = cbind(gender, age),
                  diagnostic.plot = F)
 
@@ -544,26 +545,25 @@ head(res_step1$max2[1,])
 
 ```
 
-```{r}
-# ACME, ADE, PM, TE estimation with CI
-head(res_step2$ACME)
-head(res_step2$ADE)
-head(res_step2$PM)
-head(res_step2$TE)
-```
 
 ```{r}
 # first variable category selected mediators 
 mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
 head(mediators_top10)
 
+# ## create list of mediators top10 for each cat exposure
+# mediators_top10s = list()
+# for(nX in (1:dim(res_step1$input$X_matrix)[2])){
+#   mediators_top10s[[n_med]] = M[,names(sort(res_step1$max2[nX,]))[1:10]]
+# }
+
+
 ## TODO return error message if X = multiple categories
     
 res_step2 =  hdmax2::estimate_effect(res_step1,
                                     m = mediators_top10,
                                     boots = 100,
-                                    sims = 100,
-                            multivariate = TRUE)
+                                    sims = 100)
 
 ```
 
@@ -582,15 +582,18 @@ head(mediators_top10)
 
 ## TODO return error message if X = multiple categories
     
-res_step2 =  hdmax2::estimate_effect_V2(res_step1,
+res_step2_V2 =  hdmax2::estimate_effect_V2(res_step1,
                                     m = mediators_top10,
                                     boots = 100,
-                                    sims = 100,
-                            multivariate = TRUE)
+                                    sims = 100)
 
 ```
 
 ```{r}
 ## mediators ACME plots 
-hdmax2::plot(res_step2, N_med = 10)
+hdmax2::plot(res_step2_V2, N_med = 10)
+```
+```{r}
+comp_ACME = cbind(res_step2$ACME,res_step2_V2$ACME)
+comp_ACME
 ```

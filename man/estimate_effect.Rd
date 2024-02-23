@@ -4,7 +4,7 @@
 \alias{estimate_effect}
 \title{Estimate effects for a set of mediation markers}
 \usage{
-estimate_effect(object, m, boots = 100, sims = 3, multivariate = FALSE)
+estimate_effect(object, m, boots = 100, sims = 3)
 }
 \arguments{
 \item{object}{results from hdmax2 step 2}
@@ -16,8 +16,6 @@ Response variables must be encoded as numeric. No NAs allowed.}
 
 \item{sims}{number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 10000 is recommended.}
-
-\item{multivariate}{choose if for categorial exposure categories treated a single variate or compute in partiel regression (full=TRUE)}
 }
 \value{
 hdmax2_step2 object
@@ -30,8 +28,8 @@ hdmax2_step2 object
 
 Regressions:
 \itemize{
-\item xm, regression X on M
-\item my, regression M on Y
+\item xm_size_effect, regression effects X on M
+\item my_size_effect, regression effects M on Y
 }
 
 Overall effect
