@@ -72,17 +72,33 @@ estimate_effect_V2 <- function(object , m, boots = 100, sims = 3, multivariate =
   }
   
   M = m
-  
+  #mediators_top10 = M[,names(sort(res_step1$max2_pvalues[1,]))[1:10]]
   
   ### variables definition
-  if(!multivariate) {
+  if(!object$input$multivariate) {
     X = as.matrix(object$input$X_matrix)
   }
-  if (multivariate) {
-    ## seule option pour le moment est de prendre la premiere categorie , voir comment le faire pour toutes les categorie -1 POUR EVITER LA COLINEARITE
+  if (object$input$multivariate) {
+    n = dim(object$input$X_matrix)[2]
     X = as.matrix(object$input$X_matrix[,1])
-    X_otherCats = as.data.frame(object$input$X_matrix[, 2:(dim(object$input$X_matrix)[2]-1)])
+    X_otherCats = as.data.frame(object$input$X_matrix[,-1])
+    X_otherCats = X_otherCats[,-(n-2)]
   }
+  # if (multivariate) {
+  #   n = dim(object$input$X_matrix)[2]
+  #   Xs = list()
+  #   Xs_otherCats = list()
+  #   for(i in (1:n)){
+  #   ## seule option pour le moment est de prendre la premiere categorie , voir comment le faire pour toutes les categorie 
+  #   X = as.matrix(object$input$X_matrix[,i])
+  #   X_otherCats = as.data.frame(object$input$X_matrix[,-i])
+  #   ## -1 colonne (la derriere c'est arbitraire) POUR EVITER LA COLINEARITE
+  #   X_otherCats = X_otherCats[,-(n-2)]
+  #   
+  #   Xs[[i]] =X 
+  #   Xs_otherCats[[i]] = X_otherCats 
+  #   }
+  # }
   Y = object$input$Y_matrix
   X_type = object$input$X_type
   Y_type = object$input$Y_type
@@ -90,20 +106,22 @@ estimate_effect_V2 <- function(object , m, boots = 100, sims = 3, multivariate =
   
   
   ### total covariable (covars composition)
-  if (!multivariate) {
+  if (!object$input$multivariate) {
     if (is.null(object$input$covar)) {
-      covars = data.frame(latent_factors = object$mod1$U)
+      covars = data.frame(latent_factors = object$modele_1$U)
     } else  {
-      covars = data.frame(obs_covar = object$input$covar, latent_factors = object$mod1$U)
+      covars = data.frame(obs_covar = object$input$covar, latent_factors = object$modele_1$U)
     }
   }
-  if (multivariate) {
+  if (object$input$multivariate) {
     if (is.null(object$input$covar)) {
-      covars = data.frame(latent_factors = object$mod1$U, X_otherCats = X_otherCats)
+      covars = data.frame(latent_factors = object$modele_1$U, X_otherCats = X_otherCats)
     } else  {
-      covars = data.frame(obs_covar = object$input$covar, latent_factors = object$mod1$U, X_otherCats =X_otherCats)
+      covars = data.frame(obs_covar = object$input$covar, latent_factors = object$modele_1$U, X_otherCats = X_otherCats)
     }
   }
+  
+  
     ### Compute ACME, ADE, PM and TE from package mediation
     
     # from package mediation
@@ -126,31 +144,31 @@ estimate_effect_V2 <- function(object , m, boots = 100, sims = 3, multivariate =
       
       if (!multivariate) {
         if (is.null(object$input$covar)) {
-          dat.x <- data.frame(X = X, Mi = M[, i], latent_factors = object$mod1$U)
+          dat.x <- data.frame(X = X, Mi = M[, i], latent_factors = object$modele_1$U)
         } else  {
-          dat.x <- data.frame(X = X, Mi = M[, i], latent_factors = object$mod1$U, obs_covar = object$input$covar)
+          dat.x <- data.frame(X = X, Mi = M[, i], latent_factors = object$modele_1$U, obs_covar = object$input$covar)
         }
       }
       if (multivariate) {
         if (is.null(object$input$covar)) {
-          dat.x <- data.frame(X = X, Mi = M[, i], latent_factors = object$mod1$U,  X_otherCats = X_otherCats)
+          dat.x <- data.frame(X = X, Mi = M[, i], latent_factors = object$modele_1$U,  X_otherCats = X_otherCats)
         } else  {
-          dat.x <- data.frame(X = X, Mi = M[, i], latent_factors = object$mod1$U, obs_covar = object$input$covar, X_otherCats =X_otherCats)
+          dat.x <- data.frame(X = X, Mi = M[, i], latent_factors = object$modele_1$U, obs_covar = object$input$covar, X_otherCats =X_otherCats)
         }
       }
       
       if (!multivariate) {
         if (is.null(object$input$covar)) {
-          dat.y <- data.frame(X = X, Mi = M[, i], latent_factors = object$mod1$U, Y = Y)
+          dat.y <- data.frame(X = X, Mi = M[, i], latent_factors = object$modele_1$U, Y = Y)
         } else  {
-          dat.y <- data.frame(X = X, Mi = M[, i], latent_factors = object$mod1$U, obs_covar = object$input$covar, Y = Y)
+          dat.y <- data.frame(X = X, Mi = M[, i], latent_factors = object$modele_1$U, obs_covar = object$input$covar, Y = Y)
         }
       }
       if (multivariate) {
         if (is.null(object$input$covar)) {
-          dat.y <- data.frame(X = X, Mi = M[, i], latent_factors = object$mod1$U,  X_otherCats = X_otherCats, Y = Y)
+          dat.y <- data.frame(X = X, Mi = M[, i], latent_factors = object$modele_1$U,  X_otherCats = X_otherCats, Y = Y)
         } else  {
-          dat.y <- data.frame(X = X, Mi = M[, i], latent_factors = object$mod1$U, obs_covar = object$input$covar, X_otherCats =X_otherCats, Y = Y)
+          dat.y <- data.frame(X = X, Mi = M[, i], latent_factors = object$modele_1$U, obs_covar = object$input$covar, X_otherCats =X_otherCats, Y = Y)
         }
       }
       # dat.x <- data.frame(X = X, Mi = M[, i], covars = covars)
