@@ -277,14 +277,14 @@ run_AS = function(X_matrix,
   
   # max2 test
   if (multivariate){
-    max2 = c()
-    for (x in 1:dim(pval1)[1]){
+    max2 = list()
+    for (x in 1:dim(X_matrix)[2]){
     max2_pval <- apply(cbind(pval1[x,], pval2), 1, max)^2
-    max2 = rbind(max2, max2_pval)
+    names(max2_pval) = colnames(M)
+    max2[[x]] = max2_pval
     #rownames(max2) = colnames(X)
     }
-    rownames(max2) = colnames(X_matrix)
-    colnames(max2) = colnames(M_matrix)
+    
     
   }else {
   max2_pval <- apply(cbind(pval1, pval2), 1, max)^2

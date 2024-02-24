@@ -5,7 +5,7 @@
 \title{Estimate effects for a set of mediation markers
 V2 this version allow to integrate covariates in mediation function}
 \usage{
-estimate_effect_V2(object, m, boots = 100, sims = 3, multivariate = FALSE)
+estimate_effect_V2(object, m, boots = 100, sims = 3)
 }
 \arguments{
 \item{object}{results from hdmax2 step 2}
