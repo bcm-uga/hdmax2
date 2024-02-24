@@ -85,21 +85,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
     X_otherCats = as.data.frame(object$input$X_matrix[,-1])
     X_otherCats = X_otherCats[,-(n-2)]
   }
-  # if (multivariate) {
-  #   n = dim(object$input$X_matrix)[2]
-  #   Xs = list()
-  #   Xs_otherCats = list()
-  #   for(i in (1:n)){
-  #   ## seule option pour le moment est de prendre la premiere categorie , voir comment le faire pour toutes les categorie 
-  #   X = as.matrix(object$input$X_matrix[,i])
-  #   X_otherCats = as.data.frame(object$input$X_matrix[,-i])
-  #   ## -1 colonne (la derriere c'est arbitraire) POUR EVITER LA COLINEARITE
-  #   X_otherCats = X_otherCats[,-(n-2)]
-  #   
-  #   Xs[[i]] =X 
-  #   Xs_otherCats[[i]] = X_otherCats 
-  #   }
-  # }
+  
   Y = object$input$Y_matrix
   X_type = object$input$X_type
   Y_type = object$input$Y_type
@@ -136,9 +122,6 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
  
   for (i in 1:ncol(M)) {
     
-    # dat.x <- data.frame(X = X, Mi = M[, i], covars = covars)
-    # dat.y <- data.frame(X = X, Mi = M[, i], covars = covars, Y = Y)
-    
     dat.x <- data.frame(X = X, Mi = M[, i], covars = covars)
     dat.y <- data.frame(X = X, Mi = M[, i], covars = covars, Y = Y)
 
@@ -148,15 +131,6 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
     
     mod1 <- stats::lm(Mi ~ X + ., data = dat.x)
     
-    # mod1 <- stats::lm(Mi ~ X + covars, data = dat.x )
-    # 
-    # if(Y_type=="continuous"){
-    # mod2 <- stats::lm(Y ~ X + Mi + covars , data = dat.y)
-    # }
-    # 
-    # if(Y_type=="binary"){
-    # mod2 <- stats::glm(Y ~ X + Mi + covars , data = dat.y)
-    # }
     
     if(Y_type=="continuous"){
       mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
@@ -166,10 +140,6 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
       mod2 <- stats::glm(Y ~ X + Mi + ., data = dat.y)
     }
 
-    # if(mod2_type=="surv_Cox"){
-    # mod2 = survival::survreg(Y ~ X + Mi , dist='exponential', data = dat.y)
-    # }
-    
     
     # for linear models
     xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
@@ -280,7 +250,8 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
              oie_med = median(as.vector(acme_sum)),
              oie_sd = sd(as.vector(acme_sum)),
              ote = ote,
-             ode = ode
+             ode = ode,
+             multivariate = object$input$multivariate
   )
   
   class(obj) = "hdmax2_step2"

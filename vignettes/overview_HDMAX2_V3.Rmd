@@ -452,7 +452,7 @@ res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
                  covar = NULL,
                  diagnostic.plot = F)
 # max2 test results
-head(res_step1$max2[1,])
+head(res_step1$max2[[1]])
 
 ```
 
@@ -466,7 +466,7 @@ head(res_step2$TE)
 
 ```{r}
 # first variable category selected mediators 
-mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
+mediators_top10 = M[,names(sort(res_step1$max2[[1]]))[1:10]]
 head(mediators_top10)
 
 # one hot encoding
@@ -541,21 +541,17 @@ res_step1 = hdmax2::run_AS(X_matrix = X_categorial ,
                  covar = cbind(age, gender),
                  diagnostic.plot = F)
 # max2 test results
-head(res_step1$max2[1,])
+head(res_step1$max2[[1]])
 
 ```
 
 
 ```{r}
 # first variable category selected mediators 
-mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
+mediators_top10 = M[,names(sort(res_step1$max2[[1]]))[1:10]]
 head(mediators_top10)
 
-# ## create list of mediators top10 for each cat exposure
-# mediators_top10s = list()
-# for(nX in (1:dim(res_step1$input$X_matrix)[2])){
-#   mediators_top10s[[n_med]] = M[,names(sort(res_step1$max2[nX,]))[1:10]]
-# }
+
 
 
 ## TODO return error message if X = multiple categories
@@ -576,14 +572,16 @@ hdmax2::plot(res_step2, N_med = 10)
 ## V2
 
 ```{r}
-# first variable category selected mediators 
-mediators_top10 = M[,names(sort(res_step1$max2[1,]))[1:10]]
-head(mediators_top10)
 
-## TODO return error message if X = multiple categories
-    
+# ## create list of mediators top10 for each cat exposure
+
+mediators_top10s = list()
+for(cat in (1:dim(res_step1$input$X_matrix)[2])){
+  mediators_top10s[[cat]] = M[,names(sort(res_step1$max2[[cat]]))[1:10]]
+}
+
 res_step2_V2 =  hdmax2::estimate_effect_V2(res_step1,
-                                    m = mediators_top10,
+                                    m = mediators_top10s,
                                     boots = 100,
                                     sims = 100)
 
@@ -591,9 +589,10 @@ res_step2_V2 =  hdmax2::estimate_effect_V2(res_step1,
 
 ```{r}
 ## mediators ACME plots 
-hdmax2::plot(res_step2_V2, N_med = 10)
+hdmax2::plot_V2(res_step2_V2, N_med = 10)
 ```
+
 ```{r}
-comp_ACME = cbind(res_step2$ACME,res_step2_V2$ACME)
+comp_ACME = cbind(res_step2$ACME,res_step2_V2$ACME[[1]])
 comp_ACME
 ```
