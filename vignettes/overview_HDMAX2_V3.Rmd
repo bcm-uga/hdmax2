@@ -593,6 +593,7 @@ hdmax2::plot_V2(res_step2_V2, N_med = 10)
 ```
 
 ```{r}
-comp_ACME = cbind(res_step2$ACME,res_step2_V2$ACME[[1]])
-comp_ACME
+comp_ACME = cbind(res_step2$ACME[,c(1,5)],res_step2_V2$ACME[[1]][,c(1,5)])
+library(knitr)
+knitr::kable(comp_ACME)
 ```
