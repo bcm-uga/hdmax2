@@ -133,10 +133,12 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
       mod1 <- stats::lm(Mi ~ X + ., data = dat.x)
       
       if(Y_type=="continuous"){
+		  print(paste0("Generate regression 2 for continuous outcome and mediator ", i))   
         mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
       }
       
       if(Y_type=="binary"){
+		   print(paste0("Generate regression 2 for binary outcome and mediator ", i))
         mod2 <- stats::glm(Y ~ X + Mi + ., data = dat.y)
       }
       
@@ -260,7 +262,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
   }
   
   ################################################
-  ### Estimate effects for univariate exposome ###
+  ### Estimate effects for multivariate exposome ###
   ################################################
   
   if(object$input$X_type=="multivariate"){

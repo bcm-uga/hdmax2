@@ -36,15 +36,15 @@ plot_hdmax2 <- function(object, N_med = 10) {
   #Plot the ACME of the model
   if(object$input$X_type == "univariate") {
     print("hdmax2 plot for univariate exposome")
-    plot_univariate(object, N_med = N_med)
+    p = plot_univariate(object, N_med = N_med)
   }
   
   if (object$input$X_type == "multivariate") {
     print("hdmax2 plot for multivariate exposome")
-    plot_multivariate(object, N_med = N_med)
+    p = plot_multivariate(object, N_med = N_med)
   }
   
-  
+  return(p)  
 }  
 
 
@@ -92,7 +92,8 @@ plot_univariate <- function(object, N_med = 10) {
       object$ACME,
       aes(
         object$ACME$est,
-        stats::reorder(object$ACME$feat, object$ACME$est),
+        object$ACME$feat,
+        #stats::reorder(object$ACME$feat, object$ACME$est),
         color = est <= 0,
         shape = pval <= 0.05
       )
@@ -119,7 +120,8 @@ plot_univariate <- function(object, N_med = 10) {
     ggplot2::ggplot(object$PM,
                     aes(
                       object$PM$est,
-                      stats::reorder(object$PM$feat, object$PM$est),
+                      object$ACME$feat,
+                      #stats::reorder(object$PM$feat, object$PM$est),
                       color = est <= 0,
                       shape = pval <= 0.05
                     )) +
@@ -185,7 +187,7 @@ plot_univariate <- function(object, N_med = 10) {
     ACME = object$ACME$est
   )
   df = dplyr::arrange(df, dplyr::desc(df$ACME))
-  df$mediator <- factor(df$mediator, levels = df$mediator)
+  #df$mediator <- factor(df$mediator, levels = df$mediator)
   
   df_long <- data.frame(
     mediator = rep(df$mediator, 3),
@@ -232,7 +234,7 @@ plot_univariate <- function(object, N_med = 10) {
   
   
   plot_final = gridExtra::grid.arrange(p_ACME, p_PM, p_effects, p_es, ncol = 2)
-  
+  return(plot_final)
 }
 
 
@@ -287,6 +289,7 @@ plot_multivariate <- function(object, N_med = 10) {
   }
   
   var_names = colnames(object$input$X_matrix)
+  plot_final = list()
   
   for(var_name in var_names){
     
@@ -388,8 +391,9 @@ plot_multivariate <- function(object, N_med = 10) {
     
     #patchwork::combined_plot <- (p_ACME + p_PM) / (p_effects + p_es)
     
-    plot_final = gridExtra::grid.arrange(p_ACME, p_PM, p_effects, p_es, ncol = 2)
+    plot_final[[var_name]] = gridExtra::grid.arrange(p_ACME, p_PM, p_effects, p_es, ncol = 2)
     
   }
+  return(plot_final)
 }
 
