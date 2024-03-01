@@ -127,6 +127,7 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
   return(result.fdr)
 }
 
+#------------------------------------------------------------------
 
 ##' Identifying aggregated mediator regions (AMR)
 ##'
@@ -164,6 +165,7 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
               data = data.frame(chr, start, end, pval, cpg)))
 }
 
+#------------------------------------------------------------------
 
 ##' Build AMR vector
 ##'
@@ -263,105 +265,3 @@ AMR_build <- function(res, methylation, nb_cpg = 2) {
               CpG_for_each_AMR = DMR.select))
 }
 
-##' Estimate effects for a set of AMR
-##'
-##' Estimate various quantities for causal mediation analysis for each
-##' AMRs, including average causal mediation effects
-##' (indirect effect), average direct effects, proportions mediated,
-##' and total effect.
-##'
-##' @param AMR a matrix of DMRs from the result AMR_mean of AMR_build function.
-##' @param X Exposure. An explanatory variable matrix with n rows and d columns.
-##' Each column corresponds to a distinct explanatory variable (Exposure).
-##' Explanatory variables must be encoded as numeric variables.
-##' @param Y Outcome. An explanatory variable matrix with n rows and d columns.
-##' Each column corresponds to a distinct explanatory variable (Outcome).
-##' Explanatory variables must be encoded as numeric variables.
-##' @param U set of latent factors from mEWAS function (need include covariable)
-##' @param sims number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
-##' 10000 is recommended.
-##'
-##' @return
-##' Tables of results of mediation analyzes for markers with a Q-value below the FDR threshold.
-##' Composition of tables: estimated effect, confidence interval and mediation pValue.
-##'  - ACME, estimation of the average causal mediation effect (the indirect effect)
-##'  - ADE, estimation average direct effect
-##'  - PM, estimation of the proportion mediated
-##'  - TE, estimation of the total effect
-##'  
-##' Regressions:
-##'  - xm, regression X on M
-##'  - my, regression M on Y
-##'
-##' @details
-##'
-##' We use the mediate() function of the mediation package on the set of selected AMRs.
-##' This function makes it possible to estimate their indirect effects and to
-##' test their significance.
-##'
-##' @export
-##' @author Basile Jumentier
-##' @examples
-
-wrap_mediation_AMR <- function(X, Y, AMR, U = NULL, sims = 3) {
-  
-  DMR <- AMR
-  
-  ACME <- matrix(ncol = 4, nrow = ncol(DMR))
-  ADE <- matrix(ncol = 4, nrow = ncol(DMR))
-  PM <- matrix(ncol = 4, nrow = ncol(DMR))
-  TE <- matrix(ncol = 4, nrow = ncol(DMR))
-  
-  # from linear models
-  xm <- matrix(ncol = 4, nrow = ncol(DMR))
-  my <- matrix(ncol = 4, nrow = ncol(DMR))
-  
-  for (i in 1:ncol(DMR)) {
-    
-    dat.x <- data.frame(X = X, Mi = DMR[, i], covar = U)
-    dat.y <- data.frame(X = X, Mi = DMR[, i], covar = U, Y = Y)
-    
-    mod1 <- stats::lm(Mi ~ X + ., data = dat.x)
-    mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
-    
-    # for linear models
-    xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
-    my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
-    
-    med <- mediation::mediate(mod1, mod2, sims = sims, treat = "X", mediator = "Mi")
-    
-    ACME[i, ] <- c(med$d0, med$d0.ci[1], med$d0.ci[2], med$d0.p)
-    ADE[i, ] <- c(med$z0, med$z0.ci[1], med$z0.ci[2], med$z0.p)
-    PM[i, ] <- c(med$n0, med$n0.ci[1], med$n0.ci[2], med$n0.p)
-    TE[i, ] <- c(med$tau.coef, med$tau.ci[1], med$tau.ci[2], med$tau.p)
-  }
-  
-  ACME <- as.data.frame(ACME)
-  ADE <- as.data.frame(ADE)
-  PM <- as.data.frame(PM)
-  TE <- as.data.frame(TE)
-  xm <- as.data.frame(xm)
-  my <- as.data.frame(my)
-  
-  colnames(ACME) <- c("est", "CI_2.5", "CI_97.5", "pval")
-  colnames(ADE) <- c("est", "CI_2.5", "CI_97.5", "pval")
-  colnames(PM) <- c("est", "CI_2.5", "CI_97.5", "pval")
-  colnames(TE) <- c("est", "CI_2.5", "CI_97.5", "pval")
-  colnames(xm) <- c("Estimate", "Std.Error", "t.Value", "pValue")
-  colnames(my) <- c("Estimate", "Std.Error", "t.Value", "pValue")
-  
-  ACME$DMR <- colnames(DMR)
-  ADE$DMR <- colnames(DMR)
-  PM$DMR <- colnames(DMR)
-  TE$DMR <- colnames(DMR)
-  xm$CpG <- colnames(DMR)
-  my$CpG <- colnames(DMR)
-  
-  return(list(ACME = ACME,
-              ADE = ADE,
-              PM = PM,
-              TE = TE,
-              xm = xm,
-              my = my))
-  
-}

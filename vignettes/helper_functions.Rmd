@@ -1,0 +1,145 @@
+---
+title: "hdmax2 helper functions"
+author: "Florence Pittion, Magali Richard, Olivier Francois"
+date: "January, 2024"
+output:
+  prettydoc::html_pretty:
+    self_contained: true
+    theme: cayman
+    highlight: github
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{helper_functions.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+#options("mc.cores" = 1)
+
+```
+
+
+
+## Introduction 
+
+The {\tt hdmax2} package is designed to accept exposure $X$ consisting of univariate data, which can be continuous, binary, or categorical, as well as multivariate exposomes. Binary variables are converted to 0s and 1s and treated as univariate variables. 
+
+In this vignette, we provide a series of helper function to process the data.
+
+To install the latest version of **hdmax2**, use the github repository 
+```{r}
+#devtools::install_github("bcm-uga/hdmax2")
+```
+
+
+## How to analyse agregated methylated regions ?
+
+We simulated 500 samples and 1000 potential DNA methylation mediators, with various a binary exposure (smoking status of mothers) and continuous outcomes (birth weight).
+
+
+```{r}
+data = hdmax2::helper_ex
+
+pc <- prcomp(data$methylation)
+plot(pc$sdev[1:15]^2,
+     xlab = 'Principal Component',
+     ylab = "Explained variance",
+     col = c(rep(1, 3), 2, rep(1, 16)))
+
+K=5
+
+## run hdmax2 step1
+hdmax2_step1 = hdmax2::run_AS(X_matrix = as.matrix(data$exposure),
+                              Y_matrix = as.matrix(data$phenotype),
+                              M_matrix = as.matrix(data$methylation), 
+                              K = K,
+                              X_type = "univariate",
+                              Y_type = "continuous")
+
+##Detecting AMR
+chr = data$annotation$chr
+start = data$annotation$start
+end = data$annotation$end
+pval = hdmax2_step1$max2_pvalues
+cpg = data$annotation$cpg
+
+res.amr_search = hdmax2::AMR_search(chr = data$annotation$chr,
+                                    start = data$annotation$start,
+                                    end = data$annotation$end,
+                                    pval = hdmax2_step1$max2_pvalues,
+                                    cpg = data$annotation$cpg,
+                                    seed = 0.2,
+                                    nCores = 2)
+
+res.amr_search$res
+
+res.arm_build = hdmax2::AMR_build(res.amr_search, 
+                                  methylation = data$methylation, 
+                                  nb_cpg = 2)
+
+#List of DMR selected
+head(res.arm_build$res)
+
+##CpG in the DMR
+res.arm_build$CpG_for_each_AMR
+
+
+## run hdmax2 step2
+
+object = hdmax2_step1
+mediators_top10 = data$methylation[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+m = as.matrix(res.arm_build$AMR_mean)
+boots = 100
+sims = 100
+## selected mediators effects estimation
+
+hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
+                                       m = m,
+                                       boots = 100,
+                                       sims = 100)
+
+
+hdmax2::plot_hdmax2(hdmax2_step2, N_med = 2)
+
+```
+
+## How to select potential mediators using q=values and FDR control ?
+
+```{r}
+## run hdmax2 step1
+hdmax2_step1 = hdmax2::run_AS(X_matrix = as.matrix(data$exposure),
+                 Y_matrix = as.matrix(data$phenotype),
+                 M_matrix = as.matrix(data$methylation), 
+                 K = K,
+                 X_type = "univariate",
+                 Y_type = "continuous")
+
+## Select candidate mediator  
+qval <- fdrtool::fdrtool(hdmax2_step1$max2_pvalues, statistic = "pvalue", plot = F, verbose = F)$qval
+candidate_mediator <- qval[qval<= 0.5] # In this example, we will consider FDR levels <50%.
+candidate_mediator
+
+```
+
+## How to transform a categorial variable using one-hot encoding ?
+
+```{r}
+simu_data = hdmax2::simu_data
+
+X_matrix = simu_data$X_categorial
+X_matrix = droplevels(X_matrix)
+X_matrix = mltools::one_hot(data.table::as.data.table(X_matrix))
+X_matrix = as.matrix(X_matrix)
+```
+
+
+```{r}
+sessionInfo()
+```

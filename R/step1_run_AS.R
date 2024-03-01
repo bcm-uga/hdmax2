@@ -279,7 +279,7 @@ run_AS = function(X_matrix,
     max2_detailed = list()
     for (x in 1:dim(X_matrix)[2]){
       max2_pval <- apply(cbind(pvals_1[x,], pval2), 1, max)^2
-      names(max2_pval) = colnames(M)
+      names(max2_pval) = colnames(M_matrix)
       max2_detailed[[colnames(X_matrix)[x]]] = max2_pval
     }
     res[[4]] = max2_detailed

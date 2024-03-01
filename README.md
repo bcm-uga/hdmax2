@@ -19,9 +19,8 @@ conda install conda-forge::r-rcppeigen
 conda install conda-forge::r-lme4
 
 R
+> install.packages("ggplot2")
 > install.packages("prettydoc")
-> install.packages("FactoMineR")
-> install.packages("factoextra")
 > install.packages("fdrtool")
 > install.packages("mediation")
 > devtools::install_github("bcm-uga/LEA")
@@ -33,34 +32,28 @@ R
 ## Usage
 
 ```
-library(hdmax2)
-load("data/simu_data.RData")
+# load data
+simu_data = hdmax2::simu_data
+X_matrix = as.matrix(simu_data$X_continuous)
+Y_matrix = as.matrix(simu_data$Y_continuous)
+M_matrix = as.matrix(simu_data$M)
 
-X_binary = as.matrix(simu_data$X_binary)
-Y_continuous = as.matrix(simu_data$Y_continuous)
-M = as.matrix(simu_data$M)
+# Run step 1
+hdmax2_step1 = hdmax2::run_AS(X_matrix = X_matrix ,
+                Y_matrix = Y_matrix,
+                 M_matrix = M_matrix)
 
-res_step1 = hdmax2::run_AS(X_matrix = X_binary ,
-                 Y_matrix = Y_continuous,
-                 M_matrix = M, 
-                 K = K,
-                 X_type = "binary",
-                 Y_type = "continuous",
-                 M_type = "methylation",
-                 multivariate = FALSE,
-                 covar = cbind(age, gender),
-                 diagnostic.plot = F)
+# Select mediators
+mediators_top10 = M_matrix[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+head(mediators_top10)
 
+# Run step 2
+hdmax2_step2 = hdmax2::estimate_effect(object =hdmax2_step1,
+                                    m = mediators_top10)
 
-mediators_top10 = M[,names(sort(res_step1$max2)[1:10])]
-
-res_step2 = hdmax2::estimate_effect(object = res_step1,
-                                    m = mediators_top10,
-                                     boots = 100,
-                                    sims = 100)
-
-hdmax2::plot(res_step2, N_med = 10)
-
+# Plot results
+library(ggplot2)
+hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
 ```
 
 ## Bug report / Help

@@ -21,15 +21,16 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
 ```
 
 
 
 ## Introduction 
 
-The {\tt hdmax2} package is designed to accept exposure $X$ consisting of univariate data, which can be continuous, binary, or categorical, as well as multivariate exposomes. Binary variables are converted to 0s and 1s and treated as univariate variables. 
+The `hdmax2` package is designed to accept exposure $X$ consisting of univariate data, which can be continuous, binary, as well as multivariate exposomes (which includes categorical variables). 
 
-In this vignette, we treat the univariate example.
+In this vignette, we treat the multivariate example, with a categorial explanatory variables
 
 To install the latest version of **hdmax2**, use the github repository 
 ```{r}
@@ -43,7 +44,6 @@ We simulated 100 samples and 500 potential mediators, with various type of expos
 
 
 ```{r}
-
 simu_data = hdmax2::simu_data
 
 ## Exposures
@@ -56,7 +56,7 @@ X_matrix = as.matrix(X_matrix)
 Y_matrix = as.matrix(simu_data$Y_continuous)
 
 ## High dimension mediators
-M = as.matrix(simu_data$M)
+M_matrix = as.matrix(simu_data$M)
 
 ## Covariates
 age = as.matrix(simu_data$age)
@@ -64,10 +64,12 @@ gender = as.matrix(simu_data$gender)
 
 ## Number of Latent factore estimation
 
-res_pca = FactoMineR::PCA(M, graph = F)
-factoextra::fviz_screeplot(res_pca, ncp=10)
+pc <- prcomp(M_matrix)
+plot(pc$sdev[1:10],
+     xlab = 'Principal Component',
+     ylab = "Explained variance")
 
-K=5 #pca conclusion : it is better to select too many factors that too few
+K=8 #pca conclusion : it is better to select too many factors that too few
 ```
 
 
@@ -79,28 +81,24 @@ The **run_AS** function is applied to estimate the effects of exposuire $X$ on a
 
 ```{r}
 
-
-
-
-  M_matrix = M
-
-  X_type= "multivariate"
-  detailed = TRUE
-  Y_type = "continuous"
-  covar = cbind(age, gender)
+X_type= "multivariate"
+detailed = TRUE
+Y_type = "continuous"
+detailed = TRUE
+covar = cbind(age, gender)
 
 hdmax2_step1 = hdmax2::run_AS(X_matrix = X_matrix ,
-                 Y_matrix = Y_matrix,
-                 M_matrix = M,
-                 K = K,
-                 X_type = X_type, # indicates the type of Exposure
-                 Y_type = Y_type,  # indicates the type of Outcome
-                 detailed = detailed,  # indicates the exposure is multivariate
-                 covar = covar)
+                              Y_matrix = Y_matrix,
+                              M_matrix = M_matrix,
+                              K = K,
+                              X_type = X_type, # indicates the type of Exposure
+                              Y_type = Y_type,  # indicates the type of Outcome
+                              detailed = detailed,  # indicates the exposure is multivariate
+                              covar = covar)
 
 # 
 # # max2 test results
- head(hdmax2_step1$max2_pvalues)
+head(hdmax2_step1$max2_pvalues)
 
 ```
 
@@ -110,53 +108,23 @@ In this example, we will consider the 10 first selected mediators.
 
 
 ```{r}
-##Selecting mediators
-## top 10 selecting mediators
-mediators_top10 = M[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+## Selecting top 10 mediators
+mediators_top10 = M_matrix[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
 head(mediators_top10)
 
 ```
 
-### STEP 2
+### STEP 2 : estimation of the indirect effect
+
 The function **estimate_effect** estimate the individual indirect effect of mediators.
 
 ```{r}
 object = hdmax2_step1
- m = mediators_top10
-  boots = 100
-  sims = 100
-## selected mediators effects estimation
-
-
-
- hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
-                                     m = mediators_top10,
-                                      boots = 100,
-                                sims = 100,
-                                is.categorial = TRUE)
-
-
-##The parameter sims is the number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation. 10000 is recommended, but we used 100 for the example.
+m = mediators_top10
+hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
+                                       m = mediators_top10,
+                                       is.categorial = TRUE)
 ```
-
-Estimation of **average causal mediation effect (ACME)** is the indirect effect. 
-
-Other effect estimated include :
-
-   - Average direct effect (ADE) 
-
-   - Proportion mediated (PM) 
-
-   - Total effect (TE)
-
-```{r}
-# ACME, ADE, PM, TE estimation with CI
-#head(hdmax2_step2$ACME)
-#head(hdmax2_step2$ADE)
-#head(hdmax2_step2$PM)
-#head(hdmax2_step2$TE)
-```
-
 
 ### Plot
 
@@ -173,10 +141,7 @@ We propose a set of plots which include:
 
 ```{r}
 library(ggplot2)
-## mediators ACME plots 
-object = hdmax2_step2
 hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
-
 ```
 
 

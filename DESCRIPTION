@@ -20,9 +20,7 @@ Imports:
     data.table,
     Biostrings,
     IRanges,
-    gridExtra,
-    FactoMineR,
-    factoextra
+    gridExtra
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
