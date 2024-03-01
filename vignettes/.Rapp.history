@@ -1,0 +1,61 @@
+library("devtools");#
+install_github("Danko-Lab/TED/TED")
+install.packages(c("DESeq2", "MCMCpack", "parallel", "gplots", "scran", "BiocParallel"))
+BiocManager::install("scran")
+sessionInfo()
+setwd("~/Datas/projects/hdmax2/vignettes/")
+rmarkdown::render("overview_HDMAX2_V2.Rmd")
+#load("example_hdmax2.data")#
+#
+#load("../../../results/git_thema/results/20240111_new_hdmax2/R/sample_hdmax2_data.RData")#
+#
+load("../data/sample_hdmax2_data.RData")#
+X = data$X_binary#
+Y = data$Y_time#
+M = data$M
+library("FactoMineR")#
+library("factoextra")#
+res_pca = PCA(M, graph = F)#
+fviz_screeplot(res_pca, ncp=10)
+source("../R/runAS.R")#
+# X continuous, Y continuous#
+#
+# step 1 association studies + max2#
+res_step1 = runAS(X_matrix = X ,#
+                 Y_matrix = Y,#
+                 M_matrix = M, #
+                 K = 5,#
+                 X_type = "binary",#
+                 Y_type = "continuous",#
+                 M_type = "methylation",#
+                 conf = NULL,#
+                 diagnostic.plot = F)
+# first regression#
+head(res_step1$mod1$pval)#
+head(res_step1$mod1$effect.sizes)#
+head(res_step1$mod1$zscores)#
+head(res_step1$mod1$gif)#
+#
+# second regression#
+head(res_step1$mod2$pval)#
+head(res_step1$mod2$effect.sizes)#
+head(res_step1$mod2$zscores)#
+head(res_step1$mod2$gif)#
+# max2 test results#
+head(res_step1$max2$pval)#
+head(res_step1$max2$eta0)#
+head(res_step1$max2$qval)
+##Selecting mediators#
+FDR=0.1#
+mediators = res_step1$max2$qval[res_step1$max2$qval<= FDR]#
+mediators
+source("../R/acme_mediation.R")#
+res_med = acme_mediation(qval = res_step1$max2$qval,#
+                            X = X,#
+                            Y = Y,#
+                            M = M,#
+                            U = res_step1$mod1$U,#
+                            sims = 100, FDR = FDR,#
+                            mod2_type = "continuous")
+sessionInfo()
+sessionInfo()

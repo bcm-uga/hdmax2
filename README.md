@@ -34,7 +34,7 @@ R
 
 ```
 library(hdmax2)
-load("../data/simu_data.RData")
+load("data/simu_data.RData")
 
 X_binary = as.matrix(simu_data$X_binary)
 Y_continuous = as.matrix(simu_data$Y_continuous)

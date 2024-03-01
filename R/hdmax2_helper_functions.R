@@ -189,7 +189,7 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
 ##' This method uses the Fisher method to combine the pValues and also the base pair distance (bP)
 ##' between CpGs (1000 bP maximum between nb_cpg CpGs on the same AMR).
 ##' The information for each AMR is summarized by doing the mean (by row) of each CpG.
-##' @importFrom prcomp
+##' @importFrom stats prcomp
 ##' @export
 ##' @author Basile Jumentier
 ##' @examples
