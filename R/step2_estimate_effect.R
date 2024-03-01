@@ -139,7 +139,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
       
       if(Y_type=="binary"){
 		   print(paste0("Generate regression 2 for binary outcome and mediator ", i))
-        mod2 <- stats::glm(Y ~ X + Mi + ., data = dat.y)
+        mod2 <- stats::glm(Y ~ X + Mi + ., family = "binomial", data = dat.y)
       }
       
       # if(mod2_type=="surv_Cox"){
@@ -203,7 +203,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
       # effet B m -> Y
       if(Y_type=="binary"){
         dat.1 <- data.frame(X, m, covars = covars)
-        mod2 <- glm(Y[samp] ~ ., data = dat.1[samp, ])
+        mod2 <- glm(Y[samp] ~ .,family = "binomial" , data = dat.1[samp, ])
         B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
       } 
       
@@ -238,8 +238,8 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
     
     if(Y_type == "binary") {
       print("Computing ODE and OTE for binary outcome.")
-      mod_total_effect = glm(Y ~ X + covars)
-      mod_direct_effect = glm(Y ~ X + mediators_top10 + covars)
+      mod_total_effect = glm(Y ~ X + covars, family = "binomial")
+      mod_direct_effect = glm(Y ~ X + mediators_top10 + covars, family = "binomial")
     }
     
     ote = summary(mod_total_effect)$coefficients[2,]
@@ -403,7 +403,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
         # effet B m -> Y
         if(Y_type=="binary"){
           dat.1 <- data.frame(X, M, covars = covars)
-          mod2 <- glm(Y[samp] ~ ., data = dat.1[samp, ])
+          mod2 <- glm(Y[samp] ~ ., family = "binomial", data = dat.1[samp, ])
           B <- as.data.frame(summary(mod2)$coeff[3:(ncol(M) + 2), ])
         } 
         
@@ -439,8 +439,8 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
       
       if(Y_type == "binary") {
         print("Computing ODE and OTE for binary outcome.")
-        mod_total_effect = glm(Y ~ X + covars)
-        mod_direct_effect = glm(Y ~ X + mediators_top10 + covars)
+        mod_total_effect = glm(Y ~ X + covars, family = "binomial")
+        mod_direct_effect = glm(Y ~ X + mediators_top10 + covars, family = "binomial")
       }
       
       ote = summary(mod_total_effect)$coefficients[2,]
