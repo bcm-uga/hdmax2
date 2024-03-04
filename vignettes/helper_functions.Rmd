@@ -47,6 +47,11 @@ We simulated 500 samples and 1000 potential DNA methylation mediators, with vari
 ```{r}
 data = hdmax2::helper_ex
 
+#Artificial reduction of dataset size to pass the github action check when building hdmax2 website
+data$methylation = data$methylation[ , 800:1000]
+data$annotation = data$annotation[800:1000, ]
+
+
 pc <- prcomp(data$methylation)
 plot(pc$sdev[1:15]^2,
      xlab = 'Principal Component',
@@ -75,7 +80,7 @@ res.amr_search = hdmax2::AMR_search(chr = data$annotation$chr,
                                     end = data$annotation$end,
                                     pval = hdmax2_step1$max2_pvalues,
                                     cpg = data$annotation$cpg,
-                                    seed = 0.2,
+                                    seed = 0.6, #Careful to change this parameter when working with real data
                                     nCores = 2)
 
 res.amr_search$res
