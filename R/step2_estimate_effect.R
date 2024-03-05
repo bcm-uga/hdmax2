@@ -232,14 +232,14 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
     if(Y_type == "continuous") {
       print("Computing ODE and OTE for continuous outcome.")
       mod_total_effect = lm(Y ~ X + covars)
-      mod_direct_effect = lm(Y ~ X + mediators_top10 + covars)
+      mod_direct_effect = lm(Y ~ X + M + covars)
       
     }
     
     if(Y_type == "binary") {
       print("Computing ODE and OTE for binary outcome.")
       mod_total_effect = glm(Y ~ X + covars, family = "binomial")
-      mod_direct_effect = glm(Y ~ X + mediators_top10 + covars, family = "binomial")
+      mod_direct_effect = glm(Y ~ X + M + covars, family = "binomial")
     }
     
     ote = summary(mod_total_effect)$coefficients[2,]
@@ -433,14 +433,14 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
       if(Y_type == "continuous") {
         print("Computing ODE and OTE for continuous outcome.")
         mod_total_effect = lm(Y ~ X + covars)
-        mod_direct_effect = lm(Y ~ X + mediators_top10 + covars)
+        mod_direct_effect = lm(Y ~ X + M + covars)
         
       }
       
       if(Y_type == "binary") {
         print("Computing ODE and OTE for binary outcome.")
         mod_total_effect = glm(Y ~ X + covars, family = "binomial")
-        mod_direct_effect = glm(Y ~ X + mediators_top10 + covars, family = "binomial")
+        mod_direct_effect = glm(Y ~ X + M + covars, family = "binomial")
       }
       
       ote = summary(mod_total_effect)$coefficients[2,]
