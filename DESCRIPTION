@@ -1,10 +1,11 @@
 Package: hdmax2
-Title: What the Package Does (One Line, Title Case)
+Title: R package hdmax2 performs high dimension mediation analysis
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Authors@R: c(person("Florence", "Pittion", role = c("aut", "cre"), 
+    email="florence.pittion@univ-grenoble-alpes.fr"),
+              person("Magali", "Richard", role = c("aut"), 
+    email="magali.richard@univ-grenoble-alpes.fr"))
+Description: This package allows users to estimate the indirect effects of mediators, calculate the overall indirect effect of mediators, and facilitates the execution of high-dimensional mediation analysis. The HDMAX2 method includes unobserved confounding factors through a latent factor mixed model approach. It supports the use of exposures of various types and the consideration of both continuous and binary outcomes.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -20,7 +21,9 @@ Imports:
     data.table,
     Biostrings,
     IRanges,
-    gridExtra
+    gridExtra,
+    fdrtool,
+    LEA
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
