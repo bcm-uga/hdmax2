@@ -40,7 +40,7 @@ To install the latest version of **hdmax2**, use the github repository
 
 ## Simulated dataset
 
-We simulated 100 samples and 500 potential mediators, with various type of exposures (continuous or binary) and outcomes(continuous or binary).
+We simulated 100 samples and 500 potential mediators, with various type of exposures (continuous, binary or categorial) and outcomes(continuous or binary).
 
 
 ```{r}
@@ -62,7 +62,7 @@ M_matrix = as.matrix(simu_data$M)
 age = as.matrix(simu_data$age)
 gender = as.matrix(simu_data$gender)
 
-## Number of Latent factore estimation
+## Number of Latent factor estimation
 
 pc <- prcomp(M_matrix)
 plot(pc$sdev[1:10],
@@ -73,11 +73,11 @@ K=8 #pca conclusion : it is better to select too many factors that too few
 ```
 
 
-## First use case  *binary exposure* and *continuous outcome*
+## First use case  *categorial exposure* and *continuous outcome*
 
 ### STEP 1: Run association studies
 
-The **run_AS** function is applied to estimate the effects of exposuire $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. Covariables can be included. 
+The **run_AS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. Covariables can be included. 
 
 ```{r}
 
@@ -124,6 +124,89 @@ m = mediators_top10
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
                                        m = mediators_top10,
                                        is.categorial = TRUE)
+```
+
+### Plot
+
+We propose a set of plots which include:
+
+- Forest plot of mediators ACME
+
+- Forest plot of mediators PM 
+
+- Comparison of ODE, OIE and OTE
+
+- Mediators effect size representation
+
+
+```{r}
+library(ggplot2)
+hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
+```
+
+
+
+## Second use case  *multivariate exposure* and *continuous outcome*
+
+
+```{r}
+
+## Exposures
+X_matrix = simu_data$X_multi_2expo
+X_matrix = as.matrix(X_matrix)
+
+
+```
+
+### STEP 1: Run association studies
+
+The **run_AS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. Covariables can be included. 
+
+```{r}
+
+X_type= "multivariate"
+detailed = TRUE
+Y_type = "continuous"
+detailed = TRUE
+covar = cbind(age, gender)
+
+hdmax2_step1 = hdmax2::run_AS(X_matrix = X_matrix ,
+                              Y_matrix = Y_matrix,
+                              M_matrix = M_matrix,
+                              K = K,
+                              X_type = X_type, # indicates the type of Exposure
+                              Y_type = Y_type,  # indicates the type of Outcome
+                              detailed = detailed,  # indicates the exposure is multivariate
+                              covar = covar)
+
+# 
+# # max2 test results
+head(hdmax2_step1$max2_pvalues)
+
+```
+
+### Selection of a subset of mediators
+
+In this example, we will consider the 10 first selected mediators.
+
+
+```{r}
+## Selecting top 10 mediators
+mediators_top10 = M_matrix[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+head(mediators_top10)
+
+```
+
+### STEP 2 : estimation of the indirect effect
+
+The function **estimate_effect** estimate the individual indirect effect of mediators.
+
+```{r}
+object = hdmax2_step1
+m = mediators_top10
+hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
+                                       m = mediators_top10,
+                                       is.categorial = FALSE)
 ```
 
 ### Plot

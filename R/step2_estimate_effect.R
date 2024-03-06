@@ -267,7 +267,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
                my = my,
                oie = as.vector(acme_sum),
                oie_med = median(as.vector(acme_sum)),
-               oie_sd = stats::sd(as.vector(acme_sum)),
+               oie_sd = sd(as.vector(acme_sum)),
                ote = ote,
                ode = ode,
                input = object$input,
