@@ -93,8 +93,8 @@ github repository</p>
 <h2 id="simulated-dataset">Simulated dataset<a class="anchor" aria-label="anchor" href="#simulated-dataset"></a>
 </h2>
 <p>We simulated 100 samples and 500 potential mediators, with various
-type of exposures (continuous or binary) and outcomes(continuous or
-binary).</p>
+type of exposures (continuous, binary or categorial) and
+outcomes(continuous or binary).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
 <span></span>
@@ -114,7 +114,7 @@ binary).</p>
 <span><span class="va">age</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">age</span><span class="op">)</span></span>
 <span><span class="va">gender</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">gender</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## Number of Latent factore estimation</span></span>
+<span><span class="co">## Number of Latent factor estimation</span></span>
 <span></span>
 <span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">M_matrix</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>,</span>
@@ -126,14 +126,14 @@ binary).</p>
 <span><span class="va">K</span><span class="op">=</span><span class="fl">8</span> <span class="co">#pca conclusion : it is better to select too many factors that too few</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="first-use-case-binary-exposure-and-continuous-outcome">First use case <em>binary exposure</em> and <em>continuous
-outcome</em><a class="anchor" aria-label="anchor" href="#first-use-case-binary-exposure-and-continuous-outcome"></a>
+<h2 id="first-use-case-categorial-exposure-and-continuous-outcome">First use case <em>categorial exposure</em> and <em>continuous
+outcome</em><a class="anchor" aria-label="anchor" href="#first-use-case-categorial-exposure-and-continuous-outcome"></a>
 </h2>
 <div class="section level3">
 <h3 id="step-1-run-association-studies">STEP 1: Run association studies<a class="anchor" aria-label="anchor" href="#step-1-run-association-studies"></a>
 </h3>
 <p>The <strong>run_AS</strong> function is applied to estimate the
-effects of exposuire <span class="math inline">\(X\)</span> on a matrix
+effects of exposure <span class="math inline">\(X\)</span> on a matrix
 <span class="math inline">\(M\)</span> of potential mediators, and the
 effect of each potential mediators on outcome <span class="math inline">\(Y\)</span>. Covariables can be included.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -163,7 +163,7 @@ effect of each potential mediators on outcome <span class="math inline">\(Y\)</s
 <span><span class="co"># # max2 test results</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
 <span><span class="co">#&gt; cg00005740 cg00006787 cg00007032 cg00008612 cg00009871 cg00009922 </span></span>
-<span><span class="co">#&gt;  0.9248846  0.9093581  0.1779910  0.1504423  0.9465306  0.2755099</span></span></code></pre></div>
+<span><span class="co">#&gt;  0.9248846  0.9648048  0.1779910  0.1504423  0.8090650  0.2755099</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="selection-of-a-subset-of-mediators">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators"></a>
@@ -174,20 +174,20 @@ mediators.</p>
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
 <span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M_matrix</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            cg00502576 cg00897799 cg00513564 cg00894344 cg00014667 cg00888561</span></span>
-<span><span class="co">#&gt; GSM1051525  0.8844783  0.8750781  0.7201085  0.7622600  0.7992167 0.09309668</span></span>
-<span><span class="co">#&gt; GSM1051526  0.8652441  0.8886705  0.7281696  0.8463778  0.8012565 0.10766164</span></span>
-<span><span class="co">#&gt; GSM1051527  0.8910252  0.8661710  0.6729922  0.8287131  0.7892398 0.07369961</span></span>
-<span><span class="co">#&gt; GSM1051528  0.8925080  0.9447288  0.6729783  0.8582649  0.8031898 0.09310408</span></span>
-<span><span class="co">#&gt; GSM1051529  0.8895356  0.8864371  0.7004180  0.8189183  0.8005460 0.09569806</span></span>
-<span><span class="co">#&gt; GSM1051530  0.9168653  0.8775554  0.7261984  0.7999206  0.8190546 0.06168537</span></span>
-<span><span class="co">#&gt;            cg00902815 cg00026603 cg00463171 cg00517533</span></span>
-<span><span class="co">#&gt; GSM1051525  0.7656570  0.8165730 0.06501884 0.04819313</span></span>
-<span><span class="co">#&gt; GSM1051526  0.7792483  0.8082611 0.04112654 0.05138718</span></span>
-<span><span class="co">#&gt; GSM1051527  0.8183813  0.8564870 0.04985323 0.03966803</span></span>
-<span><span class="co">#&gt; GSM1051528  0.7682291  0.8137468 0.05555453 0.03642506</span></span>
-<span><span class="co">#&gt; GSM1051529  0.7522033  0.8141816 0.04814382 0.03857423</span></span>
-<span><span class="co">#&gt; GSM1051530  0.7834045  0.8258677 0.04549460 0.03823312</span></span></code></pre></div>
+<span><span class="co">#&gt;      cg00897799 cg00502576 cg00894344 cg00513564 cg00014667 cg00888561</span></span>
+<span><span class="co">#&gt; [1,]  0.8750781  0.8844783  0.7622600  0.7201085  0.7992167 0.09309668</span></span>
+<span><span class="co">#&gt; [2,]  0.8886705  0.8652441  0.8463778  0.7281696  0.8012565 0.10766164</span></span>
+<span><span class="co">#&gt; [3,]  0.8661710  0.8910252  0.8287131  0.6729922  0.7892398 0.07369961</span></span>
+<span><span class="co">#&gt; [4,]  0.9447288  0.8925080  0.8582649  0.6729783  0.8031898 0.09310408</span></span>
+<span><span class="co">#&gt; [5,]  0.8864371  0.8895356  0.8189183  0.7004180  0.8005460 0.09569806</span></span>
+<span><span class="co">#&gt; [6,]  0.8775554  0.9168653  0.7999206  0.7261984  0.8190546 0.06168537</span></span>
+<span><span class="co">#&gt;      cg00902815 cg00410419 cg00252332 cg00026603</span></span>
+<span><span class="co">#&gt; [1,]  0.7656570 0.10374263  0.1905747  0.8165730</span></span>
+<span><span class="co">#&gt; [2,]  0.7792483 0.11881329  0.1788090  0.8082611</span></span>
+<span><span class="co">#&gt; [3,]  0.8183813 0.10789966  0.1635732  0.8564870</span></span>
+<span><span class="co">#&gt; [4,]  0.7682291 0.11699374  0.1962591  0.8137468</span></span>
+<span><span class="co">#&gt; [5,]  0.7522033 0.12040911  0.1938904  0.8141816</span></span>
+<span><span class="co">#&gt; [6,]  0.7834045 0.08577636  0.1427216  0.8258677</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-2-estimation-of-the-indirect-effect">STEP 2 : estimation of the indirect effect<a class="anchor" aria-label="anchor" href="#step-2-estimation-of-the-indirect-effect"></a>
@@ -260,7 +260,125 @@ indirect effect of mediators.</p>
 <span><span class="co">#&gt; 2 2 (1-1,2-2) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 3 3 (2-2,1-1) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 4 4 (2-2,2-2) arrange gtable[layout]</span></span></code></pre>
+</div>
+</div>
+<div class="section level2">
+<h2 id="second-use-case-multivariate-exposure-and-continuous-outcome">Second use case <em>multivariate exposure</em> and <em>continuous
+outcome</em><a class="anchor" aria-label="anchor" href="#second-use-case-multivariate-exposure-and-continuous-outcome"></a>
+</h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">## Exposures</span></span>
+<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_multi_2expo</span></span>
+<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">X_matrix</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="step-1-run-association-studies-1">STEP 1: Run association studies<a class="anchor" aria-label="anchor" href="#step-1-run-association-studies-1"></a>
+</h3>
+<p>The <strong>run_AS</strong> function is applied to estimate the
+effects of exposure <span class="math inline">\(X\)</span> on a matrix
+<span class="math inline">\(M\)</span> of potential mediators, and the
+effect of each potential mediators on outcome <span class="math inline">\(Y\)</span>. Covariables can be included.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">X_type</span><span class="op">=</span> <span class="st">"multivariate"</span></span>
+<span><span class="va">detailed</span> <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="va">Y_type</span> <span class="op">=</span> <span class="st">"continuous"</span></span>
+<span><span class="va">detailed</span> <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">gender</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X_matrix <span class="op">=</span> <span class="va">X_matrix</span> ,</span>
+<span>                              Y_matrix <span class="op">=</span> <span class="va">Y_matrix</span>,</span>
+<span>                              M_matrix <span class="op">=</span> <span class="va">M_matrix</span>,</span>
+<span>                              K <span class="op">=</span> <span class="va">K</span>,</span>
+<span>                              X_type <span class="op">=</span> <span class="va">X_type</span>, <span class="co"># indicates the type of Exposure</span></span>
+<span>                              Y_type <span class="op">=</span> <span class="va">Y_type</span>,  <span class="co"># indicates the type of Outcome</span></span>
+<span>                              detailed <span class="op">=</span> <span class="va">detailed</span>,  <span class="co"># indicates the exposure is multivariate</span></span>
+<span>                              covar <span class="op">=</span> <span class="va">covar</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "All exposome columns are in numeric format."</span></span>
+<span><span class="co">#&gt; [1] "Running first regression with multivariate explatory variables."</span></span>
+<span><span class="co">#&gt; [1] "Generating detailed pvalues for each explanatory variable."</span></span>
+<span><span class="co">#&gt; [1] "Running second regression."</span></span>
+<span><span class="co">#&gt; [1] "Running max-squared test."</span></span>
+<span><span class="co">#&gt; [1] "Generating max2 pvalues for each explanatory variable."</span></span>
+<span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># # max2 test results</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   cg00005740   cg00006787   cg00007032   cg00008612   cg00009871   cg00009922 </span></span>
+<span><span class="co">#&gt; 9.102823e-01 2.920146e-01 7.225012e-01 2.385119e-02 3.516762e-06 9.695216e-01</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="selection-of-a-subset-of-mediators-1">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators-1"></a>
+</h3>
+<p>In this example, we will consider the 10 first selected
+mediators.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
+<span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M_matrix</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      cg00812096 cg00009871 cg00502469 cg00692833 cg00667948 cg00472029</span></span>
+<span><span class="co">#&gt; [1,]  0.8347121  0.8363436  0.8927800  0.8948539  0.8712137  0.5820960</span></span>
+<span><span class="co">#&gt; [2,]  0.8458379  0.8205799  0.5682206  0.8575876  0.8896628  0.6472582</span></span>
+<span><span class="co">#&gt; [3,]  0.8588473  0.8140062  0.5051385  0.8711505  0.8557260  0.5829765</span></span>
+<span><span class="co">#&gt; [4,]  0.8839990  0.8291785  0.9149238  0.8780743  0.8603549  0.6182133</span></span>
+<span><span class="co">#&gt; [5,]  0.8692853  0.8553199  0.9022252  0.9130964  0.8654133  0.6101397</span></span>
+<span><span class="co">#&gt; [6,]  0.9016656  0.8714318  0.6100352  0.9251308  0.8822586  0.6321066</span></span>
+<span><span class="co">#&gt;      cg00418880 cg00094319 cg00823993 cg00295794</span></span>
+<span><span class="co">#&gt; [1,] 0.08166078  0.8263436  0.8934795 0.12546133</span></span>
+<span><span class="co">#&gt; [2,] 0.07109538  0.8151969  0.9026914 0.13343816</span></span>
+<span><span class="co">#&gt; [3,] 0.05141945  0.7761152  0.8829338 0.08125871</span></span>
+<span><span class="co">#&gt; [4,] 0.08230808  0.8164996  0.8706615 0.09549562</span></span>
+<span><span class="co">#&gt; [5,] 0.08376966  0.7862542  0.8955807 0.09815897</span></span>
+<span><span class="co">#&gt; [6,] 0.02454763  0.8553498  0.8895120 0.08643299</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-2-estimation-of-the-indirect-effect-1">STEP 2 : estimation of the indirect effect<a class="anchor" aria-label="anchor" href="#step-2-estimation-of-the-indirect-effect-1"></a>
+</h3>
+<p>The function <strong>estimate_effect</strong> estimate the individual
+indirect effect of mediators.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">object</span> <span class="op">=</span> <span class="va">hdmax2_step1</span></span>
+<span><span class="va">m</span> <span class="op">=</span> <span class="va">mediators_top10</span></span>
+<span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
+<span>                                       m <span class="op">=</span> <span class="va">mediators_top10</span>,</span>
+<span>                                       is.categorial <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Estimating indirect effect for multivariate exposome."</span></span>
+<span><span class="co">#&gt; [1] "A model is run to estimate indirect effect of the following explanatory variable: X_continuous"</span></span>
+<span><span class="co">#&gt; [1] "Computing ODE and OTE for continuous outcome."</span></span>
+<span><span class="co">#&gt; [1] "A model is run to estimate indirect effect of the following explanatory variable: X_continuous_2"</span></span>
+<span><span class="co">#&gt; [1] "Computing ODE and OTE for continuous outcome."</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="plot-1">Plot<a class="anchor" aria-label="anchor" href="#plot-1"></a>
+</h3>
+<p>We propose a set of plots which include:</p>
+<ul>
+<li><p>Forest plot of mediators ACME</p></li>
+<li><p>Forest plot of mediators PM</p></li>
+<li><p>Comparison of ODE, OIE and OTE</p></li>
+<li><p>Mediators effect size representation</p></li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, N_med <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "hdmax2 plot for multivariate exposome"</span></span></code></pre></div>
+<p><img src="hdmax2_multivariate_files/figure-html/unnamed-chunk-11-1.png" width="700"><img src="hdmax2_multivariate_files/figure-html/unnamed-chunk-11-2.png" width="700"></p>
+<pre><code><span><span class="co">#&gt; $X_continuous</span></span>
+<span><span class="co">#&gt; TableGrob (2 x 2) "arrange": 4 grobs</span></span>
+<span><span class="co">#&gt;   z     cells    name           grob</span></span>
+<span><span class="co">#&gt; 1 1 (1-1,1-1) arrange gtable[layout]</span></span>
+<span><span class="co">#&gt; 2 2 (1-1,2-2) arrange gtable[layout]</span></span>
+<span><span class="co">#&gt; 3 3 (2-2,1-1) arrange gtable[layout]</span></span>
+<span><span class="co">#&gt; 4 4 (2-2,2-2) arrange gtable[layout]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $X_continuous_2</span></span>
+<span><span class="co">#&gt; TableGrob (2 x 2) "arrange": 4 grobs</span></span>
+<span><span class="co">#&gt;   z     cells    name           grob</span></span>
+<span><span class="co">#&gt; 1 1 (1-1,1-1) arrange gtable[layout]</span></span>
+<span><span class="co">#&gt; 2 2 (1-1,2-2) arrange gtable[layout]</span></span>
+<span><span class="co">#&gt; 3 3 (2-2,1-1) arrange gtable[layout]</span></span>
+<span><span class="co">#&gt; 4 4 (2-2,2-2) arrange gtable[layout]</span></span></code></pre>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.3.3 (2024-02-29)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
@@ -317,7 +435,7 @@ indirect effect of mediators.</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Florence Pittion, Magali Richard.</p>
+<p>Developed by Florence Pittion, Magali Richard, Olivier François.</p>
 </div>
 
 <div class="pkgdown-footer-right">
