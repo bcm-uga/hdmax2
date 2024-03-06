@@ -96,6 +96,15 @@ github repository</p>
 <p>We simulated 500 samples and 1000 potential DNA methylation
 mediators, with various a binary exposure (smoking status of mothers)
 and continuous outcomes (birth weight).</p>
+<div class="section level3">
+<h3 id="identifying-aggregated-mediator-regions-amr">Identifying aggregated mediator regions (AMR)<a class="anchor" aria-label="anchor" href="#identifying-aggregated-mediator-regions-amr"></a>
+</h3>
+<p>Identify Aggregated Methylated regions (AMR) with AMR_search function
+which uses from the P-values from function max2 and using a adapted
+comb-p method (comb-p is a tool that manipulates BED files of possibly
+irregularly spaced P-values and calculates auto-correlation, combines
+adjacent P-values, performs false discovery adjustment, finds regions of
+enrichment and assigns significance to those regions).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/helper_ex.html">helper_ex</a></span></span>
 <span></span>
@@ -111,7 +120,7 @@ and continuous outcomes (birth weight).</p>
 <span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">16</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="helper_functions_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<code class="sourceCode R"><span><span class="co"># choosen number of dimension</span></span>
 <span><span class="va">K</span><span class="op">=</span><span class="fl">5</span></span>
 <span></span>
 <span><span class="co">## run hdmax2 step1</span></span>
@@ -164,10 +173,15 @@ and continuous outcomes (birth weight).</p>
 <span><span class="co">#&gt; [1] "cg11518257" "cg15617543"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $DMR2</span></span>
-<span><span class="co">#&gt; [1] "cg10228629" "cg06377929"</span></span>
-<span></span>
-<span></span>
-<span><span class="co">## run hdmax2 step2</span></span>
+<span><span class="co">#&gt; [1] "cg10228629" "cg06377929"</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="quantifying-indirect-effects">Quantifying indirect effects<a class="anchor" aria-label="anchor" href="#quantifying-indirect-effects"></a>
+</h3>
+<p>Like in single mediators analysis <em>esimate_effect</em> function
+could be use to estimate different effects of AMR.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## run hdmax2 step2</span></span>
 <span></span>
 <span><span class="va">object</span> <span class="op">=</span> <span class="va">hdmax2_step1</span></span>
 <span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">methylation</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
@@ -188,7 +202,7 @@ and continuous outcomes (birth weight).</p>
 <span></span>
 <span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, N_med <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "hdmax2 plot for univariate exposome"</span></span></code></pre></div>
-<p><img src="helper_functions_files/figure-html/unnamed-chunk-2-2.png" width="700"></p>
+<p><img src="helper_functions_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; TableGrob (2 x 2) "arrange": 4 grobs</span></span>
 <span><span class="co">#&gt;   z     cells    name           grob</span></span>
 <span><span class="co">#&gt; 1 1 (1-1,1-1) arrange gtable[layout]</span></span>
@@ -196,15 +210,22 @@ and continuous outcomes (birth weight).</p>
 <span><span class="co">#&gt; 3 3 (2-2,1-1) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 4 4 (2-2,2-2) arrange gtable[layout]</span></span></code></pre>
 </div>
+</div>
 <div class="section level2">
 <h2 id="how-to-select-potential-mediators-using-qvalues-and-fdr-control">How to select potential mediators using q=values and FDR control
 ?<a class="anchor" aria-label="anchor" href="#how-to-select-potential-mediators-using-qvalues-and-fdr-control"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## run hdmax2 step1</span></span>
-<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">exposure</span><span class="op">)</span>,</span>
-<span>                 Y_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">phenotype</span><span class="op">)</span>,</span>
-<span>                 M_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">methylation</span><span class="op">)</span>, </span>
+<p>Several methods can be use to select potential mediators from step1
+results for our methods, in our main use case we simply select top 10
+mediators but we can use multiple test adapted threshold like FDR
+control (False Discovery Rate)</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
+<span><span class="co">## run hdmax2 step1</span></span>
+<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">)</span>,</span>
+<span>                 Y_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">Y_continuous</span><span class="op">)</span>,</span>
+<span>                 M_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">M</span><span class="op">)</span>, </span>
 <span>                 K <span class="op">=</span> <span class="va">K</span>,</span>
 <span>                 X_type <span class="op">=</span> <span class="st">"univariate"</span>,</span>
 <span>                 Y_type <span class="op">=</span> <span class="st">"continuous"</span><span class="op">)</span></span>
@@ -216,21 +237,38 @@ and continuous outcomes (birth weight).</p>
 <span></span>
 <span><span class="co">## Select candidate mediator  </span></span>
 <span><span class="va">qval</span> <span class="op">&lt;-</span> <span class="fu">fdrtool</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fdrtool/man/fdrtool.html" class="external-link">fdrtool</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span>, statistic <span class="op">=</span> <span class="st">"pvalue"</span>, plot <span class="op">=</span> <span class="cn">F</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">$</span><span class="va">qval</span></span>
-<span><span class="va">candidate_mediator</span> <span class="op">&lt;-</span> <span class="va">qval</span><span class="op">[</span><span class="va">qval</span><span class="op">&lt;=</span> <span class="fl">0.5</span><span class="op">]</span> <span class="co"># In this example, we will consider FDR levels &lt;50%.</span></span>
+<span><span class="va">candidate_mediator</span> <span class="op">&lt;-</span> <span class="va">qval</span><span class="op">[</span><span class="va">qval</span><span class="op">&lt;=</span> <span class="fl">0.8</span><span class="op">]</span> <span class="co"># In this example, we will consider FDR levels &lt;80%.</span></span>
 <span><span class="va">candidate_mediator</span></span>
-<span><span class="co">#&gt; named numeric(0)</span></span></code></pre></div>
+<span><span class="co">#&gt; cg00019196 cg00024247 cg00035636 cg00044871 cg00054572 cg00055462 cg00071026 </span></span>
+<span><span class="co">#&gt;  0.7637137  0.7637137  0.7974308  0.7637137  0.7637137  0.7772144  0.7637137 </span></span>
+<span><span class="co">#&gt; cg00071658 cg00094319 cg00098070 cg00108349 cg00133204 cg00165067 cg00181327 </span></span>
+<span><span class="co">#&gt;  0.7637137  0.7848042  0.7637137  0.7921075  0.7993508  0.7939973  0.7637137 </span></span>
+<span><span class="co">#&gt; cg00187692 cg00208734 cg00221494 cg00242786 cg00245856 cg00252121 cg00274440 </span></span>
+<span><span class="co">#&gt;  0.7637137  0.7637137  0.7637137  0.7637137  0.7984185  0.7637137  0.7637137 </span></span>
+<span><span class="co">#&gt; cg00278131 cg00348891 cg00390259 cg00448720 cg00458564 cg00476054 cg00557354 </span></span>
+<span><span class="co">#&gt;  0.7637137  0.7637137  0.7637137  0.7743671  0.7637137  0.7637137  0.7637137 </span></span>
+<span><span class="co">#&gt; cg00587941 cg00615217 cg00627998 cg00636982 cg00644416 cg00644922 cg00663972 </span></span>
+<span><span class="co">#&gt;  0.7637137  0.7637137  0.7637137  0.7637137  0.7637137  0.7637137  0.7950435 </span></span>
+<span><span class="co">#&gt; cg00674995 cg00682015 cg00697358 cg00717219 cg00722493 cg00732810 cg00781839 </span></span>
+<span><span class="co">#&gt;  0.7637137  0.7637137  0.7637137  0.7637137  0.7820714  0.7637137  0.7637137 </span></span>
+<span><span class="co">#&gt; cg00792968 cg00823993 cg00825130 cg00841725 cg00880018 cg00894344 cg00898013 </span></span>
+<span><span class="co">#&gt;  0.7637137  0.7637137  0.7637137  0.7942501  0.7637137  0.7637137  0.7637137 </span></span>
+<span><span class="co">#&gt; cg00944193 cg00968267 cg00986957 cg00994984 cg01010012 </span></span>
+<span><span class="co">#&gt;  0.7637137  0.7637137  0.7679389  0.7758579  0.7965575</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="how-to-transform-a-categorial-variable-using-one-hot-encoding">How to transform a categorial variable using one-hot encoding ?<a class="anchor" aria-label="anchor" href="#how-to-transform-a-categorial-variable-using-one-hot-encoding"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>When categorial variables are used in our models, we must go through
+design matrices, and for that, one-hot encoding function is needed.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
 <span></span>
 <span><span class="va">X_matrix</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_categorial</span></span>
 <span><span class="va">X_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/droplevels.html" class="external-link">droplevels</a></span><span class="op">(</span><span class="va">X_matrix</span><span class="op">)</span></span>
 <span><span class="va">X_matrix</span> <span class="op">=</span> <span class="fu">mltools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mltools/man/one_hot.html" class="external-link">one_hot</a></span><span class="op">(</span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">X_matrix</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">X_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">X_matrix</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.3.3 (2024-02-29)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
@@ -276,7 +314,7 @@ and continuous outcomes (birth weight).</p>
 <span><span class="co">#&gt; [61] Formula_1.2-5           htmlTable_2.4.2         systemfonts_1.0.5      </span></span>
 <span><span class="co">#&gt; [64] jquerylib_0.1.4         glue_1.7.0              pkgdown_2.0.7          </span></span>
 <span><span class="co">#&gt; [67] nloptr_2.0.3            stringi_1.8.3           gtable_0.3.4           </span></span>
-<span><span class="co">#&gt; [70] GenomeInfoDb_1.38.6     hdmax2_0.0.0.9000       lme4_1.1-35.1          </span></span>
+<span><span class="co">#&gt; [70] GenomeInfoDb_1.38.7     hdmax2_0.0.0.9000       lme4_1.1-35.1          </span></span>
 <span><span class="co">#&gt; [73] munsell_0.5.0           tibble_3.2.1            pillar_1.9.0           </span></span>
 <span><span class="co">#&gt; [76] htmltools_0.5.7         GenomeInfoDbData_1.2.11 R6_2.5.1               </span></span>
 <span><span class="co">#&gt; [79] textshaping_0.3.7       evaluate_0.23           lpSolve_5.6.20         </span></span>
