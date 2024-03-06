@@ -191,8 +191,8 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
     
     for (i in 1:ncol(acme_sum)) {
       samp <- sample(length(X), replace = T)
-      
-      
+     # print(samp)
+
       # effet A X -> M
       mod1 <- lm(m[samp, ] ~ X[samp] + covars[samp, ])
       A <- t(sapply(summary(mod1), function(x) x$coeff[2, ]))
@@ -203,8 +203,21 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
       # effet B m -> Y
       if(Y_type=="binary"){
         dat.1 <- data.frame(X, m, covars = covars)
-        mod2 <- glm(Y[samp] ~ .,family = "binomial" , data = dat.1[samp, ])
-        B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
+       # mod2 <- glm(Y[samp] ~ .,family = "binomial" , data = dat.1[samp, ])
+        #B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
+        
+        #check that glm converges to include this iteration
+        mod2 <- tryCatch(
+          glm(Y[samp] ~ .,family = "binomial" , data = dat.1[samp, ]),
+          warning = function(w) {
+          print(paste0("glm.fit produces warning, iteration ", i, " of bootstrap is not used"))
+           return(NULL)
+          }
+          )
+        
+        if (!is.null( mod2)) { 
+          B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
+        }
       } 
       
       if(Y_type=="continuous"){
@@ -225,6 +238,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
       ab$AB <- ab$A * ab$B
       
       acme_sum[i] <- sum(ab$AB)
+      #print(acme_sum[i])
     }
     
     ### Compute ODE and OTE for the given model
@@ -403,8 +417,21 @@ estimate_effect <- function(object , m, boots = 100, sims = 3, is.categorial = F
         # effet B m -> Y
         if(Y_type=="binary"){
           dat.1 <- data.frame(X, M, covars = covars)
-          mod2 <- glm(Y[samp] ~ ., family = "binomial", data = dat.1[samp, ])
-          B <- as.data.frame(summary(mod2)$coeff[3:(ncol(M) + 2), ])
+         # mod2 <- glm(Y[samp] ~ ., family = "binomial", data = dat.1[samp, ])
+         # B <- as.data.frame(summary(mod2)$coeff[3:(ncol(M) + 2), ])
+          
+          #check that glm converges to include this iteration
+          mod2 <- tryCatch(
+            glm(Y[samp] ~ ., family = "binomial", data = dat.1[samp, ]),
+            warning = function(w) {
+              print(paste0("glm.fit produces warning, iteration ", i, " of bootstrap is not used"))
+              return(NULL)
+            }
+          )
+          
+          if (!is.null( mod2)) { 
+            B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
+          }
         } 
         
         if(Y_type=="continuous"){
