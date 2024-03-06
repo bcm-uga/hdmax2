@@ -2,7 +2,8 @@
 % Please edit documentation in R/hdmax2_helper_functions.R
 \name{combp2}
 \alias{combp2}
-\title{Run mediation analysis for a set of markers}
+\title{Run mediation analysis for a set of markers
+Function adapt from the combp function() of the ENmix package}
 \usage{
 combp2(data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCores = 10)
 }
@@ -21,8 +22,12 @@ V2 is chromosome position, V4 is for P value and V5 for name of CpGs.}
 }
 \value{
 Results of the DMRs analysis.
+\itemize{
+\item result.fdr, table of selected AMRs. For each AMR include chromosomic position, P-value, and FDR
+}
 }
 \description{
+Run mediation analysis for a set of markers
 Function adapt from the combp function() of the ENmix package
 }
 \details{

@@ -1,7 +1,5 @@
 ##' Run mediation analysis for a set of markers
-##'
 ##' Function adapt from the combp function() of the ENmix package
-##'
 ##' @param data A data frame from bed format file with colname name
 ##' "V1","V2", "V3","V4","V5",V1 indicate chromosome (1,2,3,...,X,Y),
 ##' V2 is chromosome position, V4 is for P value and V5 for name of CpGs.
@@ -9,16 +7,14 @@
 ##' @param bin.size bin size for autocorrelation calculation.
 ##' @param seed FDR significance threshold for initial selection of DMR region.
 ##' @param nCores Number of computer cores used in calculation
-##'
 ##' @return
 ##' Results of the DMRs analysis.
-##'
+##' - result.fdr, table of selected AMRs. For each AMR include chromosomic position, P-value, and FDR
+##' @export
 ##' @details
-##'
 ##' The input should be a data frame with column name V1-V5, indicating chromosome, start position,end position,
 ##' pValues and probe names. The function will use a modified comb-p method to identify
 ##' differentially methylated regions.
-##'
 ##' @author Basile Jumentier
 ##'
 combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCores = 10) {
@@ -133,23 +129,18 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
 ##'
 ##' Identify aggregated methylated regions (AMR) from the P-values from function max2 using a modified comb-p method. 
 ##' Compute the P-value and the FDR for each AMR detected.
-##'
 ##' @param chr chromosomes
 ##' @param start chromosomal position of markers (start)
 ##' @param end chromosomal position of markers (end)
 ##' @param pval P-values for each markers, from the max2 function
 ##' @param cpg name of each markers
 ##' @param ... see help of combp of ENmix package
-##'
 ##' @return
 ##' - res, table of selected AMRs. For each AMR include chromosomic position, P-value, and FDR
 ##' - data, matrix of all cpg, with annotation and provided P-values
-##'
 ##' @details
-##'
 ##' The function uses a modified comb-p method to identify
 ##' aggregated methylated regions (AMRs).
-##'
 ##' @export
 ##' @author Basile Jumentier
 ##' @examples
@@ -170,28 +161,22 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
 ##' Build AMR vector
 ##'
 ##' Build AMR from the result of function AMR_search
-##'
 ##' @param res result object of function AMR_search
 ##' @param methylation a matrix of methylation profile.
 ##' @param nb_cpg threshold of minimal number of CpG in the AMR
-##'
 ##' @return
 ##' A set of build AMRs.
 ##'  - res, selected AMR
 ##'  - CpG_for_each_AMR, list of markers present on each AMR.
 ##'  - AMR_acp, first components of PCA for each DMR
 ##'  - AMR_mean, mean value of CpG on the AMR 
-##'
-##'
 ##' @details
-##'
 ##' We use the series of pValues (one pValue per CpGs) obtained with the mEWAS
 ##' regression method and the combination of pValue max2.
 ##' To determine the potential AMRs used the combp method present in the ENmix package (Xu et al. 2016).
 ##' This method uses the Fisher method to combine the pValues and also the base pair distance (bP)
 ##' between CpGs (1000 bP maximum between nb_cpg CpGs on the same AMR).
 ##' The information for each AMR is summarized by doing the mean (by row) of each CpG.
-##' @importFrom stats prcomp
 ##' @export
 ##' @author Basile Jumentier
 ##' @examples
