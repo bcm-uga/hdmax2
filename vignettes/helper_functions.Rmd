@@ -69,9 +69,7 @@ K=5
 hdmax2_step1 = hdmax2::run_AS(X_matrix = as.matrix(data$exposure),
                               Y_matrix = as.matrix(data$phenotype),
                               M_matrix = as.matrix(data$methylation), 
-                              K = K,
-                              X_type = "univariate",
-                              Y_type = "continuous")
+                              K = K)
 
 ##Detecting AMR
 chr = data$annotation$chr

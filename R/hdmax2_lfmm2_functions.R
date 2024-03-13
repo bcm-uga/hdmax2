@@ -43,7 +43,7 @@ lfmm2_med = function(input,
     if (anyNA(Y)) {
       stop("The input matrix contains missing values: NA, 9 or -9 not allowed.")
     }
-  }
+   }
   
   ## Check independent/covariate env matrix  
   ## LEA 
@@ -60,7 +60,7 @@ lfmm2_med = function(input,
     if (anyNA(X)) {
       stop("The environmental matrix contains NA.")
     }
-  }
+   }
   
   if (length(K) > 1){
     stop("Multiple values of K not allowed.")

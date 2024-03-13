@@ -5,7 +5,7 @@
 \title{Estimate effects for a set of mediation markers
 V2 this version allow to integrate covariates in mediation function}
 \usage{
-estimate_effect(object, m, boots = 100, sims = 3, is.categorial = FALSE)
+estimate_effect(object, m, boots = 100, sims = 3)
 }
 \arguments{
 \item{object}{results from hdmax2 step 2}
@@ -73,5 +73,5 @@ hdmax2_step2 = hdmax2::estimate_effect(
    m = mediators_top10)
 }
 \author{
-Florence Pittion
+Florence Pittion, Magali Richard
 }

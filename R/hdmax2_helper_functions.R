@@ -16,6 +16,16 @@
 ##' pValues and probe names. The function will use a modified comb-p method to identify
 ##' differentially methylated regions.
 ##' @author Basile Jumentier
+##' @example 
+##'data = hdmax2::helper_ex
+##'chr = data$annotation$chr
+##'start = data$annotation$start
+##'end = data$annotation$end
+##'pval = hdmax2_step1$max2_pvalues
+##'cpg = data$annotation$cpg
+##'data_combp <- data.frame(chr, start, end, pval, cpg)
+##'colnames(data_combp) <- paste0("V", 1:5)
+##'res <- combp2(data_combp, seed = 0.6,  nCores = 2, ...)
 ##'
 combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCores = 10) {
   
@@ -144,7 +154,36 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
 ##' @export
 ##' @author Basile Jumentier
 ##' @examples
+##'data = hdmax2::helper_ex
+##'#Artificial reduction of dataset size to pass the github action check when building hdmax2 website
+##'data$methylation = data$methylation[ , 800:1000]
+##'data$annotation = data$annotation[800:1000, ]
+##'K=5
+##'## run hdmax2 step1
+##'hdmax2_step1 = hdmax2::run_AS(X_matrix = as.matrix(data$exposure),
+##'                              Y_matrix = as.matrix(data$phenotype),
+##'                              M_matrix = as.matrix(data$methylation),
+##'                              K = K,
+##'                              X_type = "univariate",
+##'                              Y_type = "continuous")
 ##'
+##'##Detecting AMR
+##'chr = data$annotation$chr
+##'start = data$annotation$start
+##'end = data$annotation$end
+##'pval = hdmax2_step1$max2_pvalues
+##'cpg = data$annotation$cpg
+##'
+##'res.amr_search = hdmax2::AMR_search(chr = data$annotation$chr,
+##'                                    start = data$annotation$start,
+##'                                    end = data$annotation$end,
+##'                                    pval = hdmax2_step1$max2_pvalues,
+##'                                    cpg = data$annotation$cpg,
+##'                                    seed = 0.6, #Careful to change this parameter when working with real data
+##'                                    nCores = 2)
+##'
+##'res.amr_search$res
+##'##'
 AMR_search <- function(chr, start, end, pval, cpg, ...) {
   
   tmp <- data.frame(chr, start, end, pval, cpg)
@@ -180,6 +219,42 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
 ##' @export
 ##' @author Basile Jumentier
 ##' @examples
+##'data = hdmax2::helper_ex
+##'#Artificial reduction of dataset size to pass the github action check when building hdmax2 website
+##'data$methylation = data$methylation[ , 800:1000]
+##'data$annotation = data$annotation[800:1000, ]
+##'K=5
+##'## run hdmax2 step1
+##'hdmax2_step1 = hdmax2::run_AS(X_matrix = as.matrix(data$exposure),
+##'                              Y_matrix = as.matrix(data$phenotype),
+##'                              M_matrix = as.matrix(data$methylation),
+##'                              K = K,
+##'                              X_type = "univariate",
+##'                              Y_type = "continuous")
+##'
+##'##Detecting AMR
+##'chr = data$annotation$chr
+##'start = data$annotation$start
+##'end = data$annotation$end
+##'pval = hdmax2_step1$max2_pvalues
+##'cpg = data$annotation$cpg
+##'
+##'res.amr_search = hdmax2::AMR_search(chr = data$annotation$chr,
+##'                                    start = data$annotation$start,
+##'                                    end = data$annotation$end,
+##'                                    pval = hdmax2_step1$max2_pvalues,
+##'                                    cpg = data$annotation$cpg,
+##'                                    seed = 0.6, #Careful to change this parameter when working with real data
+##'                                    nCores = 2)
+##'
+##'res.amr_search$res
+##'
+##'res.arm_build = hdmax2::AMR_build(res.amr_search, 
+##'methylation = data$methylation, nb_cpg = 2)
+##'#List of DMR selected
+##'head(res.arm_build$res)
+##'## CpG in the DMR
+##'res.arm_build$CpG_for_each_AMR
 ##'
 AMR_build <- function(res, methylation, nb_cpg = 2) {
   

@@ -33,6 +33,38 @@ Compute the P-value and the FDR for each AMR detected.
 The function uses a modified comb-p method to identify
 aggregated methylated regions (AMRs).
 }
+\examples{
+data = hdmax2::helper_ex
+#Artificial reduction of dataset size to pass the github action check when building hdmax2 website
+data$methylation = data$methylation[ , 800:1000]
+data$annotation = data$annotation[800:1000, ]
+K=5
+## run hdmax2 step1
+hdmax2_step1 = hdmax2::run_AS(X_matrix = as.matrix(data$exposure),
+                             Y_matrix = as.matrix(data$phenotype),
+                             M_matrix = as.matrix(data$methylation),
+                             K = K,
+                             X_type = "univariate",
+                             Y_type = "continuous")
+
+##Detecting AMR
+chr = data$annotation$chr
+start = data$annotation$start
+end = data$annotation$end
+pval = hdmax2_step1$max2_pvalues
+cpg = data$annotation$cpg
+
+res.amr_search = hdmax2::AMR_search(chr = data$annotation$chr,
+                                   start = data$annotation$start,
+                                   end = data$annotation$end,
+                                   pval = hdmax2_step1$max2_pvalues,
+                                   cpg = data$annotation$cpg,
+                                   seed = 0.6, #Careful to change this parameter when working with real data
+                                   nCores = 2)
+
+res.amr_search$res
+##'
+}
 \author{
 Basile Jumentier
 }

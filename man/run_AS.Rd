@@ -5,12 +5,10 @@
 \title{Association Study with both exposure and outcome}
 \usage{
 run_AS(
-  X_matrix,
-  Y_matrix,
-  M_matrix,
-  K = 5,
-  X_type = "univariate",
-  Y_type = "continuous",
+  X,
+  Y,
+  M,
+  K,
   covar = NULL,
   detailed = FALSE,
   diagnostic.plot = FALSE,
@@ -19,19 +17,16 @@ run_AS(
 )
 }
 \arguments{
-\item{X_matrix}{Exposure. An explanatory variable matrix with n rows and d columns.
-Each column corresponds to a distinct explanatory variable (Exposure). All columns should be in numeric format.}
+\item{X}{Exposure. An explanatory variable data frame with n rows and d columns.
+Each column corresponds to a distinct explanatory variable (Exposure).
+Continuous and binary variables must be encoded in numeric format. categorical variables are factor objects. The user can use the as.factor function to encode categorical variables, and  levels() and ordered() functions to define the modal order of categorical variables.}
 
-\item{Y_matrix}{Outcome. An explanatory variable matrix with n rows and 1 columns.}
+\item{Y}{Outcome. An explanatory variable matrix with n rows and 1 columns, corresponds to a vector, which supports both continuous and binary formats.}
 
-\item{M_matrix}{a response variable matrix with n rows and p columns.
+\item{M}{a response variable matrix with n rows and p columns.
 Response variables must be encoded as numeric. No NAs allowed.}
 
 \item{K}{an integer for the number of latent factors in the regression model.}
-
-\item{X_type}{Type of exposition, can be either "univariate" (for continuous and binary variables), or "multivariate". Categorial variables must be one-hot encoded as multivariate variables. See helper_functions for example.}
-
-\item{Y_type}{type of outcome, , can be either "binary" or "continuous"}
 
 \item{covar}{set of covariable, must be numeric. No NAs allowed}
 
@@ -94,13 +89,15 @@ Max2 test The P-value is computed for each markers following this formula
 \examples{
 # Load example dataset
 simu_data = hdmax2::simu_data
+
 # Run {hdmax2} step 1
 hdmax2_step1 = run_AS(X_matrix = as.matrix(simu_data$X_continuous) ,
                       Y_matrix =  as.matrix(simu_data$Y_continuous),
-                      M_matrix =  as.matrix(simu_data$M))
-# Print max2 test results
+                      M_matrix =  as.matrix(simu_data$M),
+                      K=5)
+
 head(hdmax2_step1$max2_pvalues)
 }
 \author{
-Florence Pittion
+Florence Pittion, Magali Richard
 }
