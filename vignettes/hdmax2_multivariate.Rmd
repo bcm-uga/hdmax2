@@ -1,0 +1,227 @@
+---
+title: "hdmax2 application for multivariate exposome"
+author: "Florence Pittion, Magali Richard, Olivier Francois"
+date: "January, 2024"
+output:
+  prettydoc::html_pretty:
+    self_contained: true
+    theme: cayman
+    highlight: github
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{hdmax2_multivariate.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+```
+
+
+
+## Introduction 
+
+The `hdmax2` package is designed to accept exposure $X$ consisting of univariate data, which can be continuous, binary, as well as multivariate exposomes (which includes categorical variables). 
+
+In this vignette, we treat the multivariate example, with a categorial explanatory variables
+
+To install the latest version of **hdmax2**, use the github repository 
+```{r}
+#devtools::install_github("bcm-uga/hdmax2")
+```
+
+
+## Simulated dataset
+
+We simulated 100 samples and 500 potential mediators, with various type of exposures (continuous, binary or categorial) and outcomes(continuous or binary).
+
+
+```{r}
+simu_data = hdmax2::simu_data
+
+## Exposures
+X_matrix = simu_data$X_categorial
+
+## Outcomes
+Y_matrix = simu_data$Y_continuous
+
+## High dimension mediators
+M_matrix = as.matrix(simu_data$M)
+
+## Covariates
+age = simu_data$age
+gender =simu_data$gender
+
+## Number of Latent factor estimation
+
+pc <- prcomp(M_matrix)
+plot(pc$sdev[1:10],
+     xlab = 'Principal Component',
+     ylab = "Explained variance")
+
+K=8 #pca conclusion : it is better to select too many factors that too few
+```
+
+
+## First use case  *categorial exposure* and *continuous outcome*
+
+### STEP 1: Run association studies
+
+The **run_AS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. Covariables can be included. 
+
+```{r}
+
+#X_type= "multivariate"
+detailed = TRUE
+#Y_type = "continuous"
+detailed = TRUE
+covar = cbind(age, gender)
+
+hdmax2_step1 = hdmax2::run_AS(X = X_matrix,
+                              Y = Y_matrix,
+                              M = M_matrix,
+                              K = K,
+                              detailed = detailed,  # indicates the exposure is multivariate
+                              covar = covar)
+
+# 
+# # max2 test results
+head(hdmax2_step1$max2_pvalues)
+
+```
+
+### Selection of a subset of mediators
+
+In this example, we will consider the 10 first selected mediators.
+
+
+```{r}
+## Selecting top 10 mediators
+mediators_top10 = M_matrix[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+head(mediators_top10)
+
+```
+
+### STEP 2 : estimation of the indirect effect
+
+The function **estimate_effect** estimate the individual indirect effect of mediators.
+
+```{r}
+object = hdmax2_step1
+m = mediators_top10
+hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
+                                       m = mediators_top10,
+                                       is.categorial = TRUE)
+```
+
+### Plot
+
+We propose a set of plots which include:
+
+- Forest plot of mediators ACME
+
+- Forest plot of mediators PM 
+
+- Comparison of ODE, OIE and OTE
+
+- Mediators effect size representation
+
+
+```{r}
+library(ggplot2)
+hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
+```
+
+
+
+## Second use case  *multivariate exposure* and *continuous outcome*
+
+
+```{r}
+
+## Exposures
+X_matrix = simu_data$X_multi_2expo
+
+
+
+```
+
+### STEP 1: Run association studies
+
+The **run_AS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. Covariables can be included. 
+
+```{r}
+
+#X_type= "multivariate"
+#detailed = TRUE
+#Y_type = "continuous"
+detailed = TRUE
+covar = cbind(age, gender)
+
+hdmax2_step1 = hdmax2::run_AS(X = X_matrix ,
+                              Y = Y_matrix,
+                              M = M_matrix,
+                              K = K,
+                              detailed = detailed,  # indicates the exposure is multivariate
+                              covar = covar)
+
+# 
+# # max2 test results
+head(hdmax2_step1$max2_pvalues)
+
+```
+
+### Selection of a subset of mediators
+
+In this example, we will consider the 10 first selected mediators.
+
+
+```{r}
+## Selecting top 10 mediators
+mediators_top10 = M_matrix[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+head(mediators_top10)
+
+```
+
+### STEP 2 : estimation of the indirect effect
+
+The function **estimate_effect** estimate the individual indirect effect of mediators.
+
+```{r}
+object = hdmax2_step1
+m = mediators_top10
+hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
+                                       m = mediators_top10,
+                                       is.categorial = FALSE)
+```
+
+### Plot
+
+We propose a set of plots which include:
+
+- Forest plot of mediators ACME
+
+- Forest plot of mediators PM 
+
+- Comparison of ODE, OIE and OTE
+
+- Mediators effect size representation
+
+
+```{r}
+library(ggplot2)
+hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
+```
+
+
+
+```{r}
+sessionInfo()
+```

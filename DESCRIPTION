@@ -1,24 +1,34 @@
 Package: hdmax2
-Title: High Dimensionnal Mediation Analysis
-Version: 1.0.0.0
-Date: 2022-02-09
-Author: Basile Jumentier <basile.jumentier@gmail.com>
-Maintainer: Basile Jumentier <basile.jumentier@gmail.com>
-Description: The R package hdmax2 contains a set of functions to perform mediation analysis with high dimensional mediators such as genomic and epigenomic data. 
-License: GPL-3
+Title: R package hdmax2 performs high dimension mediation analysis
+Version: 0.0.0.9000
+Authors@R: c(person("Florence", "Pittion", role = c("aut", "cre"), email="florence.pittion@univ-grenoble-alpes.fr"),
+             person("Magali", "Richard", role = c("aut","ths"), email="magali.richard@univ-grenoble-alpes.fr"),
+             person("Olivier", "Francois", role = c("aut","ths"), email="olivier.francois@univ-grenoble-alpes.fr"),
+             person("Basile", "Jumentier", role = c("aut"), email="basile.jumentier@gmail.com"))
+Description: This package allows users to estimate the indirect effects of mediators, calculate the overall indirect effect of mediators, and facilitates the execution of high-dimensional mediation analysis. The HDMAX2 method includes unobserved confounding factors through a latent factor mixed model approach. It supports the use of exposures of various types and the consideration of both continuous and binary outcomes.
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.1
 Imports: 
-    Biostrings,
+    mltools,
+    ggplot2,
+    survival,
     dplyr,
-    fdrtool,
-    IRanges,
-    lfmm,
     mediation,
-    parallel,
     stats,
-    utils
+    utils,
+    data.table,
+    Biostrings,
+    IRanges,
+    gridExtra,
+    fdrtool,
+    LEA
 Depends: 
     R (>= 2.10)
+VignetteBuilder: knitr
+Suggests: 
+    knitr,
+    rmarkdown
+LazyData: true
+URL: https://bcm-uga.github.io/hdmax2/
