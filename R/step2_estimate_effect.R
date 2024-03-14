@@ -45,9 +45,10 @@
 ##' simu_data = hdmax2::simu_data
 ##' # Run {hdmax2} step 1
 ##' hdmax2_step1 = hdmax2::run_AS(
-##'   X_matrix = as.matrix(simu_data$X_continuous) ,
-##'   Y_matrix =  as.matrix(simu_data$Y_continuous),
-##'   M_matrix =  as.matrix(simu_data$M)
+##'   X = simu_data$X_continuous,
+##'   Y =  simu_data$Y_continuous,
+##'   M =  simu_data$M,
+##'   K = 5
 ##' )
 ##' # Select mediators
 ##' mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
@@ -65,12 +66,12 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
   
   X_mat = object$input$X_input
   Y = object$input$Y_input
-
+  
   M = m
   if (is.null(colnames(M))) {
     colnames(M) <- 1:ncol(M)
   }
-
+  
   expo_var_ids =object$input$expo_var_ids
   ncol_var = length(expo_var_ids)
   Y_type = object$input$outcome_var_type
@@ -89,12 +90,12 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
   # TODO x = as.dataframe de X
   
   for(expo_var_id in expo_var_ids){
-    X = X_mat[, expo_var_id]
-    # if(is.vector(X_mat)){
-    # X = X_mat[which(expo_var_ids%in%expo_var_id)]
-    # } else if (is.matrix(X_mat)){
-    #   X = X_mat[,which(expo_var_ids%in%expo_var_id)]
-    # }
+   if (is.vector(X_mat)){
+     X = X_mat
+   } else if (is.data.frame(X_mat)|| is.matrix(X_mat)){
+     X = X_mat[, expo_var_id]
+   }
+    
     if( ncol_var == 1){
       print("Estimating indirect effect for univariate exposome.")  
       
@@ -105,10 +106,12 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
       } 
     } else if( ncol_var > 1){
       print("Estimating indirect effect for multivariate exposome.") 
-      extra_expo_vars = expo_var_ids[-which(expo_var_ids%in%expo_var_id)]
-      df_extra = X_mat[,which(expo_var_ids%in%extra_expo_vars)]
-     
-       for(col in 1:dim(df_extra)[2]){
+      extra_expo_vars = expo_var_ids[-which(expo_var_ids %in% expo_var_id)]
+      df_extra = X_mat[,which(expo_var_ids %in% extra_expo_vars)]
+      if(is.vector(df_extra)){
+        df_extra = t(t(df_extra))
+      }
+      for(col in 1:dim(df_extra)[2]){
         if(typeof(df_extra[,col])=="character"){
           df_extra[,col] = as.factor(df_extra[,col])
           print(paste("categorial column transformed in factors in covariable data frame"))
@@ -124,7 +127,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
     }
     
     expo_var_type =  typeof(X)
-
+    
     if (expo_var_type == "character"||is.factor(X)){
       print("The input exposome is categorial")
       X_fact = as.factor(X)
@@ -159,24 +162,24 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
         
         for (i in 1:ncol(M)) {#numeric
           
-          dat.x <- data.frame(X = X[,cn[k]], Mi = M[, i], covars = covars)
-          dat.y <- data.frame(X = X[,cn[k]], Mi = M[, i], covars = covars, Y = Y)
+          dat.x <- data.frame(Xk = X[,k], X = X[,-k], Mi = M[, i], covars = covars)
+          dat.y <- data.frame(Xk = X[,k], X = X[,-k], Mi = M[, i], covars = covars, Y = Y)
           
-          mod1 = stats::lm(Mi ~ X + ., data = dat.x)
+          mod1 = stats::lm(Mi ~ Xk + ., data = dat.x)
           
           if(Y_type=="continuous"){
             print(paste0("Generate regression 2 for continuous outcome and mediator ", i))   
-            mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
+            mod2 <- stats::lm(Y ~ Xk + Mi + ., data = dat.y)
             
           } else if(Y_type=="binary"){
             print(paste0("Generate regression 2 for binary outcome and mediator ", i))
-            mod2 <- stats::glm(Y ~ X + Mi + ., family = "binomial", data = dat.y)
+            mod2 <- stats::glm(Y ~ Xk + Mi + ., family = "binomial", data = dat.y)
           }
           
           xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
           my[i, ] <- summary(mod2)$coeff[3, ] # effect of M
           
-          med = mediation::mediate(mod1, mod2, treat = "X", mediator = "Mi")
+          med = mediation::mediate(mod1, mod2, treat = "Xk", mediator = "Mi")
           
           ACME[i, ] <- c(med$d0, med$d0.ci[1], med$d0.ci[2], med$d0.p)
           ADE[i, ] <- c(med$z0, med$z0.ci[1], med$z0.ci[2], med$z0.p)
@@ -205,95 +208,90 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
         xm$feat <- colnames(M)
         my$feat <- colnames(M)
         
-          # bootstrap
-          acme_sum <- matrix(nrow = 1, ncol = boots)
-          #covars = as.matrix(covars)
+        # bootstrap
+        acme_sum <- matrix(nrow = 1, ncol = boots)
+        #covars = as.matrix(covars)
+
+        for (i in 1:ncol(acme_sum)) {
           
+          if (is.data.frame(X)||is.matrix(X)){
+            samp <- sample(dim(X)[1], replace = T)
+          } else if (is.vector(X)) {
+            samp <- sample(length(X[,k]), replace = T)
+          }
           
-          for (i in 1:ncol(acme_sum)) {
+          data_samp <- data.frame(Xk = X[samp,k], X = X[samp,-k], m = m[samp, ], covars = covars[samp, ])
+          # effet A X -> M
+          mod1 <- stats::lm(m ~ Xk + ., data = data_samp)
+          A <- t(sapply(summary(mod1), function(x) x$coeff[2, ]))
+          A <- data.frame(feat = rownames(A), A)
+          # A <- separate(A, CpG, c("0", "CpG"), " ")[, -1]
+          
+          # effet B m -> Y
+          if(Y_type=="binary"){
+            dat.1 <- data.frame(Y = Y[samp], Xk = X[samp,k], X = X[samp,-k], M=M[samp,], covars = covars[samp,])
+            # mod2 <- glm(Y[samp] ~ .,family = "binomial" , data = dat.1[samp, ])
+            #B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
             
-            if (is.data.frame(X)||is.matrix(X)){
-              samp <- sample(dim(X)[1], replace = T)
-            } else if (is.vector(X)) {
-              samp <- sample(length(X), replace = T)
-            }
-            
-            data_samp <- data.frame(X = X[samp], m = m[samp, ], covars = covars[samp, ])
-            # effet A X -> M
-            mod1 <- stats::lm(m ~ X + ., data = data_samp)
-            A <- t(sapply(summary(mod1), function(x) x$coeff[2, ]))
-            A <- data.frame(feat = rownames(A), A)
-            # A <- separate(A, CpG, c("0", "CpG"), " ")[, -1]
-            
-            # effet B m -> Y
-            if(Y_type=="binary"){
-              dat.1 <- data.frame(Y = Y[samp], X = X[samp], m=m[samp,], covars = covars[samp,])
-              # mod2 <- glm(Y[samp] ~ .,family = "binomial" , data = dat.1[samp, ])
-              #B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
-              
-              #check that glm converges to include this iteration
-              mod2 <- tryCatch(
-                stats::glm(Y ~ .,family = "binomial" , data = dat.1),
-                warning = function(w) {
-                  print(paste0("glm.fit produces warning, iteration ", i, " of bootstrap is not used"))
-                  return(NULL)
-                }
-              )
-              
-              if (!is.null( mod2)) { 
-                B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
+            #check that glm converges to include this iteration
+            mod2 <- tryCatch(
+              stats::glm(Y ~ Xk + .,family = "binomial" , data = dat.1),
+              warning = function(w) {
+                print(paste0("glm.fit produces warning, iteration ", i, " of bootstrap is not used"))
+                return(NULL)
               }
-            } 
+            )
             
-            if(Y_type=="continuous"){
-              dat.1 <- data.frame(Y = Y[samp], X = X[samp], m=m[samp,], covars = covars[samp,])
-              mod2 <- stats::lm(Y ~ ., data = dat.1)
+            if (!is.null( mod2)) { 
               B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
-              #B <- as.data.frame(summary(mod2)$coeff[3:10, ])
             }
-            
-            colnames(B) <- c("B", "B_sd", "B_tv", "B_pv")
-            colnames(A)[2:5] <- c("A", "A_sd", "A_tv", "A_pv")
-            
-            ab <- cbind(A, B)
-            rownames(ab) <- NULL
-            
-            # effet A*B
-            ab$AB <- ab$A * ab$B
-            
-            acme_sum[i] <- sum(ab$AB)
-            #print(acme_sum[i])
-          } # end of bootstrap
+          } 
           
-          ### Compute ODE and OTE for the given model
-          
-          if(Y_type == "continuous") {
-            print("Computing ODE and OTE for continuous outcome.")
-            data_tot = data.frame(X =X, Y= Y, covars = covars)
-            mod_total_effect = stats::lm(Y ~ . , data = data_tot)
-            data_tot2 = data.frame(X =X, Y= Y, M = M, covars = covars)
-            mod_direct_effect = stats::lm(Y ~ ., data = data_tot2)
+          if(Y_type=="continuous"){
+            dat.1 <- data.frame(Y = Y[samp], Xk = X[samp,k], X = X[samp,-k], M=M[samp,], covars = covars[samp,])
+            mod2 <- stats::lm(Y ~ Xk+ ., data = dat.1)
+            B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
+            #B <- as.data.frame(summary(mod2)$coeff[3:10, ])
           }
           
-          if(Y_type == "binary") {
-            print("Computing ODE and OTE for binary outcome.")
-            data_tot = data.frame(X =X, Y= Y, covars = covars)
-            mod_total_effect = stats::glm(Y ~ . , family = "binomial",  data = data_tot)
-            data_tot2 = data.frame(X =X, Y= Y, M = M ,covars = covars)
-            mod_direct_effect = stats::glm(Y ~ . , family = "binomial",  data = data_tot2)
-          }
+          colnames(B) <- c("B", "B_sd", "B_tv", "B_pv")
+          colnames(A)[2:5] <- c("A", "A_sd", "A_tv", "A_pv")
           
-          ote = summary(mod_total_effect)$coefficients[2,]
-          ode = summary(mod_direct_effect)$coefficients[2,]
+          ab <- cbind(A, B)
+          rownames(ab) <- NULL
           
-          oie = as.vector(acme_sum)
-          oie_med = median(as.vector(acme_sum))
-          oie_sd = sd(as.vector(acme_sum))
-          ote = ote
-          ode = ode
+          # effet A*B
+          ab$AB <- ab$A * ab$B
           
-      
-      
+          acme_sum[i] <- sum(ab$AB)
+          #print(acme_sum[i])
+        } # end of bootstrap
+        
+        ### Compute ODE and OTE for the given model
+        
+        if(Y_type == "continuous") {
+          print("Computing ODE and OTE for continuous outcome.")
+          data_tot = data.frame(X =X, Y= Y, covars = covars)
+          mod_total_effect = stats::lm(Y ~ . , data = data_tot)
+          data_tot2 = data.frame(X =X, Y= Y, M = M, covars = covars)
+          mod_direct_effect = stats::lm(Y ~ ., data = data_tot2)
+        }
+        
+        if(Y_type == "binary") {
+          print("Computing ODE and OTE for binary outcome.")
+          data_tot = data.frame(X =X, Y= Y, covars = covars)
+          mod_total_effect = stats::glm(Y ~ . , family = "binomial",  data = data_tot)
+          data_tot2 = data.frame(X =X, Y= Y, M = M ,covars = covars)
+          mod_direct_effect = stats::glm(Y ~ . , family = "binomial",  data = data_tot2)
+        }
+        
+        ote = summary(mod_total_effect)$coefficients[2,]
+        ode = summary(mod_direct_effect)$coefficients[2,]
+        
+        oie = as.vector(acme_sum)
+        oie_med = median(as.vector(acme_sum))
+        oie_sd = sd(as.vector(acme_sum))
+        
         ACME_cat[[k]] = ACME
         ADE_cat[[k]] = ADE
         PM_cat[[k]] = PM
@@ -385,25 +383,25 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
       TEs[[expo_var_id]] = TE
       xms[[expo_var_id]] = xm
       mys[[expo_var_id]] = my
-    
- 
+      
+      
       ### Compute OIE by bootstrap
       
       # bootstrap
-      acme_sum <- matrix(nrow = 1, ncol = 100)
+      acme_sum <- matrix(nrow = 1, ncol = boots)
       #covars = as.matrix(covars)
       
       
       for (i in 1:ncol(acme_sum)) {
         
-         if (is.data.frame(X)){
-        samp <- sample(dim(X)[1], replace = T)
+        if (is.data.frame(X)||is.matrix(X)){
+          samp <- sample(dim(X)[1], replace = T)
         } else if (is.vector(X)) {
           samp <- sample(length(X), replace = T)
         }
         data_samp <- data.frame(X = X[samp], m= m[samp, ], covars = covars[samp, ])
         
-            # effet A X -> M
+        # effet A X -> M
         mod1 <- stats::lm(m ~ X + . , data = data_samp)
         A <- t(sapply(summary(mod1), function(x) x$coeff[2, ]))
         A <- data.frame(feat = rownames(A), A)
@@ -455,7 +453,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
         print("Computing ODE and OTE for continuous outcome.")
         data_tot = data.frame(X =X, Y= Y, covars = covars)
         mod_total_effect = stats::lm(Y ~ . , data = data_tot)
-        data_tot2 = data.frame(X =X, Y= Y, M =m,covars = covars)
+        data_tot2 = data.frame(X =X, Y= Y, M =M,covars = covars)
         mod_direct_effect = stats::lm(Y ~ ., data = data_tot2)
       }
       
@@ -469,13 +467,11 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
       
       ote = summary(mod_total_effect)$coefficients[2,]
       ode = summary(mod_direct_effect)$coefficients[2,]
-    
+      
       oie = as.vector(acme_sum)
       oie_med = median(as.vector(acme_sum))
       oie_sd = sd(as.vector(acme_sum))
-      ote = ote
-      ode = ode
- 
+      
       oies[[expo_var_id]]= oie
       oies_med[[expo_var_id]] = oie_med
       oies_sd[[expo_var_id]] = oie_sd
@@ -483,20 +479,21 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
       odes[[expo_var_id]] = ode
     }
     
-    obj = list(ACME = ACMEs,
-               ADE = ADEs,
-               PM = PMs,
-               TE = TEs,
-               xm = xms,
-               my = mys,
-               oie = oies,
-               oie_med = oies_med,
-               oie_sd = oies_sd,
-               ote = otes,
-               ode = odes,
-               input = object$input
-    )
   }
+  
+  obj = list(ACME = ACMEs,
+             ADE = ADEs,
+             PM = PMs,
+             TE = TEs,
+             xm = xms,
+             my = mys,
+             oie = oies,
+             oie_med = oies_med,
+             oie_sd = oies_sd,
+             ote = otes,
+             ode = odes,
+             input = object$input
+  )
   class(obj) = "hdmax2_step2"
   
   return(obj)

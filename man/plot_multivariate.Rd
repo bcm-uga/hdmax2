@@ -5,12 +5,10 @@
 \title{Summary plot for multivariate exposure variables
 This function draw a summary plot of hdmax2}
 \usage{
-plot_multivariate(object, N_med = 10)
+plot_multivariate(object)
 }
 \arguments{
 \item{object}{results from hdmax2 step 2}
-
-\item{N_med}{number of selected mediators}
 }
 \value{
 Summary plot for ACME, PM, OIE, effects interpretation
@@ -23,20 +21,13 @@ This function draw a summary plot of hdmax2
 # Load example dataset
 simu_data = hdmax2::simu_data
 X_matrix = simu_data$X_categorial
-    X_matrix = droplevels(X_matrix)
-  X_matrix = mltools::one_hot(data.table::as.data.table(X_matrix))
-   X_matrix = as.matrix(X_matrix)
 Y_matrix = simu_data$Y_continuous
  M_matrix = simu_data$M
- X_type= "multivariate"
- Y_type = "continuous"
 # Run {hdmax2} step 1
 hdmax2_step1 = hdmax2::run_AS(
-  X_matrix = X_matrix ,
-  Y_matrix =  Y_matrix,
-  M_matrix =  M_matrix, 
-  X_type = X_type,
-  Y_type = Y_type,
+  X = X_matrix ,
+  Y =  Y_matrix,
+  M =  M_matrix
 )
 # Select mediators
 mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
@@ -44,9 +35,8 @@ mediators_top10 = simu_data$M[, mediators_subset]
 # Run {hdmax2} step 2
 hdmax2_step2 = hdmax2::estimate_effect(
    object = hdmax2_step1, 
-   m = mediators_top10,
-   is.categorial = TRUE)
-hdmax2::plot_multivariate(hdmax2_step2, N_med = 10)
+   m = mediators_top10)
+hdmax2::plot_multivariate(hdmax2_step2)
 }
 \author{
 Florence Pittion, Magali Richard

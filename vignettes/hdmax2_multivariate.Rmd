@@ -53,20 +53,20 @@ X_matrix = simu_data$X_categorial
 Y_matrix = simu_data$Y_continuous
 
 ## High dimension mediators
-M_matrix = as.matrix(simu_data$M)
+M_matrix = simu_data$M
 
 ## Covariates
 age = simu_data$age
-gender =simu_data$gender
+gender = simu_data$gender
 
 ## Number of Latent factor estimation
 
 pc <- prcomp(M_matrix)
-plot(pc$sdev[1:10],
+plot(pc$sdev^2/sum(pc$sdev)[1:10],
      xlab = 'Principal Component',
      ylab = "Explained variance")
 
-K=8 #pca conclusion : it is better to select too many factors that too few
+K=5 #pca conclusion : it is better to select too many factors that too few
 ```
 
 
@@ -78,10 +78,8 @@ The **run_AS** function is applied to estimate the effects of exposure $X$ on a 
 
 ```{r}
 
-#X_type= "multivariate"
-detailed = TRUE
-#Y_type = "continuous"
-detailed = TRUE
+
+detailed = FALSE
 covar = cbind(age, gender)
 
 hdmax2_step1 = hdmax2::run_AS(X = X_matrix,
@@ -91,7 +89,7 @@ hdmax2_step1 = hdmax2::run_AS(X = X_matrix,
                               detailed = detailed,  # indicates the exposure is multivariate
                               covar = covar)
 
-# 
+ 
 # # max2 test results
 head(hdmax2_step1$max2_pvalues)
 
@@ -117,8 +115,7 @@ The function **estimate_effect** estimate the individual indirect effect of medi
 object = hdmax2_step1
 m = mediators_top10
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
-                                       m = mediators_top10,
-                                       is.categorial = TRUE)
+                                       m = mediators_top10)
 ```
 
 ### Plot
@@ -136,7 +133,8 @@ We propose a set of plots which include:
 
 ```{r}
 library(ggplot2)
-hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
+hdmax2::plot_hdmax2(hdmax2_step2)
+
 ```
 
 
@@ -145,12 +143,21 @@ hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
 
 
 ```{r}
+simu_data = hdmax2::simu_data
+## multivariate Exposures (continuous + binary)
+X_matrix = data.frame(X1 = simu_data$X_continuous, X2 = simu_data$X_binary)
 
-## Exposures
-X_matrix = simu_data$X_multi_2expo
+## Outcomes
+Y_matrix = simu_data$Y_continuous
 
+## High dimension mediators
+M_matrix = simu_data$M
 
+## Covariates
+age = simu_data$age
+gender = simu_data$gender
 
+ K= 5
 ```
 
 ### STEP 1: Run association studies
@@ -159,10 +166,7 @@ The **run_AS** function is applied to estimate the effects of exposure $X$ on a 
 
 ```{r}
 
-#X_type= "multivariate"
-#detailed = TRUE
-#Y_type = "continuous"
-detailed = TRUE
+detailed = FALSE
 covar = cbind(age, gender)
 
 hdmax2_step1 = hdmax2::run_AS(X = X_matrix ,
@@ -172,7 +176,6 @@ hdmax2_step1 = hdmax2::run_AS(X = X_matrix ,
                               detailed = detailed,  # indicates the exposure is multivariate
                               covar = covar)
 
-# 
 # # max2 test results
 head(hdmax2_step1$max2_pvalues)
 
@@ -198,8 +201,7 @@ The function **estimate_effect** estimate the individual indirect effect of medi
 object = hdmax2_step1
 m = mediators_top10
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
-                                       m = mediators_top10,
-                                       is.categorial = FALSE)
+                                       m = mediators_top10)
 ```
 
 ### Plot
@@ -217,7 +219,8 @@ We propose a set of plots which include:
 
 ```{r}
 library(ggplot2)
-hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
+hdmax2::plot_hdmax2(hdmax2_step2)
+
 ```
 
 

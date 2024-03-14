@@ -91,9 +91,9 @@ Max2 test The P-value is computed for each markers following this formula
 simu_data = hdmax2::simu_data
 
 # Run {hdmax2} step 1
-hdmax2_step1 = run_AS(X_matrix = as.matrix(simu_data$X_continuous) ,
-                      Y_matrix =  as.matrix(simu_data$Y_continuous),
-                      M_matrix =  as.matrix(simu_data$M),
+hdmax2_step1 = run_AS(X = simu_data$X_continuous ,
+                      Y =  simu_data$Y_continuous,
+                      M =  simu_data$M,
                       K=5)
 
 head(hdmax2_step1$max2_pvalues)

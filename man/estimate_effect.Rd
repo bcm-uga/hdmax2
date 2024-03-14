@@ -60,9 +60,9 @@ tests their significance.
 simu_data = hdmax2::simu_data
 # Run {hdmax2} step 1
 hdmax2_step1 = hdmax2::run_AS(
-  X_matrix = as.matrix(simu_data$X_continuous) ,
-  Y_matrix =  as.matrix(simu_data$Y_continuous),
-  M_matrix =  as.matrix(simu_data$M)
+  X = simu_data$X_continuous,
+  Y =  simu_data$Y_continuous,
+  M =  simu_data$M
 )
 # Select mediators
 mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])

@@ -58,7 +58,7 @@ data$annotation = data$annotation[800:1000, ]
 
 
 pc <- prcomp(data$methylation)
-plot(pc$sdev[1:15]^2,
+plot((pc$sdev^2/sum(pc$sdev))[1:15],
      xlab = 'Principal Component',
      ylab = "Explained variance",
      col = c(rep(1, 3), 2, rep(1, 16)))
@@ -66,9 +66,9 @@ plot(pc$sdev[1:15]^2,
 K=5
 
 ## run hdmax2 step1
-hdmax2_step1 = hdmax2::run_AS(X_matrix = as.matrix(data$exposure),
-                              Y_matrix = as.matrix(data$phenotype),
-                              M_matrix = as.matrix(data$methylation), 
+hdmax2_step1 = hdmax2::run_AS(X = data$exposure,
+                              Y = data$phenotype,
+                              M = data$methylation, 
                               K = K)
 
 ##Detecting AMR
@@ -121,7 +121,7 @@ hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
                                        sims = 100)
 
 
-hdmax2::plot_hdmax2(hdmax2_step2, N_med = 2)
+#hdmax2::plot_hdmax2(hdmax2_step2)
 
 ```
 
@@ -133,12 +133,10 @@ Several methods can be use to select potential mediators from step1 results for 
 
 data = hdmax2::simu_data
 ## run hdmax2 step1
-hdmax2_step1 = hdmax2::run_AS(X_matrix = as.matrix(data$X_continuous),
-                 Y_matrix = as.matrix(data$Y_continuous),
-                 M_matrix = as.matrix(data$M), 
-                 K = K,
-                 X_type = "univariate",
-                 Y_type = "continuous")
+hdmax2_step1 = hdmax2::run_AS(X = data$X_continuous,
+                 Y = data$Y_continuous,
+                 M = data$M, 
+                 K = K)
 
 ## Select candidate mediator  
 qval <- fdrtool::fdrtool(hdmax2_step1$max2_pvalues, statistic = "pvalue", plot = F, verbose = F)$qval
@@ -155,6 +153,7 @@ When categorial variables are used in our models, we must go through design matr
 simu_data = hdmax2::simu_data
 
 X_matrix = simu_data$X_categorial
+X_matrix = as.factor(X_matrix)
 X_matrix = droplevels(X_matrix)
 X_matrix = mltools::one_hot(data.table::as.data.table(X_matrix))
 X_matrix = as.matrix(X_matrix)

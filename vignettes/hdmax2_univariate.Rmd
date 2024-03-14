@@ -62,12 +62,12 @@ gender = simu_data$gender
 
 ## Number of Latent factore estimation
 pc <- prcomp(M_matrix)
-plot(pc$sdev[1:10],
+plot((pc$sdev^2/sum(pc$sdev))[1:10],
+     type = "b",
      xlab = 'Principal Component',
      ylab = "Explained variance")
 
-
-K=8 #pca conclusion : it is better to select too many factors that too few
+K=5 #pca conclusion : it is better to select too many factors that too few
 ```
 
 
@@ -78,18 +78,14 @@ K=8 #pca conclusion : it is better to select too many factors that too few
 The **run_AS** function is applied to estimate the effects of exposuire $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. Covariables can be included. 
 
 ```{r}
-
- 
- K = K
- # X_type= "univariate"
- # Y_type = "continuous"
- covar = cbind(age, gender)
+K = K
+covar = cbind(age, gender)
 
 hdmax2_step1 = hdmax2::run_AS(X = X_matrix ,
                 Y = Y_matrix,
                  M = M_matrix, 
                  K = K,
-                 covar = NULL)
+                 covar = covar)
 
 ```
 
@@ -134,7 +130,7 @@ We propose a set of plots which include:
 
 ```{r}
 library(ggplot2)
-hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
+hdmax2::plot_hdmax2(hdmax2_step2)
 
 ```
 

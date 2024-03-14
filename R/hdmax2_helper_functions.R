@@ -160,12 +160,10 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
 ##'data$annotation = data$annotation[800:1000, ]
 ##'K=5
 ##'## run hdmax2 step1
-##'hdmax2_step1 = hdmax2::run_AS(X_matrix = as.matrix(data$exposure),
-##'                              Y_matrix = as.matrix(data$phenotype),
-##'                              M_matrix = as.matrix(data$methylation),
-##'                              K = K,
-##'                              X_type = "univariate",
-##'                              Y_type = "continuous")
+##'hdmax2_step1 = hdmax2::run_AS(X = data$exposure,
+##'                              Y = data$phenotype,
+##'                              M = data$methylation,
+##'                              K = K)
 ##'
 ##'##Detecting AMR
 ##'chr = data$annotation$chr
@@ -225,12 +223,10 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
 ##'data$annotation = data$annotation[800:1000, ]
 ##'K=5
 ##'## run hdmax2 step1
-##'hdmax2_step1 = hdmax2::run_AS(X_matrix = as.matrix(data$exposure),
-##'                              Y_matrix = as.matrix(data$phenotype),
-##'                              M_matrix = as.matrix(data$methylation),
-##'                              K = K,
-##'                              X_type = "univariate",
-##'                              Y_type = "continuous")
+##'hdmax2_step1 = hdmax2::run_AS(X = data$exposure,
+##'                              Y = data$phenotype,
+##'                              M = data$methylation,
+##'                              K = K)
 ##'
 ##'##Detecting AMR
 ##'chr = data$annotation$chr
