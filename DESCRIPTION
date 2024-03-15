@@ -1,6 +1,6 @@
 Package: hdmax2
 Title: R package hdmax2 performs high dimension mediation analysis
-Version: 0.0.0.9000
+Version: 2.0.0.9000
 Authors@R: c(person("Florence", "Pittion", role = c("aut", "cre"), email="florence.pittion@univ-grenoble-alpes.fr"),
              person("Magali", "Richard", role = c("aut","ths"), email="magali.richard@univ-grenoble-alpes.fr"),
              person("Olivier", "Francois", role = c("aut","ths"), email="olivier.francois@univ-grenoble-alpes.fr"),
