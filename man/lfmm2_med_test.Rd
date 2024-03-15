@@ -40,10 +40,10 @@ lfmm2_test adapted function for hdmax2 from LEA::lfmm2.test
 }
 \examples{
 data(simu_data)
-
+K = 5
 mod.lfmm1 = lfmm2_med(input = simu_data$M, 
 env = simu_data$X_binary, 
-K = 5,
+K = K,
 effect.sizes = FALSE)
 
 res_reg1 = lfmm2_med_test(mod.lfmm1, 
@@ -54,5 +54,5 @@ genomic.control = TRUE)
 
 }
 \author{
-Florence Pittion
+Florence Pittion, Magali Richard, Olivier Francois
 }

@@ -32,10 +32,11 @@ hdmax2_step1 = hdmax2::run_AS(
 mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
 mediators_top10 = simu_data$M[, mediators_subset]
 # Run {hdmax2} step 2
-hdmax2_step2 = hdmax2::estimate_effect(
-   object = hdmax2_step1, 
-   m = mediators_top10)
+hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
+                                       m = mediators_top10)
+# Generate plot
 hdmax2::plot_hdmax2(hdmax2_step2)
+
 }
 \author{
 Florence Pittion, Magali Richard

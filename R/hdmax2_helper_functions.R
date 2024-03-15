@@ -172,14 +172,14 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
 ##'pval = hdmax2_step1$max2_pvalues
 ##'cpg = data$annotation$cpg
 ##'
-##'res.amr_search = hdmax2::AMR_search(chr = data$annotation$chr,
-##'                                    start = data$annotation$start,
-##'                                    end = data$annotation$end,
-##'                                    pval = hdmax2_step1$max2_pvalues,
-##'                                    cpg = data$annotation$cpg,
-##'                                    seed = 0.6, #Careful to change this parameter when working with real data
-##'                                    nCores = 2)
-##'
+##'res.amr_search = hdmax2::AMR_search(
+##' chr = data$annotation$chr,
+##' start = data$annotation$start,
+##' end = data$annotation$end,
+##' pval = hdmax2_step1$max2_pvalues,
+##' cpg = data$annotation$cpg,
+##' seed = 0.6, #Careful to change this parameter when working with real data
+##' nCores = 2)
 ##'res.amr_search$res
 ##'##'
 AMR_search <- function(chr, start, end, pval, cpg, ...) {
@@ -235,13 +235,14 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
 ##'pval = hdmax2_step1$max2_pvalues
 ##'cpg = data$annotation$cpg
 ##'
-##'res.amr_search = hdmax2::AMR_search(chr = data$annotation$chr,
-##'                                    start = data$annotation$start,
-##'                                    end = data$annotation$end,
-##'                                    pval = hdmax2_step1$max2_pvalues,
-##'                                    cpg = data$annotation$cpg,
-##'                                    seed = 0.6, #Careful to change this parameter when working with real data
-##'                                    nCores = 2)
+##'res.amr_search = hdmax2::AMR_search(
+##' chr = data$annotation$chr,
+##' start = data$annotation$start,
+##' end = data$annotation$end,
+##' pval = hdmax2_step1$max2_pvalues,
+##' cpg = data$annotation$cpg,
+##' seed = 0.6, #Careful to change this parameter when working with real data
+##' nCores = 2)
 ##'
 ##'res.amr_search$res
 ##'
@@ -262,30 +263,20 @@ AMR_build <- function(res, methylation, nb_cpg = 2) {
   nb <- NULL
   
   for (i in 1:nrow(res)) {
-    
     chri <- as.character(res$chr[i])
-    
     tmp <- dplyr::filter(data, chr == chri)
-    
     nb <- c(nb, sum((res$start[i]:res$end[i]) %in% tmp$start))
   }
   
   # Select DMRs with nb_cpg CpGs at minimum
   
   res <- cbind(res, nb)
-  
   res <- dplyr::filter(res, nb >= nb_cpg)
-  
   DMR.select <- list()
   
   for (i in 1:nrow(res)) {
-    
     chri <- as.character(res$chr[i])
-    
     tmp <- dplyr::filter(data, chr == chri)
-    
-    # DMR.select[[i]] <- tmp$cpg[(tmp$start %in% (res$start[i]:res$end[i]))]
-    # THE CHANGE
     DMR.select[[i]] <- as.character(tmp$cpg[(tmp$start %in% (res$start[i]:res$end[i]))])
   }
   

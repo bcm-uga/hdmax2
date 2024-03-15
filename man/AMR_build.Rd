@@ -52,13 +52,14 @@ end = data$annotation$end
 pval = hdmax2_step1$max2_pvalues
 cpg = data$annotation$cpg
 
-res.amr_search = hdmax2::AMR_search(chr = data$annotation$chr,
-                                   start = data$annotation$start,
-                                   end = data$annotation$end,
-                                   pval = hdmax2_step1$max2_pvalues,
-                                   cpg = data$annotation$cpg,
-                                   seed = 0.6, #Careful to change this parameter when working with real data
-                                   nCores = 2)
+res.amr_search = hdmax2::AMR_search(
+chr = data$annotation$chr,
+start = data$annotation$start,
+end = data$annotation$end,
+pval = hdmax2_step1$max2_pvalues,
+cpg = data$annotation$cpg,
+seed = 0.6, #Careful to change this parameter when working with real data
+nCores = 2)
 
 res.amr_search$res
 

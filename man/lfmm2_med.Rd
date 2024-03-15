@@ -25,11 +25,12 @@ lfmm2 adapted function for hdmax2 from LEA::lfmm2
 }
 \examples{
 data(simu_data)
+K = 5
 mod.lfmm1 = lfmm2_med(input = simu_data$M, 
 env = simu_data$X_binary, 
-K = 5,
+K = K,
 effect.sizes = FALSE)
 }
 \author{
-Florence Pittion
+Florence Pittion, Magali Richard, Olivier Francois
 }

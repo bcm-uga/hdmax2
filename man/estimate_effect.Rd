@@ -56,21 +56,21 @@ tests their significance.
 \examples{
 # Load example dataset
 simu_data = hdmax2::simu_data
+K = 5
 # Run {hdmax2} step 1
 hdmax2_step1 = hdmax2::run_AS(
   X = simu_data$X_continuous,
   Y =  simu_data$Y_continuous,
   M =  simu_data$M,
-  K = 5
+  K = K
 )
 # Select mediators
 mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
 mediators_top10 = simu_data$M[, mediators_subset]
 # Run {hdmax2} step 2
-hdmax2_step2 = hdmax2::estimate_effect(
-   object = hdmax2_step1, 
-   m = mediators_top10)
+hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
+                                       m = mediators_top10)
 }
 \author{
-Florence Pittion, Magali Richard
+Florence Pittion, Magali Richard, Olivier Francois
 }

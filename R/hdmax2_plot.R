@@ -21,10 +21,11 @@
 ##' mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
 ##' mediators_top10 = simu_data$M[, mediators_subset]
 ##' # Run {hdmax2} step 2
-##' hdmax2_step2 = hdmax2::estimate_effect(
-##'    object = hdmax2_step1, 
-##'    m = mediators_top10)
+##' hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
+##'                                        m = mediators_top10)
+##' # Generate plot
 ##' hdmax2::plot_hdmax2(hdmax2_step2)
+##' 
 ##' @import ggplot2
 ##' @importFrom stats reshape
 
@@ -35,12 +36,12 @@ plot_hdmax2 <- function(object) {
   }
   
   #Plot the ACME of the model
-  if(length(object$input$expo_var_ids) == 1 & (object$input$expo_var_types!="character")) {
+  if(length(object$input$expo_var_ids) == 1 && (object$input$expo_var_types!="character")) {
     print("hdmax2 plot for univariate exposome")
     p = plot_univariate(object)
   }
   
-  if(length(object$input$expo_var_ids) == 1 & (object$input$expo_var_types=="character")) {
+  if(length(object$input$expo_var_ids) == 1 && (object$input$expo_var_types=="character")) {
     print("hdmax2 plot for univariate categorial exposome")
     p = plot_univariate_cat(object)
   }
@@ -69,19 +70,20 @@ plot_hdmax2 <- function(object) {
 ##' K = 5
 ##' # Run {hdmax2} step 1
 ##' hdmax2_step1 = hdmax2::run_AS(
-##'   X = simu_data$X_continuous ,
-##'   Y =  simu_data$Y_continuous,
-##'   M =  simu_data$M,
+##'   X = simu_data$X_continuous,
+##'   Y = simu_data$Y_continuous,
+##'   M = simu_data$M,
 ##'   K = K
 ##' )
 ##' # Select mediators
 ##' mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
 ##' mediators_top10 = simu_data$M[, mediators_subset]
 ##' # Run {hdmax2} step 2
-##' hdmax2_step2 = hdmax2::estimate_effect(
-##'    object = hdmax2_step1, 
-##'    m = mediators_top10)
+##' hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
+##'                                        m = mediators_top10)
+##' # Generate plot
 ##' hdmax2::plot_univariate(hdmax2_step2)
+##' 
 ##' @import ggplot2
 ##' @importFrom stats reshape
 
@@ -264,19 +266,20 @@ plot_univariate <- function(object) {
 ##' K = 5
 ##' # Run {hdmax2} step 1
 ##' hdmax2_step1 = hdmax2::run_AS(
-##'   X = simu_data$X_continuous ,
-##'   Y =  simu_data$Y_continuous,
-##'   M =  simu_data$M,
+##'   X = simu_data$X_categorial,
+##'   Y = simu_data$Y_continuous,
+##'   M = simu_data$M,
 ##'   K = K
 ##' )
 ##' # Select mediators
 ##' mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
 ##' mediators_top10 = simu_data$M[, mediators_subset]
 ##' # Run {hdmax2} step 2
-##' hdmax2_step2 = hdmax2::estimate_effect(
-##'    object = hdmax2_step1, 
-##'    m = mediators_top10)
-##' hdmax2::plot_univariate(hdmax2_step2)
+##' hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
+##'                                        m = mediators_top10)
+##' # Generate plot
+##' hdmax2::plot_univariate_cat(hdmax2_step2)
+##' 
 ##' @import ggplot2
 ##' @importFrom stats reshape
 
@@ -459,25 +462,26 @@ plot_univariate_cat <- function(object) {
 ##' @examples
 ##' # Load example dataset
 ##' simu_data = hdmax2::simu_data
-##' X_matrix = simu_data$X_categorial
+##' X_matrix = data.frame(X1 = simu_data$X_continuous, X2 = simu_data$X_continuous_2)
 ##' Y_matrix = simu_data$Y_continuous
 ##' M_matrix = simu_data$M
 ##' K = 5
 ##' # Run {hdmax2} step 1
 ##' hdmax2_step1 = hdmax2::run_AS(
-##'   X = X_matrix ,
-##'   Y =  Y_matrix,
-##'   M =  M_matrix,
+##'   X = X_matrix,
+##'   Y = Y_matrix,
+##'   M = M_matrix,
 ##'   K = K
 ##' )
 ##' # Select mediators
 ##' mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
 ##' mediators_top10 = simu_data$M[, mediators_subset]
 ##' # Run {hdmax2} step 2
-##' hdmax2_step2 = hdmax2::estimate_effect(
-##'    object = hdmax2_step1, 
-##'    m = mediators_top10)
+##' hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
+##'                                        m = mediators_top10)
+##' # Generate plot
 ##' hdmax2::plot_multivariate(hdmax2_step2)
+##' 
 ##' @import ggplot2
 ##' @importFrom stats reshape
 ##' 

@@ -18,8 +18,6 @@
 ##' @param K an integer for the number of latent factors in the regression model.
 ##' @param covar set of covariable, must be numeric. No NAs allowed
 ##' @param detailed A logical to indicate if p-values must be estimated for each explanatory variables (detailed = TRUE) in addition to the pvalue of the global model (detailed = FALSE, by default)
-##' @param diagnostic.plot if TRUE the histogram of the p-values together
-##' with the estimate of eta0 null line is plotted.
 ##' Useful to visually check the fit of the estimated proportion of null p-values.
 ##' @param genomic.control correct pvalue with genomic inflation factor
 ##' @param effect.sizes if effect sizes from lfmm are needed
@@ -61,16 +59,16 @@
 ##' Max2 test The P-value is computed for each markers following this formula
 ##' \deqn{pV = max(pVal1, pVal2)^2}
 ##' @export
-##' @author Florence Pittion, Magali Richard
+##' @author Florence Pittion, Magali Richard, Olivier Francois, Basile Jumentier
 ##' @examples
 ##' # Load example dataset
 ##' simu_data = hdmax2::simu_data
-##' 
+##'  K = 5
 ##' # Run {hdmax2} step 1
 ##' hdmax2_step1 = run_AS(X = simu_data$X_continuous ,
-##'                       Y =  simu_data$Y_continuous,
-##'                       M =  simu_data$M,
-##'                       K=5)
+##'                       Y = simu_data$Y_continuous,
+##'                       M = simu_data$M,
+##'                       K = K)
 ##' 
 ##' head(hdmax2_step1$max2_pvalues)
 
@@ -80,7 +78,6 @@ run_AS = function(X,
                   K,
                   covar = NULL,
                   detailed = FALSE,
-                  diagnostic.plot = FALSE ,
                   genomic.control = TRUE,
                   effect.sizes = FALSE
 ) {
@@ -112,7 +109,7 @@ run_AS = function(X,
     }
     if (expo_var_types == "character"){
       print("The input exposome is categorial")
-      # model matrix transformation
+      # model matrix transformation (-1 column to avoid colinearity)
       X = as.factor(X)
       X = model.matrix(~X)
       X = X[,-1]
@@ -166,11 +163,11 @@ run_AS = function(X,
   
   if (all(Y %in% c(0, 1))) {
     if (is.integer(Y)) {
-      print("The outcome vector is integer and contains only 0s and 1s.")
+      print("The outcome vector is integer and contains only 0s and 1s, it is assimilated as binary variable.")
       Y = as.matrix(as.double(Y))
       outcome_var_type = "binary"
     } else if (is.double(Y)) {
-      print("The outcome vector is numeric and contains only 0s and 1s.")
+      print("The outcome vector is numeric and contains only 0s and 1s, it is assimilated as binary variable.")
       Y = as.matrix(Y)
       outcome_var_type = "binary"
     }
@@ -309,12 +306,12 @@ run_AS = function(X,
   
   res[[1]] = reg1  
   
+  
+  
   #########################################
   ### Run second regression : Y ~ X + M ###
   #########################################
-  
-  
- 
+
   # The model run is actually M ~ X + Y, i.e. independent of the type of Y (continuous or binary)
   
   print("Running second regression.")
@@ -352,7 +349,6 @@ run_AS = function(X,
   max2 = max2_pval
   
   res[[3]] = max2
-  
   
   if (detailed == TRUE){
     print("Generating max2 pvalues for each explanatory variable.")

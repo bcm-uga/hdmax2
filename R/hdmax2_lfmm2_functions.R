@@ -6,12 +6,13 @@
 ##' @param effect.sizes true or false to obtain effect sizes
 ##' @return an object with the following attributes 
 ##' @export 
-##' @author Florence Pittion
+##' @author Florence Pittion, Magali Richard, Olivier Francois
 ##' @examples
 ##' data(simu_data)
+##' K = 5
 ##' mod.lfmm1 = lfmm2_med(input = simu_data$M, 
 ##' env = simu_data$X_binary, 
-##' K = 5,
+##' K = K,
 ##' effect.sizes = FALSE)
 
 
@@ -109,7 +110,6 @@ lfmm2_med = function(input,
   # compute LFMM factors U and loadings V
   # Non orthogonal factors
   U <- crossprod(t(Q %*% D_inv), svk$u %*% Sigma_k)
-  #U <- Q %*% D_inv %*% svk$u %*% Sigma_k
   V <- svk$v[,1:K]
   
   # compute environmental effect sizes 
@@ -122,9 +122,6 @@ lfmm2_med = function(input,
   
   
   obj= list()
-  # obj$K <- as.integer(K)
-  # obj$lambda <- as.numeric(lambda)
-  # obj$B <- as.matrix(B)
   obj$U <- as.matrix(U)
   obj$V <- as.matrix(V)
   
@@ -148,13 +145,13 @@ lfmm2_med = function(input,
 ##' @return an object with the following attributes 
 ##' @importFrom stats binomial glm lm median pchisq pf prcomp qchisq qf
 ##' @export
-##' @author Florence Pittion
+##' @author Florence Pittion, Magali Richard, Olivier Francois
 ##' @examples 
 ##' data(simu_data)
-##' 
+##' K = 5
 ##' mod.lfmm1 = lfmm2_med(input = simu_data$M, 
 ##' env = simu_data$X_binary, 
-##' K = 5,
+##' K = K,
 ##' effect.sizes = FALSE)
 ##' 
 ##' res_reg1 = lfmm2_med_test(mod.lfmm1, 
@@ -303,22 +300,17 @@ lfmm2_med_test= function(object,
   
   
   if (genomic.control){
-    
     if (!full){
-      
       if (d == 1){
         gif <- median(z_score^2)/qchisq(0.5, df = 1, lower.tail = FALSE)
       } else {
         gif <- apply(z_score^2, 1, median)/qchisq(0.5, df = 1, lower.tail = FALSE)
       }
       p_value <- pchisq(z_score^2/gif, df = 1, lower.tail = FALSE)
-      
     } else {
-      
       gif <- median(f_score)/qf(0.5, d, n - d - 1, lower.tail = FALSE)
       p_value <- pf(f_score/gif, d, n - d - 1, lower.tail = FALSE)
     }
-    
   }
   
   if (!full & anyNA(z_score)) {

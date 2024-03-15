@@ -38,24 +38,24 @@
 ##' tests their significance.
 ##'
 ##' @export
-##' @author Florence Pittion, Magali Richard
+##' @author Florence Pittion, Magali Richard, Olivier Francois, Basile Jumentier
 ##' @examples 
 ##' # Load example dataset
 ##' simu_data = hdmax2::simu_data
+##' K = 5
 ##' # Run {hdmax2} step 1
 ##' hdmax2_step1 = hdmax2::run_AS(
 ##'   X = simu_data$X_continuous,
 ##'   Y =  simu_data$Y_continuous,
 ##'   M =  simu_data$M,
-##'   K = 5
+##'   K = K
 ##' )
 ##' # Select mediators
 ##' mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
 ##' mediators_top10 = simu_data$M[, mediators_subset]
 ##' # Run {hdmax2} step 2
-##' hdmax2_step2 = hdmax2::estimate_effect(
-##'    object = hdmax2_step1, 
-##'    m = mediators_top10)
+##' hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
+##'                                        m = mediators_top10)
 
 estimate_effect <- function(object , m, boots = 100, sims = 3) {
   
@@ -220,18 +220,15 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
           }
           
           data_samp <- data.frame(Xk = X[samp,k], X = X[samp,-k], m = m[samp, ], covars = covars[samp, ])
-          # effet A X -> M
+          # effect A X -> M
           mod1 <- stats::lm(m ~ Xk + ., data = data_samp)
           A <- t(sapply(summary(mod1), function(x) x$coeff[2, ]))
           A <- data.frame(feat = rownames(A), A)
-          # A <- separate(A, CpG, c("0", "CpG"), " ")[, -1]
           
-          # effet B m -> Y
+          
+          # effect B m -> Y
           if(Y_type=="binary"){
             dat.1 <- data.frame(Y = Y[samp], Xk = X[samp,k], X = X[samp,-k], M=M[samp,], covars = covars[samp,])
-            # mod2 <- glm(Y[samp] ~ .,family = "binomial" , data = dat.1[samp, ])
-            #B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
-            
             #check that glm converges to include this iteration
             mod2 <- tryCatch(
               stats::glm(Y ~ Xk + .,family = "binomial" , data = dat.1),
@@ -240,7 +237,6 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
                 return(NULL)
               }
             )
-            
             if (!is.null( mod2)) { 
               B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
             }
@@ -250,7 +246,6 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
             dat.1 <- data.frame(Y = Y[samp], Xk = X[samp,k], X = X[samp,-k], M=M[samp,], covars = covars[samp,])
             mod2 <- stats::lm(Y ~ Xk+ ., data = dat.1)
             B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
-            #B <- as.data.frame(summary(mod2)$coeff[3:10, ])
           }
           
           colnames(B) <- c("B", "B_sd", "B_tv", "B_pv")
@@ -259,12 +254,10 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
           ab <- cbind(A, B)
           rownames(ab) <- NULL
           
-          # effet A*B
+          # effect A*B
           ab$AB <- ab$A * ab$B
-          
           acme_sum[i] <- sum(ab$AB)
-          #print(acme_sum[i])
-        } # end of bootstrap
+        }
         
         ### Compute ODE and OTE for the given model
         
@@ -318,16 +311,16 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
       
     } else if (expo_var_type== "integer"||expo_var_type== "logical"||expo_var_type== "double"){
       print("The input exposome is continuous or binary" )
-      
+      # boolean transformed as numeric
       X = as.numeric(X)
       
-      # from package mediation
+      # To collect data from package mediation
       ACME <- matrix(ncol = 4, nrow = ncol(M))
       ADE <- matrix(ncol = 4, nrow = ncol(M))
       PM <- matrix(ncol = 4, nrow = ncol(M))
       TE <- matrix(ncol = 4, nrow = ncol(M))
       
-      # from linear models
+      # To collect data from linear models
       xm <- matrix(ncol = 4, nrow = ncol(M))
       my <- matrix(ncol = 4, nrow = ncol(M))
       
@@ -388,8 +381,6 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
       
       # bootstrap
       acme_sum <- matrix(nrow = 1, ncol = boots)
-      #covars = as.matrix(covars)
-      
       
       for (i in 1:ncol(acme_sum)) {
         
@@ -400,18 +391,14 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
         }
         data_samp <- data.frame(X = X[samp], m= m[samp, ], covars = covars[samp, ])
         
-        # effet A X -> M
+        # effect A X -> M
         mod1 <- stats::lm(m ~ X + . , data = data_samp)
         A <- t(sapply(summary(mod1), function(x) x$coeff[2, ]))
         A <- data.frame(feat = rownames(A), A)
-        # A <- separate(A, CpG, c("0", "CpG"), " ")[, -1]
         
-        # effet B m -> Y
+        # effect B m -> Y
         if(Y_type=="binary"){
           dat.1 <- data.frame(Y = Y[samp], X = X[samp], m=m[samp,], covars = covars[samp,])
-          # mod2 <- glm(Y[samp] ~ .,family = "binomial" , data = dat.1[samp, ])
-          #B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
-          
           #check that glm converges to include this iteration
           mod2 <- tryCatch(
             stats::glm(Y ~ .,family = "binomial" , data = dat.1),
@@ -430,7 +417,6 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
           dat.1 <- data.frame(Y = Y[samp], X = X[samp], m=m[samp,], covars = covars[samp,])
           mod2 <- stats::lm(Y ~ ., data = dat.1)
           B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
-          #B <- as.data.frame(summary(mod2)$coeff[3:10, ])
         }
         
         colnames(B) <- c("B", "B_sd", "B_tv", "B_pv")
@@ -439,11 +425,9 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
         ab <- cbind(A, B)
         rownames(ab) <- NULL
         
-        # effet A*B
+        # effect A*B
         ab$AB <- ab$A * ab$B
-        
         acme_sum[i] <- sum(ab$AB)
-        #print(acme_sum[i])
       } # end of bootstrap
       
       ### Compute ODE and OTE for the given model
@@ -477,7 +461,6 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
       otes[[expo_var_id]] = ote
       odes[[expo_var_id]] = ode
     }
-    
   }
   
   obj = list(ACME = ACMEs,

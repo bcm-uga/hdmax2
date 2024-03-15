@@ -20,25 +20,26 @@ This function draw a summary plot of hdmax2
 \examples{
 # Load example dataset
 simu_data = hdmax2::simu_data
-X_matrix = simu_data$X_categorial
+X_matrix = data.frame(X1 = simu_data$X_continuous, X2 = simu_data$X_continuous_2)
 Y_matrix = simu_data$Y_continuous
 M_matrix = simu_data$M
 K = 5
 # Run {hdmax2} step 1
 hdmax2_step1 = hdmax2::run_AS(
-  X = X_matrix ,
-  Y =  Y_matrix,
-  M =  M_matrix,
+  X = X_matrix,
+  Y = Y_matrix,
+  M = M_matrix,
   K = K
 )
 # Select mediators
 mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
 mediators_top10 = simu_data$M[, mediators_subset]
 # Run {hdmax2} step 2
-hdmax2_step2 = hdmax2::estimate_effect(
-   object = hdmax2_step1, 
-   m = mediators_top10)
+hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
+                                       m = mediators_top10)
+# Generate plot
 hdmax2::plot_multivariate(hdmax2_step2)
+
 }
 \author{
 Florence Pittion, Magali Richard

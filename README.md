@@ -60,6 +60,15 @@ hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
 
 Please open an issue if you find a bug.
 
+## Jumentier et al. 2023 release access
+
+To access code choose V1.0.0.0 in tags tab.
+
+To install this version:
+```
+devtools::install_github("bcm-uga/hdmax2",  ref = "V1.0.0.0")
+```
+
 ## References 
 
 - Jumentier B, CC Barrot, M Estavoyer, J Tost, B Heude, çO Fran, and J Lepeule (2023). High-Dimensional Medi- 220

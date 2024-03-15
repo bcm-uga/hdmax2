@@ -11,7 +11,6 @@ run_AS(
   K,
   covar = NULL,
   detailed = FALSE,
-  diagnostic.plot = FALSE,
   genomic.control = TRUE,
   effect.sizes = FALSE
 )
@@ -30,10 +29,7 @@ Response variables must be encoded as numeric. No NAs allowed.}
 
 \item{covar}{set of covariable, must be numeric. No NAs allowed}
 
-\item{detailed}{A logical to indicate if p-values must be estimated for each explanatory variables (detailed = TRUE) in addition to the pvalue of the global model (detailed = FALSE, by default)}
-
-\item{diagnostic.plot}{if TRUE the histogram of the p-values together
-with the estimate of eta0 null line is plotted.
+\item{detailed}{A logical to indicate if p-values must be estimated for each explanatory variables (detailed = TRUE) in addition to the pvalue of the global model (detailed = FALSE, by default)
 Useful to visually check the fit of the estimated proportion of null p-values.}
 
 \item{genomic.control}{correct pvalue with genomic inflation factor}
@@ -89,15 +85,15 @@ Max2 test The P-value is computed for each markers following this formula
 \examples{
 # Load example dataset
 simu_data = hdmax2::simu_data
-
+ K = 5
 # Run {hdmax2} step 1
 hdmax2_step1 = run_AS(X = simu_data$X_continuous ,
-                      Y =  simu_data$Y_continuous,
-                      M =  simu_data$M,
-                      K=5)
+                      Y = simu_data$Y_continuous,
+                      M = simu_data$M,
+                      K = K)
 
 head(hdmax2_step1$max2_pvalues)
 }
 \author{
-Florence Pittion, Magali Richard
+Florence Pittion, Magali Richard, Olivier Francois
 }
