@@ -81,7 +81,6 @@ This rejects the null-hypothesis that either the effect of X on M, or the effect
 <span>  <span class="va">K</span>,</span>
 <span>  covar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  detailed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  diagnostic.plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  genomic.control <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  effect.sizes <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -113,12 +112,7 @@ Response variables must be encoded as numeric. No NAs allowed.</p></dd>
 
 
 <dt>detailed</dt>
-<dd><p>A logical to indicate if p-values must be estimated for each explanatory variables (detailed = TRUE) in addition to the pvalue of the global model (detailed = FALSE, by default)</p></dd>
-
-
-<dt>diagnostic.plot</dt>
-<dd><p>if TRUE the histogram of the p-values together
-with the estimate of eta0 null line is plotted.
+<dd><p>A logical to indicate if p-values must be estimated for each explanatory variables (detailed = TRUE) in addition to the pvalue of the global model (detailed = FALSE, by default)
 Useful to visually check the fit of the estimated proportion of null p-values.</p></dd>
 
 
@@ -160,19 +154,19 @@ $$pV = max(pVal1, pVal2)^2$$</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p>Florence Pittion, Magali Richard</p>
+    <p>Florence Pittion, Magali Richard, Olivier Francois</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Load example dataset</span></span></span>
 <span class="r-in"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="simu_data.html">simu_data</a></span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">K</span> <span class="op">=</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="co"># Run {hdmax2} step 1</span></span></span>
 <span class="r-in"><span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">run_AS</span><span class="op">(</span>X <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span> ,</span></span>
-<span class="r-in"><span>                      Y <span class="op">=</span>  <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span>,</span></span>
-<span class="r-in"><span>                      M <span class="op">=</span>  <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span>,</span></span>
-<span class="r-in"><span>                      K<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                      Y <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span>,</span></span>
+<span class="r-in"><span>                      M <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span>,</span></span>
+<span class="r-in"><span>                      K <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The exposure argument is a vector."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The outcome argument is a vector."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The outcome argument is numeric"</span>

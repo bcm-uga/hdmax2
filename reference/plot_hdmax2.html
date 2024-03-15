@@ -104,9 +104,8 @@ This function draw a summary plot of hdmax2</p>
 <span class="r-in"><span><span class="va">mediators_subset</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span><span class="op">[</span>, <span class="va">mediators_subset</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="co"># Run {hdmax2} step 2</span></span></span>
-<span class="r-in"><span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="estimate_effect.html">estimate_effect</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>   object <span class="op">=</span> <span class="va">hdmax2_step1</span>, </span></span>
-<span class="r-in"><span>   m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>, </span></span>
+<span class="r-in"><span>                                       m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Estimating indirect effect for univariate exposome."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The input exposome is continuous or binary"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Generate regression 2 for continuous outcome and mediator 1"</span>
@@ -120,6 +119,7 @@ This function draw a summary plot of hdmax2</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Generate regression 2 for continuous outcome and mediator 9"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Generate regression 2 for continuous outcome and mediator 10"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Computing ODE and OTE for continuous outcome."</span>
+<span class="r-in"><span><span class="co"># Generate plot</span></span></span>
 <span class="r-in"><span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu">plot_hdmax2</span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hdmax2 plot for univariate exposome"</span>
 <span class="r-plt img"><img src="plot_hdmax2-1.png" alt="" width="700" height="433"></span>
@@ -129,6 +129,7 @@ This function draw a summary plot of hdmax2</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 2 (1-1,2-2) arrange gtable[layout]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3 3 (2-2,1-1) arrange gtable[layout]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 4 (2-2,2-2) arrange gtable[layout]</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

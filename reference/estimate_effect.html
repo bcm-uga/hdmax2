@@ -109,19 +109,20 @@ tests their significance.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p>Florence Pittion, Magali Richard</p>
+    <p>Florence Pittion, Magali Richard, Olivier Francois</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Load example dataset</span></span></span>
 <span class="r-in"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="simu_data.html">simu_data</a></span></span></span>
+<span class="r-in"><span><span class="va">K</span> <span class="op">=</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="co"># Run {hdmax2} step 1</span></span></span>
 <span class="r-in"><span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="run_AS.html">run_AS</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  X <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span>,</span></span>
 <span class="r-in"><span>  Y <span class="op">=</span>  <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span>,</span></span>
 <span class="r-in"><span>  M <span class="op">=</span>  <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span>,</span></span>
-<span class="r-in"><span>  K <span class="op">=</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span>  K <span class="op">=</span> <span class="va">K</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The exposure argument is a vector."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The outcome argument is a vector."</span>
@@ -139,9 +140,8 @@ tests their significance.</p>
 <span class="r-in"><span><span class="va">mediators_subset</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span><span class="op">[</span>, <span class="va">mediators_subset</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="co"># Run {hdmax2} step 2</span></span></span>
-<span class="r-in"><span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu">estimate_effect</span><span class="op">(</span></span></span>
-<span class="r-in"><span>   object <span class="op">=</span> <span class="va">hdmax2_step1</span>, </span></span>
-<span class="r-in"><span>   m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu">estimate_effect</span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>, </span></span>
+<span class="r-in"><span>                                       m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Estimating indirect effect for univariate exposome."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The input exposome is continuous or binary"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Generate regression 2 for continuous outcome and mediator 1"</span>
