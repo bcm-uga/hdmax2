@@ -66,7 +66,7 @@ To access code choose V1.0.0.0 in tags tab.
 
 To install this version:
 ```
-devtools::install_github("bcm-uga/hdmax2",  ref = "V1.0.0.0")
+devtools::install_github("bcm-uga/hdmax2", ref="v1.0.0.0")
 ```
 
 ## References 
