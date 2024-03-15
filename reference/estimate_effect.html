@@ -62,7 +62,7 @@ and total effect.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">estimate_effect</span><span class="op">(</span><span class="va">object</span>, <span class="va">m</span>, boots <span class="op">=</span> <span class="fl">100</span>, sims <span class="op">=</span> <span class="fl">3</span>, is.categorial <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">estimate_effect</span><span class="op">(</span><span class="va">object</span>, <span class="va">m</span>, boots <span class="op">=</span> <span class="fl">100</span>, sims <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -83,10 +83,6 @@ Response variables must be encoded as numeric. No NAs allowed.</p></dd>
 <dt>sims</dt>
 <dd><p>number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 10000 is recommended.</p></dd>
-
-
-<dt>is.categorial</dt>
-<dd><p>A a logical variable, if true, one mode of the categorical variable will be arbitrarily removed to avoid collinearity. Caution: if X is a mixture of categorical variables and other variables, you must remove a mode from the categorical variable beforehand, and indicate this parameter as FALSE.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -113,7 +109,7 @@ tests their significance.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p>Florence Pittion</p>
+    <p>Florence Pittion, Magali Richard</p>
     </div>
 
     <div class="section level2">
@@ -122,12 +118,20 @@ tests their significance.</p>
 <span class="r-in"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="simu_data.html">simu_data</a></span></span></span>
 <span class="r-in"><span><span class="co"># Run {hdmax2} step 1</span></span></span>
 <span class="r-in"><span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="run_AS.html">run_AS</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  X_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">)</span> ,</span></span>
-<span class="r-in"><span>  Y_matrix <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  M_matrix <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">M</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  X <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span>,</span></span>
+<span class="r-in"><span>  Y <span class="op">=</span>  <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span>,</span></span>
+<span class="r-in"><span>  M <span class="op">=</span>  <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span>,</span></span>
+<span class="r-in"><span>  K <span class="op">=</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "All exposome columns are in numeric format."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Running first regression with univariate explanorty variable."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The exposure argument is a vector."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The outcome argument is a vector."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The outcome argument is numeric"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Potential mediators matrix is actually a matrix"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "provided K = 5"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "K value has been transformed as integer"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The input exposome is continuous or binary"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Running first regression with univariate explanatory variable."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Running second regression."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Running max-squared test."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Not generating max2 pvalues for each explanatory variable."</span>
@@ -139,6 +143,7 @@ tests their significance.</p>
 <span class="r-in"><span>   object <span class="op">=</span> <span class="va">hdmax2_step1</span>, </span></span>
 <span class="r-in"><span>   m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Estimating indirect effect for univariate exposome."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The input exposome is continuous or binary"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Generate regression 2 for continuous outcome and mediator 1"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Generate regression 2 for continuous outcome and mediator 2"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Generate regression 2 for continuous outcome and mediator 3"</span>
@@ -157,7 +162,7 @@ tests their significance.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Florence Pittion, Magali Richard, Olivier François.</p>
+  <p></p><p>Developed by Florence Pittion, Magali Richard, Olivier Francois, Basile Jumentier.</p>
 </div>
 
 <div class="pkgdown-footer-right">

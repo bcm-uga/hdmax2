@@ -75,12 +75,10 @@ This rejects the null-hypothesis that either the effect of X on M, or the effect
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_AS</span><span class="op">(</span></span>
-<span>  <span class="va">X_matrix</span>,</span>
-<span>  <span class="va">Y_matrix</span>,</span>
-<span>  <span class="va">M_matrix</span>,</span>
-<span>  K <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  X_type <span class="op">=</span> <span class="st">"univariate"</span>,</span>
-<span>  Y_type <span class="op">=</span> <span class="st">"continuous"</span>,</span>
+<span>  <span class="va">X</span>,</span>
+<span>  <span class="va">Y</span>,</span>
+<span>  <span class="va">M</span>,</span>
+<span>  <span class="va">K</span>,</span>
 <span>  covar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  detailed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  diagnostic.plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -91,30 +89,23 @@ This rejects the null-hypothesis that either the effect of X on M, or the effect
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>X_matrix</dt>
-<dd><p>Exposure. An explanatory variable matrix with n rows and d columns.
-Each column corresponds to a distinct explanatory variable (Exposure). All columns should be in numeric format.</p></dd>
+    <dl><dt>X</dt>
+<dd><p>Exposure. An explanatory variable data frame with n rows and d columns.
+Each column corresponds to a distinct explanatory variable (Exposure).
+Continuous and binary variables must be encoded in numeric format. categorical variables are factor objects. The user can use the as.factor function to encode categorical variables, and  levels() and ordered() functions to define the modal order of categorical variables.</p></dd>
 
 
-<dt>Y_matrix</dt>
-<dd><p>Outcome. An explanatory variable matrix with n rows and 1 columns.</p></dd>
+<dt>Y</dt>
+<dd><p>Outcome. An explanatory variable matrix with n rows and 1 columns, corresponds to a vector, which supports both continuous and binary formats.</p></dd>
 
 
-<dt>M_matrix</dt>
+<dt>M</dt>
 <dd><p>a response variable matrix with n rows and p columns.
 Response variables must be encoded as numeric. No NAs allowed.</p></dd>
 
 
 <dt>K</dt>
 <dd><p>an integer for the number of latent factors in the regression model.</p></dd>
-
-
-<dt>X_type</dt>
-<dd><p>Type of exposition, can be either "univariate" (for continuous and binary variables), or "multivariate". Categorial variables must be one-hot encoded as multivariate variables. See helper_functions for example.</p></dd>
-
-
-<dt>Y_type</dt>
-<dd><p>type of outcome, , can be either "binary" or "continuous"</p></dd>
 
 
 <dt>covar</dt>
@@ -169,23 +160,32 @@ $$pV = max(pVal1, pVal2)^2$$</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p>Florence Pittion</p>
+    <p>Florence Pittion, Magali Richard</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Load example dataset</span></span></span>
 <span class="r-in"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="simu_data.html">simu_data</a></span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Run {hdmax2} step 1</span></span></span>
-<span class="r-in"><span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">run_AS</span><span class="op">(</span>X_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">)</span> ,</span></span>
-<span class="r-in"><span>                      Y_matrix <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                      M_matrix <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">M</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "All exposome columns are in numeric format."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Running first regression with univariate explanorty variable."</span>
+<span class="r-in"><span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">run_AS</span><span class="op">(</span>X <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span> ,</span></span>
+<span class="r-in"><span>                      Y <span class="op">=</span>  <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span>,</span></span>
+<span class="r-in"><span>                      M <span class="op">=</span>  <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span>,</span></span>
+<span class="r-in"><span>                      K<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The exposure argument is a vector."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The outcome argument is a vector."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The outcome argument is numeric"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Potential mediators matrix is actually a matrix"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "provided K = 5"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "K value has been transformed as integer"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The input exposome is continuous or binary"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Running first regression with univariate explanatory variable."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Running second regression."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Running max-squared test."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Not generating max2 pvalues for each explanatory variable."</span>
-<span class="r-in"><span><span class="co"># Print max2 test results</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> cg00005740 cg00006787 cg00007032 cg00008612 cg00009871 cg00009922 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.2614245  0.4061289  0.1119728  0.9231155  0.7612041  0.8804220 </span>
@@ -196,7 +196,7 @@ $$pV = max(pVal1, pVal2)^2$$</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Florence Pittion, Magali Richard, Olivier François.</p>
+  <p></p><p>Developed by Florence Pittion, Magali Richard, Olivier Francois, Basile Jumentier.</p>
 </div>
 
 <div class="pkgdown-footer-right">
