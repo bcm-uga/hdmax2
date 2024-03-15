@@ -12,7 +12,6 @@
 ##' @param sims number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 ##' 10000 is recommended.
 ##' @param boots number of bootstrap
-##' @param is.categorial A a logical variable, if true, one mode of the categorical variable will be arbitrarily removed to avoid collinearity. Caution: if X is a mixture of categorical variables and other variables, you must remove a mode from the categorical variable beforehand, and indicate this parameter as FALSE.
 ##' @return hdmax2_step2 object
 ##' 
 ##'  - ACME, estimation of the average causal mediation effect (the indirect effect)
@@ -131,7 +130,7 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
     if (expo_var_type == "character"||is.factor(X)){
       print("The input exposome is categorial")
       X_fact = as.factor(X)
-      X_dm = model.matrix(~X_fact)
+      X_dm = stats::model.matrix(~X_fact)
       print("categorial exposome design matrix transformation")
       X = X_dm[,-1]
       cn = colnames(X)
@@ -162,8 +161,8 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
         
         for (i in 1:ncol(M)) {#numeric
           
-          dat.x <- data.frame(Xk = X[,k], X = X[,-k], Mi = M[, i], covars = covars)
-          dat.y <- data.frame(Xk = X[,k], X = X[,-k], Mi = M[, i], covars = covars, Y = Y)
+          dat.x <- data.frame(Xk = X[,k], Xmk = X[,-k], Mi = M[, i], covars = covars)
+          dat.y <- data.frame(Xk = X[,k], Xmk = X[,-k], Mi = M[, i], covars = covars, Y = Y)
           
           mod1 = stats::lm(Mi ~ Xk + ., data = dat.x)
           
@@ -271,17 +270,17 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
         
         if(Y_type == "continuous") {
           print("Computing ODE and OTE for continuous outcome.")
-          data_tot = data.frame(X =X, Y= Y, covars = covars)
+          data_tot = data.frame(X = X, Y= Y, covars = covars)
           mod_total_effect = stats::lm(Y ~ . , data = data_tot)
-          data_tot2 = data.frame(X =X, Y= Y, M = M, covars = covars)
+          data_tot2 = data.frame(X = X, Y= Y, M = M, covars = covars)
           mod_direct_effect = stats::lm(Y ~ ., data = data_tot2)
         }
         
         if(Y_type == "binary") {
           print("Computing ODE and OTE for binary outcome.")
-          data_tot = data.frame(X =X, Y= Y, covars = covars)
+          data_tot = data.frame(X = X, Y= Y, covars = covars)
           mod_total_effect = stats::glm(Y ~ . , family = "binomial",  data = data_tot)
-          data_tot2 = data.frame(X =X, Y= Y, M = M ,covars = covars)
+          data_tot2 = data.frame(X = X, Y= Y, M = M ,covars = covars)
           mod_direct_effect = stats::glm(Y ~ . , family = "binomial",  data = data_tot2)
         }
         
@@ -301,8 +300,8 @@ estimate_effect <- function(object , m, boots = 100, sims = 3) {
         oie_cat[[k]] = oie
         oie_med_cat[[k]] = oie_med
         oie_sd_cat[[k]] = oie_sd
-        ote_cat[[k]] = ote_cat
-        ode_cat[[k]] = ode_cat
+        ote_cat[[k]] = ote
+        ode_cat[[k]] = ode
       }
       
       ACMEs[[expo_var_id]] = ACME_cat

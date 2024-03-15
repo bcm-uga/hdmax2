@@ -17,8 +17,6 @@ Response variables must be encoded as numeric. No NAs allowed.}
 
 \item{sims}{number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
 10000 is recommended.}
-
-\item{is.categorial}{A a logical variable, if true, one mode of the categorical variable will be arbitrarily removed to avoid collinearity. Caution: if X is a mixture of categorical variables and other variables, you must remove a mode from the categorical variable beforehand, and indicate this parameter as FALSE.}
 }
 \value{
 hdmax2_step2 object
@@ -62,7 +60,8 @@ simu_data = hdmax2::simu_data
 hdmax2_step1 = hdmax2::run_AS(
   X = simu_data$X_continuous,
   Y =  simu_data$Y_continuous,
-  M =  simu_data$M
+  M =  simu_data$M,
+  K = 5
 )
 # Select mediators
 mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])

@@ -116,6 +116,7 @@ object = hdmax2_step1
 m = mediators_top10
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
                                        m = mediators_top10)
+
 ```
 
 ### Plot
@@ -217,7 +218,7 @@ We propose a set of plots which include:
 - Mediators effect size representation
 
 
-```{r}
+```{r,eval = F}
 library(ggplot2)
 hdmax2::plot_hdmax2(hdmax2_step2)
 

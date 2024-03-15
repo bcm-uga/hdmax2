@@ -40,18 +40,12 @@ To install the latest version of **hdmax2**, use the github repository
 
 ## Simulated dataset
 
-We simulated 100 samples and 500 potential mediators, with various type of exposures (continuous or binary) and outcomes(continuous or binary).
+We simulated 100 samples and 500 potential mediators, with various type of exposures (continuous or binary) and outcomes (continuous or binary).
 
 
 ```{r}
 
 simu_data = hdmax2::simu_data
-
-## Exposures
-X_matrix = simu_data$X_binary
-
-## Outcomes
-Y_matrix = simu_data$Y_continuous
 
 ## High dimension mediators
 M_matrix = simu_data$M
@@ -78,7 +72,13 @@ K=5 #pca conclusion : it is better to select too many factors that too few
 The **run_AS** function is applied to estimate the effects of exposuire $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. Covariables can be included. 
 
 ```{r}
-K = K
+## Exposures
+X_matrix = simu_data$X_binary
+
+## Outcomes
+Y_matrix = simu_data$Y_continuous
+
+## covariates
 covar = cbind(age, gender)
 
 hdmax2_step1 = hdmax2::run_AS(X = X_matrix ,
@@ -103,7 +103,7 @@ head(mediators_top10)
 ```
 
 ### STEP 2
-The function **estimate_effect** estimate the individual indirect effect of mediators.
+The function **estimate_effect** estimate the individual indirect effect of mediators, but also overall effects of selected mediators.
 
 ```{r}
 object = hdmax2_step1
@@ -134,6 +134,7 @@ hdmax2::plot_hdmax2(hdmax2_step2)
 
 ```
 
+##TODO comments about plots
 
 
 ```{r}

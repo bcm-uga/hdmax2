@@ -146,7 +146,7 @@ run_AS = function(X,
       } 
       
       col_name = paste("Var", expo_var, sep="_")
-      Xs= cbind(Xs, setNames(new_X,col_name))
+      Xs= cbind(Xs, stats::setNames(new_X,col_name))
       new_expo_var_types[expo_var] = new_expo_var_type
     }
     expo_var_ids = colnames(X)
