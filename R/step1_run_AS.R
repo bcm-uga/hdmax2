@@ -115,7 +115,14 @@ run_AS = function(X,
       X = X[,-1]
       new_expo_var_type = typeof(X)
       
-    } else if (expo_var_types== "integer"||expo_var_types== "logical"||expo_var_types== "double"){
+    } else if (is.factor(X)){
+      print("The input exposome is categorial")
+      # model matrix transformation (-1 column to avoid colinearity)
+      X = model.matrix(~X)
+      X = X[,-1]
+      new_expo_var_type = typeof(X)
+    }
+    else if (expo_var_types== "integer"||expo_var_types== "logical"||expo_var_types== "double"){
       print("The input exposome is continuous or binary" )
       X = as.numeric(X)
       new_expo_var_type = typeof(X)
@@ -134,12 +141,18 @@ run_AS = function(X,
         new_X = as.factor(X[,expo_var])
         new_X = model.matrix(~new_X)
         new_X = new_X[,-1]
-        new_expo_var_type =  typeof(X)
+        new_expo_var_type =  typeof(new_X)
         
+      } else if (is.factor(X)){ 
+        print(paste("The input exposome no ", expo_var," is categorial"))
+        # model matrix transformation
+        new_X = model.matrix(~new_X)
+        new_X = new_X[,-1]
+        new_expo_var_type =  typeof(new_X)
       } else if (expo_var_types[expo_var]== "integer"||expo_var_types[expo_var]== "logical"|| expo_var_types[expo_var]== "double"){
         print(paste("The input exposome no ",expo_var, "is continuous or binary" ))
         new_X = X[,expo_var]
-        new_expo_var_type = typeof(X)
+        new_expo_var_type = typeof(new_X)
       } 
       
       col_name = paste("Var", expo_var, sep="_")
@@ -199,7 +212,7 @@ run_AS = function(X,
   if(expo_var_n == 1){
     
     print("Running first regression with univariate explanatory variable.")
-    if (expo_var_types == "character"){
+    if (expo_var_types == "character"|| is.factor(X)){
       
       mod.lfmm1 = lfmm2_med(input = M, 
                             env = X, 

@@ -95,5 +95,5 @@ hdmax2_step1 = run_AS(X = simu_data$X_continuous ,
 head(hdmax2_step1$max2_pvalues)
 }
 \author{
-Florence Pittion, Magali Richard, Olivier Francois
+Florence Pittion, Magali Richard, Olivier Francois, Basile Jumentier
 }

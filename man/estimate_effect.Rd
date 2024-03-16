@@ -72,5 +72,5 @@ hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
                                        m = mediators_top10)
 }
 \author{
-Florence Pittion, Magali Richard, Olivier Francois
+Florence Pittion, Magali Richard, Olivier Francois, Basile Jumentier
 }
