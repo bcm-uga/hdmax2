@@ -95,7 +95,7 @@ github repository</p>
 type of exposures (continuous or binary) and outcomes (continuous or
 binary). For this example we will use a binary exposure, a continuous
 outcome and two covariates (age and gender).</p>
-<p>We will define the K number of estimeted latent factors with a PCA
+<p>We will define the K number of estimated latent factors with a PCA
 and elbow procedure apply to screeplot.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -245,13 +245,12 @@ mediators.</p>
 <span><span class="co">#&gt; 4 4 (2-2,2-2) arrange gtable[layout]</span></span></code></pre>
 <p>We obtained one set of 4 plots:</p>
 <ul>
-<li><p><strong>A</strong> Estimates of indirect effect (ACME)
-and</p></li>
-<li><p><strong>B</strong> proportions of mediated effect (PM) for the
-top 10 mediators. The effect estimate is represented by a dot and its
-95% CI by the bar. Symbols correspond to the significance cut off of 5%
-(square for p-value <span class="math inline">\(\geq 0.05\)</span>,
-circle p-value <span class="math inline">\(&lt; 0.05\)</span>). Colors
+<li><p><strong>A</strong> Estimates of indirect effect (ACME) and
+<strong>B</strong> proportions of mediated effect (PM) for the top 10
+mediators. The effect estimate is represented by a dot and its 95% CI by
+the bar. Symbols correspond to the significance cut off of 5% (square
+for p-value <span class="math inline">\(\geq 0.05\)</span>, circle
+p-value <span class="math inline">\(&lt; 0.05\)</span>). Colors
 correspond to the sign of the effect (green for estimated effect <span class="math inline">\(\leq 0\)</span> , red for estimated effect <span class="math inline">\(&gt; 0\)</span>).</p></li>
 <li><p><strong>C</strong> Effect sizes of Overall Direct Effect (ODE),
 Overall Indirect Effect (OIE) and Overall Total Effect (OTE). Error bars
