@@ -79,14 +79,14 @@ Pittion, Magali Richard, Olivier Francois</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The {} package is designed to accept exposure <span class="math inline">\(X\)</span> consisting of univariate data, which
+<p>The <code>hdmax2</code> package is designed to accept exposure <span class="math inline">\(X\)</span> consisting of univariate data, which
 can be continuous, binary, or categorical, as well as multivariate
 exposomes. Binary variables are converted to 0s and 1s and treated as
 univariate variables.</p>
 <p>In this vignette, we provide a series of helper function to process
 the data.</p>
-<p>To install the latest version of <strong>hdmax2</strong>, use the
-github repository</p>
+<p>To install the latest version of <code>hdmax2</code>, use the github
+repository</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#devtools::install_github("bcm-uga/hdmax2")</span></span></code></pre></div>
 </div>
@@ -100,11 +100,14 @@ and continuous outcomes (birth weight).</p>
 <h3 id="identifying-aggregated-mediator-regions-amr">Identifying aggregated mediator regions (AMR)<a class="anchor" aria-label="anchor" href="#identifying-aggregated-mediator-regions-amr"></a>
 </h3>
 <p>Identify Aggregated Methylated regions (AMR) with AMR_search function
-which uses from the P-values from function max2 and using a adapted
-comb-p method (comb-p is a tool that manipulates BED files of possibly
-irregularly spaced P-values and calculates auto-correlation, combines
-adjacent P-values, performs false discovery adjustment, finds regions of
-enrichment and assigns significance to those regions).</p>
+which uses from the P-values from <em>max-squared</em> test compute in
+<code>run_AS</code> function and using a adapted comb-p method (comb-p
+is a tool that manipulates BED files of possibly irregularly spaced
+P-values and calculates auto-correlation, combines adjacent P-values,
+performs false discovery adjustment, finds regions of enrichment and
+assigns significance to those regions). AMR identification could be
+useful in Epigenomic Wide Association Studies when single CpG mediation
+is unsuccessful, or could be complementary analysis.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/helper_ex.html">helper_ex</a></span></span>
 <span></span>
@@ -114,7 +117,7 @@ enrichment and assigns significance to those regions).</p>
 <span></span>
 <span></span>
 <span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">methylation</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">]</span>,</span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">]</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">'Principal Component'</span>,</span>
 <span>     ylab <span class="op">=</span> <span class="st">"Explained variance"</span>,</span>
 <span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">16</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -183,8 +186,9 @@ enrichment and assigns significance to those regions).</p>
 <div class="section level3">
 <h3 id="quantifying-indirect-effects">Quantifying indirect effects<a class="anchor" aria-label="anchor" href="#quantifying-indirect-effects"></a>
 </h3>
-<p>Like in single mediators analysis <em>esimate_effect</em> function
-could be use to estimate different effects of AMR.</p>
+<p>Like with single mediators analysis <em>esimate_effect</em> function
+could be use to estimate different effects of AMR. Also
+<code>plot_hdmax2</code> can be applied to step2 results.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## run hdmax2 step2</span></span>
 <span></span>
@@ -224,9 +228,10 @@ could be use to estimate different effects of AMR.</p>
 ?<a class="anchor" aria-label="anchor" href="#how-to-select-potential-mediators-using-qvalues-and-fdr-control"></a>
 </h2>
 <p>Several methods can be use to select potential mediators from step1
-results for our methods, in our main use case we simply select top 10
-mediators but we can use multiple test adapted threshold like FDR
-control (False Discovery Rate)</p>
+results of our method, in our main use cases we simply select top 10
+mediators to simplify the narrative. Among available methods to select
+mediators from mediation test pvalues, we can use FDR control (False
+Discovery Rate).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
@@ -270,18 +275,20 @@ control (False Discovery Rate)</p>
 <span><span class="co">#&gt;  0.7637137  0.7637137  0.7679389  0.7758579  0.7965575</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="how-to-transform-a-categorial-variable-using-one-hot-encoding">How to transform a categorial variable using one-hot encoding ?<a class="anchor" aria-label="anchor" href="#how-to-transform-a-categorial-variable-using-one-hot-encoding"></a>
+<h2 id="how-to-transform-a-categorial-variable-ordered-factors">How to transform a categorial variable ordered factors ?<a class="anchor" aria-label="anchor" href="#how-to-transform-a-categorial-variable-ordered-factors"></a>
 </h2>
 <p>When categorial variables are used in our models, we must go through
-design matrices, and for that, one-hot encoding function is needed.</p>
+design matrices, the <code>run_AS</code> and
+<code>estimate_effect</code> functions can transform character vector
+when order doesn’t matter for categories. Otherwise here’s a simply way
+to transform character vector in factor and order categories as you
+want.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
 <span></span>
-<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_categorial</span></span>
-<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">X_matrix</span><span class="op">)</span></span>
-<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/droplevels.html" class="external-link">droplevels</a></span><span class="op">(</span><span class="va">X_matrix</span><span class="op">)</span></span>
-<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="fu">mltools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mltools/man/one_hot.html" class="external-link">one_hot</a></span><span class="op">(</span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">X_matrix</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">X_matrix</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># inverse alphabetical order for example</span></span>
+<span><span class="va">X</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_categorial</span></span>
+<span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">X</span>, ordered <span class="op">=</span> <span class="cn">TRUE</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"D"</span>,<span class="st">"C"</span>,<span class="st">"B"</span>,<span class="st">"A"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.3.3 (2024-02-29)</span></span>
@@ -315,30 +322,30 @@ design matrices, and for that, one-hot encoding function is needed.</p>
 <span><span class="co">#&gt; [13] Hmisc_5.1-2             sass_0.4.9              tools_4.3.3            </span></span>
 <span><span class="co">#&gt; [16] utf8_1.2.4              yaml_2.3.8              data.table_1.15.2      </span></span>
 <span><span class="co">#&gt; [19] knitr_1.45              labeling_0.4.3          htmlwidgets_1.6.4      </span></span>
-<span><span class="co">#&gt; [22] mediation_4.5.0         mltools_0.3.5           foreign_0.8-86         </span></span>
-<span><span class="co">#&gt; [25] withr_3.0.0             purrr_1.0.2             BiocGenerics_0.48.1    </span></span>
-<span><span class="co">#&gt; [28] desc_1.4.3              nnet_7.3-19             grid_4.3.3             </span></span>
-<span><span class="co">#&gt; [31] stats4_4.3.3            fansi_1.0.6             colorspace_2.1-0       </span></span>
-<span><span class="co">#&gt; [34] scales_1.3.0            MASS_7.3-60.0.1         cli_3.6.2              </span></span>
-<span><span class="co">#&gt; [37] mvtnorm_1.2-4           rmarkdown_2.26          crayon_1.5.2           </span></span>
-<span><span class="co">#&gt; [40] ragg_1.3.0              generics_0.1.3          rstudioapi_0.15.0      </span></span>
-<span><span class="co">#&gt; [43] minqa_1.2.6             cachem_1.0.8            stringr_1.5.1          </span></span>
-<span><span class="co">#&gt; [46] zlibbioc_1.48.2         splines_4.3.3           parallel_4.3.3         </span></span>
-<span><span class="co">#&gt; [49] XVector_0.42.0          base64enc_0.1-3         vctrs_0.6.5            </span></span>
-<span><span class="co">#&gt; [52] boot_1.3-29             Matrix_1.6-5            sandwich_3.1-0         </span></span>
-<span><span class="co">#&gt; [55] jsonlite_1.8.8          IRanges_2.36.0          S4Vectors_0.40.2       </span></span>
-<span><span class="co">#&gt; [58] Formula_1.2-5           htmlTable_2.4.2         systemfonts_1.0.6      </span></span>
-<span><span class="co">#&gt; [61] jquerylib_0.1.4         glue_1.7.0              pkgdown_2.0.7          </span></span>
-<span><span class="co">#&gt; [64] nloptr_2.0.3            stringi_1.8.3           gtable_0.3.4           </span></span>
-<span><span class="co">#&gt; [67] GenomeInfoDb_1.38.7     hdmax2_2.0.0.9000       lme4_1.1-35.1          </span></span>
-<span><span class="co">#&gt; [70] munsell_0.5.0           tibble_3.2.1            pillar_1.9.0           </span></span>
-<span><span class="co">#&gt; [73] htmltools_0.5.7         GenomeInfoDbData_1.2.11 R6_2.5.1               </span></span>
-<span><span class="co">#&gt; [76] textshaping_0.3.7       evaluate_0.23           lpSolve_5.6.20         </span></span>
-<span><span class="co">#&gt; [79] lattice_0.22-5          highr_0.10              backports_1.4.1        </span></span>
-<span><span class="co">#&gt; [82] memoise_2.0.1           bslib_0.6.1             fdrtool_1.2.17         </span></span>
-<span><span class="co">#&gt; [85] Rcpp_1.0.12             gridExtra_2.3           nlme_3.1-164           </span></span>
-<span><span class="co">#&gt; [88] checkmate_2.3.1         xfun_0.42               fs_1.6.3               </span></span>
-<span><span class="co">#&gt; [91] zoo_1.8-12              prettydoc_0.4.1         pkgconfig_2.0.3</span></span></code></pre></div>
+<span><span class="co">#&gt; [22] mediation_4.5.0         foreign_0.8-86          withr_3.0.0            </span></span>
+<span><span class="co">#&gt; [25] purrr_1.0.2             BiocGenerics_0.48.1     desc_1.4.3             </span></span>
+<span><span class="co">#&gt; [28] nnet_7.3-19             grid_4.3.3              stats4_4.3.3           </span></span>
+<span><span class="co">#&gt; [31] fansi_1.0.6             colorspace_2.1-0        scales_1.3.0           </span></span>
+<span><span class="co">#&gt; [34] MASS_7.3-60.0.1         cli_3.6.2               mvtnorm_1.2-4          </span></span>
+<span><span class="co">#&gt; [37] rmarkdown_2.26          crayon_1.5.2            ragg_1.3.0             </span></span>
+<span><span class="co">#&gt; [40] generics_0.1.3          rstudioapi_0.15.0       minqa_1.2.6            </span></span>
+<span><span class="co">#&gt; [43] cachem_1.0.8            stringr_1.5.1           zlibbioc_1.48.2        </span></span>
+<span><span class="co">#&gt; [46] splines_4.3.3           parallel_4.3.3          XVector_0.42.0         </span></span>
+<span><span class="co">#&gt; [49] base64enc_0.1-3         vctrs_0.6.5             boot_1.3-29            </span></span>
+<span><span class="co">#&gt; [52] Matrix_1.6-5            sandwich_3.1-0          jsonlite_1.8.8         </span></span>
+<span><span class="co">#&gt; [55] IRanges_2.36.0          S4Vectors_0.40.2        Formula_1.2-5          </span></span>
+<span><span class="co">#&gt; [58] htmlTable_2.4.2         systemfonts_1.0.6       jquerylib_0.1.4        </span></span>
+<span><span class="co">#&gt; [61] glue_1.7.0              pkgdown_2.0.7           nloptr_2.0.3           </span></span>
+<span><span class="co">#&gt; [64] stringi_1.8.3           gtable_0.3.4            GenomeInfoDb_1.38.7    </span></span>
+<span><span class="co">#&gt; [67] hdmax2_2.0.0.9000       lme4_1.1-35.1           munsell_0.5.0          </span></span>
+<span><span class="co">#&gt; [70] tibble_3.2.1            pillar_1.9.0            htmltools_0.5.7        </span></span>
+<span><span class="co">#&gt; [73] GenomeInfoDbData_1.2.11 R6_2.5.1                textshaping_0.3.7      </span></span>
+<span><span class="co">#&gt; [76] evaluate_0.23           lpSolve_5.6.20          lattice_0.22-5         </span></span>
+<span><span class="co">#&gt; [79] highr_0.10              backports_1.4.1         memoise_2.0.1          </span></span>
+<span><span class="co">#&gt; [82] bslib_0.6.1             fdrtool_1.2.17          Rcpp_1.0.12            </span></span>
+<span><span class="co">#&gt; [85] gridExtra_2.3           nlme_3.1-164            checkmate_2.3.1        </span></span>
+<span><span class="co">#&gt; [88] xfun_0.42               fs_1.6.3                zoo_1.8-12             </span></span>
+<span><span class="co">#&gt; [91] prettydoc_0.4.1         pkgconfig_2.0.3</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
