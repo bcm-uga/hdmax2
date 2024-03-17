@@ -47,9 +47,9 @@ To install the latest version of **hdmax2**, use the github repository
 
 We simulated 100 samples and 500 potential mediators, with various type of exposures (continuous, binary or categorial) and outcomes(continuous or binary).
 
-For the two example we will use a continuous outcome and two covariates (age and gender).
+For the two examples we will use a continuous outcome and two covariates (age and gender).
 
-We will define the K number of estimeted latent factors with a PCA and elbow procedure apply to screeplot.
+We will define the K number of estimated latent factors with a PCA and elbow procedure apply to screeplot.
 
 
 ```{r, variable definition}
@@ -153,11 +153,9 @@ hdmax2::plot_hdmax2(hdmax2_step2)
 
 
 ```
-We obtained three set, for each category of categorial exposure (minus the reference category), of 4 plots:
+We obtained three sets, for each category of categorial exposure (minus the reference category), of 4 plots:
 
-   - **A** Estimates of indirect effect (ACME) and 
-   
-   - **B** proportions of mediated effect (PM) for the top 10 mediators. The effect estimate is represented by a dot and its 95\% CI by the bar. Symbols correspond to the significance cut off of 5\%  (square for p-value $\geq 0.05$, circle p-value $< 0.05$). Colors correspond to the sign of the effect (green for estimated effect $\leq 0$ , red for estimated effect $> 0$). 
+   - **A** Estimates of indirect effect (ACME) and  **B** proportions of mediated effect (PM) for the top 10 mediators. The effect estimate is represented by a dot and its 95\% CI by the bar. Symbols correspond to the significance cut off of 5\%  (square for p-value $\geq 0.05$, circle p-value $< 0.05$). Colors correspond to the sign of the effect (green for estimated effect $\leq 0$ , red for estimated effect $> 0$). 
    
    - **C** Effect sizes of Overall Direct Effect (ODE), Overall Indirect Effect (OIE) and Overall Total Effect (OTE). Error bars correspond to standard deviation (ODE and OTE) or confidence interval (OIE). 
     
@@ -234,11 +232,9 @@ hdmax2::plot_hdmax2(hdmax2_step2)
 
 ```
 
-We obtained two set, for each variables of multivariate exposure, of 4 plots:
+We obtained two sets, for each variables of multivariate exposure, of 4 plots:
 
-   - **A** Estimates of indirect effect (ACME) and 
-   
-   - **B** proportions of mediated effect (PM) for the top 10 mediators. The effect estimate is represented by a dot and its 95\% CI by the bar. Symbols correspond to the significance cut off of 5\%  (square for p-value $\geq 0.05$, circle p-value $< 0.05$). Colors correspond to the sign of the effect (green for estimated effect $\leq 0$ , red for estimated effect $> 0$). 
+   - **A** Estimates of indirect effect (ACME) and  **B** proportions of mediated effect (PM) for the top 10 mediators. The effect estimate is represented by a dot and its 95\% CI by the bar. Symbols correspond to the significance cut off of 5\%  (square for p-value $\geq 0.05$, circle p-value $< 0.05$). Colors correspond to the sign of the effect (green for estimated effect $\leq 0$ , red for estimated effect $> 0$). 
    
    - **C** Effect sizes of Overall Direct Effect (ODE), Overall Indirect Effect (OIE) and Overall Total Effect (OTE). Error bars correspond to standard deviation (ODE and OTE) or confidence interval (OIE). 
     
