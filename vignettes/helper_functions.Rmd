@@ -117,8 +117,7 @@ sims = 100
 
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
                                        m = m,
-                                       boots = 100,
-                                       sims = 100)
+                                       boots = 100)
 
 
 library(ggplot2)

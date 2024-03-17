@@ -41,6 +41,9 @@ To install the latest version of **hdmax2**, use the github repository
 ## Simulated dataset
 
 We simulated 100 samples and 500 potential mediators, with various type of exposures (continuous or binary) and outcomes (continuous or binary).
+For this example we will use a binary exposure, a continuous outcome and two covariates (age and gender).
+
+We will define the K number of estimeted latent factors with a PCA and elbow procedure apply to screeplot.
 
 
 ```{r}
@@ -50,10 +53,17 @@ simu_data = hdmax2::simu_data
 ## High dimension mediators
 M_matrix = simu_data$M
 
+## Exposures
+X_matrix = simu_data$X_binary
+
+## Outcomes
+Y_matrix = simu_data$Y_continuous
+
+
 ## Covariates
 age = simu_data$age
 gender = simu_data$gender
-
+covar = cbind(age, gender)
 ## Number of Latent factore estimation
 pc <- prcomp(M_matrix)
 plot((pc$sdev^2/sum(pc$sdev))[1:10],
@@ -69,17 +79,9 @@ K=5 #pca conclusion : it is better to select too many factors that too few
 
 ### STEP 1: Run association studies
 
-The **run_AS** function is applied to estimate the effects of exposuire $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. Covariables can be included. 
+The **run_AS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. Covariables can be included. 
 
 ```{r}
-## Exposures
-X_matrix = simu_data$X_binary
-
-## Outcomes
-Y_matrix = simu_data$Y_continuous
-
-## covariates
-covar = cbind(age, gender)
 
 hdmax2_step1 = hdmax2::run_AS(X = X_matrix ,
                 Y = Y_matrix,
@@ -91,7 +93,8 @@ hdmax2_step1 = hdmax2::run_AS(X = X_matrix ,
 
 ### Selection of a subset of mediators
 
-In this example, we will consider the 10 first selected mediators.
+Step 1 provides an object which contains results from the two regression (pvalues, fscores, zscores), latent factor estimation from first regression, function inputs, and more important max-squared test pvalues results. This last result allow to select mediators which user's choosen method. For this example we selected top ten of more significant pvalues from max-squared test.
+
 
 
 ```{r}
@@ -133,6 +136,15 @@ library(ggplot2)
 hdmax2::plot_hdmax2(hdmax2_step2)
 
 ```
+We obtained one set of 4 plots:
+
+   - **A** Estimates of indirect effect (ACME) and 
+   
+   - **B** proportions of mediated effect (PM) for the top 10 mediators. The effect estimate is represented by a dot and its 95\% CI by the bar. Symbols correspond to the significance cut off of 5\%  (square for p-value $\geq 0.05$, circle p-value $< 0.05$). Colors correspond to the sign of the effect (green for estimated effect $\leq 0$ , red for estimated effect $> 0$). 
+   
+   - **C** Effect sizes of Overall Direct Effect (ODE), Overall Indirect Effect (OIE) and Overall Total Effect (OTE). Error bars correspond to standard deviation (ODE and OTE) or confidence interval (OIE). 
+    
+   - **D** Indirect effect sizes for the selected mediators. Black corresponds to the ACME, violet to the effect of exposure X on mediator M in the model $X \sim M$, and blue corresponds to the effect of mediator M on outcome Y in the model $Y \sim M + X$.
 
 ##TODO comments about plots
 

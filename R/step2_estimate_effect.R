@@ -170,7 +170,7 @@ estimate_effect <- function(object , m, boots = 100) {
           dat.y <- data.frame(Xk = X[,k], Xmk = X[,-k], Mi = M[, i], covars = covars, Y = Y)
           
           mod1 = stats::lm(Mi ~ Xk + ., data = dat.x)
-          print(paste0("Generate regression 1 for categorial exposure and mediator ", i)
+          print(paste0("Generate regression 1 for categorial exposure and mediator ", i))
           
           if(Y_type=="continuous"){
             print(paste0("Generate regression 2 for continuous outcome and mediator ", i))   
@@ -334,7 +334,7 @@ estimate_effect <- function(object , m, boots = 100) {
         dat.x <- data.frame(X = X, Mi = M[, i], covars = covars)
         dat.y <- data.frame(X = X, Mi = M[, i], covars = covars, Y = Y)
         mod1 = stats::lm(Mi ~ X + ., data = dat.x)
-        print(paste0("Generate regression 1 for continuous or binary exposure and mediator ", i)
+        print(paste0("Generate regression 1 for continuous or binary exposure and mediator ", i))
         
         if(Y_type=="continuous"){
           print(paste0("Generate regression 2 for continuous outcome and mediator ", i))   

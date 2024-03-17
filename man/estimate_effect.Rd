@@ -5,7 +5,7 @@
 \title{Estimate effects for a set of mediation markers
 V2 this version allow to integrate covariates in mediation function}
 \usage{
-estimate_effect(object, m, boots = 100, sims = 3)
+estimate_effect(object, m, boots = 100)
 }
 \arguments{
 \item{object}{results from hdmax2 step 2}
@@ -14,9 +14,6 @@ estimate_effect(object, m, boots = 100, sims = 3)
 Response variables must be encoded as numeric. No NAs allowed.}
 
 \item{boots}{number of bootstrap}
-
-\item{sims}{number of Monte Carlo draws for nonparametric bootstrap or quasi-Bayesian approximation.
-10000 is recommended.}
 }
 \value{
 hdmax2_step2 object

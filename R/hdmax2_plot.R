@@ -36,16 +36,15 @@ plot_hdmax2 <- function(object) {
   }
   
   #Plot the ACME of the model
-  if(length(object$input$expo_var_ids) == 1 && (object$input$expo_var_types!="character")) {
+  if(length(object$input$expo_var_ids) == 1 &&  is.factor(object$input$X_input)==FALSE && (object$input$expo_var_types!="character")) {
     print("hdmax2 plot for univariate exposome")
     p = plot_univariate(object)
   }
   
-  if(length(object$input$expo_var_ids) == 1 && (object$input$expo_var_types=="character")) {
+  if(length(object$input$expo_var_ids) == 1 && (object$input$expo_var_types=="character" || is.factor(object$input$X_input))) {
     print("hdmax2 plot for univariate categorial exposome")
     p = plot_univariate_cat(object)
   }
-  
   
   if (length(object$input$expo_var_ids) > 1 ) {
     print("hdmax2 plot for multivariate exposome")

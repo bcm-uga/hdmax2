@@ -115,19 +115,22 @@ run_AS = function(X,
       X = X[,-1]
       new_expo_var_type = typeof(X)
       
-    } else if (is.factor(X)){
-      print("The input exposome is categorial")
-      # model matrix transformation (-1 column to avoid colinearity)
-      X = model.matrix(~X)
-      X = X[,-1]
-      new_expo_var_type = typeof(X)
-    }
+    } 
     else if (expo_var_types== "integer"||expo_var_types== "logical"||expo_var_types== "double"){
       print("The input exposome is continuous or binary" )
       X = as.numeric(X)
       new_expo_var_type = typeof(X)
     } 
     
+  } else if (is.factor(X)){
+    expo_var_n = 1
+    expo_var_types =  typeof(X)
+    expo_var_ids = 1
+    print("The input exposome is categorial")
+    # model matrix transformation (-1 column to avoid colinearity)
+    X = model.matrix(~X)
+    X = X[,-1]
+    new_expo_var_type = typeof(X)
   } else if(is.data.frame(X)){
     expo_var_n = dim(X)[2]
     expo_var_ids = colnames(X)
@@ -212,7 +215,7 @@ run_AS = function(X,
   if(expo_var_n == 1){
     
     print("Running first regression with univariate explanatory variable.")
-    if (expo_var_types == "character"|| is.factor(X)){
+    if (expo_var_types == "character"|| is.factor(X_input)){
       
       mod.lfmm1 = lfmm2_med(input = M, 
                             env = X, 
@@ -409,6 +412,8 @@ check_argument_exposure = function(argument){
     }
   } else if (is.vector(argument)) {
     print("The exposure argument is a vector.")
+  } else if (is.factor(argument)) {
+    print("The exposure argument is a factor.")
   } else {
     stop("The exposure  is not a data frame,  nor a vector ")
   }
