@@ -153,8 +153,9 @@ When categorial variables are used in our models, we must go through design matr
 ```{r}
 simu_data = hdmax2::simu_data
 
+# inverse alphabetical order for example
 X = simu_data$X_categorial
-X = as.factor(X, ordered = TRUE, levels = c("A", "B", "C", "D"))
+X = factor(X, ordered = TRUE, levels = c("D","C","B","A"))
 
 ```
 
