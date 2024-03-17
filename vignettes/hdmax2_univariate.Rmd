@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 
 ## Introduction 
 
-The {\tt hdmax2} package is designed to accept exposure $X$ consisting of univariate data, which can be continuous, binary, as well as multivariate exposomes (which includes categorical variables). 
+The `hdmax2` package is designed to accept exposure $X$ consisting of univariate data, which can be continuous, binary, as well as multivariate exposomes (which includes categorical variables). 
 
 In this vignette, we treat the univariate example.
 
