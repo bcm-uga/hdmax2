@@ -126,7 +126,7 @@ hdmax2::plot_hdmax2(hdmax2_step2)
 
 ```
 
-## How to select potential mediators using q=values and FDR control ?
+## How to select potential mediators using q-values and FDR control ?
 
 Several methods can be use to select potential mediators from step1 results of our method, in our main use cases we simply select top 10 mediators to simplify the narrative. Among available methods to select mediators from mediation test pvalues, we can use FDR control (False Discovery Rate).
 
@@ -146,7 +146,7 @@ candidate_mediator
 
 ```
 
-## How to transform a categorial variable ordered factors ?
+## How to transform a categorial variable in ordered factor ?
 
 When categorial variables are used in our models, we must go through design matrices, the `run_AS` and `estimate_effect` functions can transform character vector when order doesn't matter for categories. Otherwise here's a simply way to transform character vector in factor and order categories as you want. 
 
