@@ -36,7 +36,7 @@ In this vignette, we treat two example of multivariate exposomes:
 
 - the second example with a two variables exposure
 
-To install the latest version of **hdmax2**, use the github repository 
+To install the latest version of `hdmax2`, use the github repository 
 
 ```{r, package installation}
 #devtools::install_github("bcm-uga/hdmax2")

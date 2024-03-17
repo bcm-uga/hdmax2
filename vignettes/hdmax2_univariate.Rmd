@@ -31,7 +31,7 @@ The `hdmax2` package is designed to accept exposure $X$ consisting of univariate
 
 In this vignette, we treat the univariate example.
 
-To install the latest version of **hdmax2**, use the github repository 
+To install the latest version of `hdmax2`, use the github repository 
 
 ```{r}
 #devtools::install_github("bcm-uga/hdmax2")

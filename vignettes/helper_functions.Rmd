@@ -29,11 +29,11 @@ knitr::opts_chunk$set(
 
 ## Introduction 
 
-The {\tt hdmax2} package is designed to accept exposure $X$ consisting of univariate data, which can be continuous, binary, or categorical, as well as multivariate exposomes. Binary variables are converted to 0s and 1s and treated as univariate variables. 
+The `hdmax2` package is designed to accept exposure $X$ consisting of univariate data, which can be continuous, binary, or categorical, as well as multivariate exposomes. Binary variables are converted to 0s and 1s and treated as univariate variables. 
 
 In this vignette, we provide a series of helper function to process the data.
 
-To install the latest version of **hdmax2**, use the github repository 
+To install the latest version of `hdmax2`, use the github repository 
 ```{r}
 #devtools::install_github("bcm-uga/hdmax2")
 ```
