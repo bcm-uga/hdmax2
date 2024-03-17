@@ -46,7 +46,7 @@ We simulated 500 samples and 1000 potential DNA methylation mediators, with vari
 ### Identifying aggregated mediator regions (AMR)
 
 
-Identify Aggregated Methylated regions (AMR) with AMR_search function which uses from the P-values from function max2 and using a adapted comb-p method (comb-p is a tool that manipulates BED files of possibly irregularly spaced P-values and calculates auto-correlation, combines adjacent P-values, performs false discovery adjustment, finds regions of enrichment and assigns significance to those regions).
+Identify Aggregated Methylated regions (AMR) with AMR_search function which uses from the P-values from *max-squared* test compute in `run_AS` function and using a adapted comb-p method (comb-p is a tool that manipulates BED files of possibly irregularly spaced P-values and calculates auto-correlation, combines adjacent P-values, performs false discovery adjustment, finds regions of enrichment and assigns significance to those regions). AMR identification could be useful in Epigenomic Wide Association Studies when single CpG mediation is unsuccessful, or could be complementary analysis.
 
 
 ```{r}
@@ -58,7 +58,7 @@ data$annotation = data$annotation[800:1000, ]
 
 
 pc <- prcomp(data$methylation)
-plot((pc$sdev^2/sum(pc$sdev))[1:15],
+plot((pc$sdev^2/sum(pc$sdev^2))[1:15],
      xlab = 'Principal Component',
      ylab = "Explained variance",
      col = c(rep(1, 3), 2, rep(1, 16)))
@@ -102,7 +102,7 @@ res.arm_build$CpG_for_each_AMR
 
 ### Quantifying indirect effects 
 
-Like in single mediators analysis *esimate_effect* function could be use to estimate different effects of AMR.
+Like with single mediators analysis *esimate_effect* function could be use to estimate different effects of AMR. Also `plot_hdmax2` can be applied to step2 results.
 
 
 ```{r}
@@ -128,7 +128,7 @@ hdmax2::plot_hdmax2(hdmax2_step2)
 
 ## How to select potential mediators using q=values and FDR control ?
 
-Several methods can be use to select potential mediators from step1 results for our methods, in our main use case we simply select top 10 mediators but we can use multiple test adapted threshold like FDR control (False Discovery Rate)
+Several methods can be use to select potential mediators from step1 results of our method, in our main use cases we simply select top 10 mediators to simplify the narrative. Among available methods to select mediators from mediation test pvalues, we can use FDR control (False Discovery Rate).
 
 ```{r}
 
@@ -146,18 +146,16 @@ candidate_mediator
 
 ```
 
-## How to transform a categorial variable using one-hot encoding ?
+## How to transform a categorial variable ordered factors ?
 
-When categorial variables are used in our models, we must go through design matrices, and for that, one-hot encoding function is needed.
+When categorial variables are used in our models, we must go through design matrices, the `run_AS` and `estimate_effect` functions can transform character vector when order doesn't matter for categories. Otherwise here's a simply way to transform character vector in factor and order categories as you want. 
 
 ```{r}
 simu_data = hdmax2::simu_data
 
-X_matrix = simu_data$X_categorial
-X_matrix = as.factor(X_matrix)
-X_matrix = droplevels(X_matrix)
-X_matrix = mltools::one_hot(data.table::as.data.table(X_matrix))
-X_matrix = as.matrix(X_matrix)
+X = simu_data$X_categorial
+X = as.factor(X, ordered = TRUE, levels = c("A", "B", "C", "D"))
+
 ```
 
 

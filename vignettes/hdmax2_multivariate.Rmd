@@ -69,9 +69,8 @@ gender = simu_data$gender
 
 ```{r, pca for latent factor}
 ## Number of Latent factor estimation
-
 pc <- prcomp(M)
-plot((pc$sdev^2/sum(pc$sdev))[1:10],
+plot((pc$sdev^2/sum(pc$sdev^2))[1:10],
      type = "b",
      xlab = 'Principal Component',
      ylab = "Explained variance")
