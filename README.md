@@ -62,7 +62,7 @@ Please open an issue if you find a bug.
 
 ## Jumentier et al. 2023 release access
 
-To access code choose V1.0.0.0 in tags tab.
+To access code choose v1.0.0.0 in tags tab.
 
 To install this version:
 ```
@@ -71,7 +71,7 @@ devtools::install_github("bcm-uga/hdmax2", ref="v1.0.0.0")
 
 ## References 
 
-- Jumentier B, CC Barrot, M Estavoyer, J Tost, B Heude, çO Fran, and J Lepeule (2023). High-Dimensional Medi- 220
+- Jumentier B, CC Barrot, M Estavoyer, J Tost, B Heude, O Francois, and J Lepeule (2023). High-Dimensional Medi- 220
 ation Analysis: A New Method Applied to Maternal Smoking, Placental DNA Methylation, and Birth Out- 221
 comes. Environmental Health Perspectives 131 (). Publisher: Environmental Health Perspectives, 047011. 222
 https://doi.org/10.1289/EHP11559.

@@ -443,7 +443,7 @@ estimate_effect <- function(object , m, boots = 100) {
         print("Computing ODE and OTE for continuous outcome.")
         data_tot = data.frame(X =X, Y= Y, covars = covars)
         mod_total_effect = stats::lm(Y ~ . , data = data_tot)
-        data_tot2 = data.frame(X =X, Y= Y, M =M,covars = covars)
+        data_tot2 = data.frame(X =X, Y= Y, M =M ,covars = covars)
         mod_direct_effect = stats::lm(Y ~ ., data = data_tot2)
       }
       

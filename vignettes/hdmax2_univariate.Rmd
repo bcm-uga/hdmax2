@@ -41,9 +41,10 @@ To install the latest version of **hdmax2**, use the github repository
 ## Simulated dataset
 
 We simulated 100 samples and 500 potential mediators, with various type of exposures (continuous or binary) and outcomes (continuous or binary).
-For this example we will use a binary exposure, a continuous outcome and two covariates (age and gender).
 
-We will define the K number of estimated latent factors with a PCA and elbow procedure apply to screeplot.
+For this example we use a binary exposure, a continuous outcome and two covariates (age and gender).
+
+We define the K number of estimated latent factors with a PCA and elbow procedure apply to screeplot.
 
 
 ```{r}
@@ -51,21 +52,22 @@ We will define the K number of estimated latent factors with a PCA and elbow pro
 simu_data = hdmax2::simu_data
 
 ## High dimension mediators
-M_matrix = simu_data$M
+M = simu_data$M
 
 ## Exposures
-X_matrix = simu_data$X_binary
+X  = simu_data$X_binary
 
 ## Outcomes
-Y_matrix = simu_data$Y_continuous
+Y  = simu_data$Y_continuous
 
 
 ## Covariates
 age = simu_data$age
 gender = simu_data$gender
 covar = cbind(age, gender)
+
 ## Number of Latent factore estimation
-pc <- prcomp(M_matrix)
+pc <- prcomp(M)
 plot((pc$sdev^2/sum(pc$sdev))[1:10],
      type = "b",
      xlab = 'Principal Component',
@@ -83,11 +85,11 @@ The **run_AS** function is applied to estimate the effects of exposure $X$ on a 
 
 ```{r}
 
-hdmax2_step1 = hdmax2::run_AS(X = X_matrix ,
-                Y = Y_matrix,
-                 M = M_matrix, 
-                 K = K,
-                 covar = covar)
+hdmax2_step1 = hdmax2::run_AS(X = X,
+                              Y = Y,
+                              M = M, 
+                              K = K,
+                              covar = covar)
 
 ```
 
@@ -100,7 +102,7 @@ Step 1 provides an object which contains results from the two regression (pvalue
 ```{r}
 ## Selecting top 10 mediators
 ## top 10 selecting mediators
-mediators_top10 = M_matrix[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+mediators_top10 = M[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
 head(mediators_top10)
 
 ```
@@ -113,7 +115,7 @@ object = hdmax2_step1
 m = mediators_top10
 
 hdmax2_step2 = hdmax2::estimate_effect(object = object,
-                                    m = m)
+                                       m = m)
 
 ```
 
