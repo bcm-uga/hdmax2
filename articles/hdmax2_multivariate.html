@@ -86,8 +86,7 @@ includes categorical variables).</p>
 <ul>
 <li><p>the first example, with a categorial explanatory
 variables</p></li>
-<li><p>the second example with a two continuous variables
-exposure</p></li>
+<li><p>the second example with a two variables exposure</p></li>
 </ul>
 <p>To install the latest version of <strong>hdmax2</strong>, use the
 github repository</p>
@@ -100,18 +99,18 @@ github repository</p>
 <p>We simulated 100 samples and 500 potential mediators, with various
 type of exposures (continuous, binary or categorial) and
 outcomes(continuous or binary).</p>
-<p>For the two examples we will use a continuous outcome and two
-covariates (age and gender).</p>
-<p>We will define the K number of estimated latent factors with a PCA
-and elbow procedure apply to screeplot.</p>
+<p>For the two examples we use a continuous outcome and two covariates
+(age and gender).</p>
+<p>We define the K number of estimated latent factors with a PCA and
+elbow procedure apply to screeplot.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
 <span></span>
 <span><span class="co">## Outcomes</span></span>
-<span><span class="va">Y_matrix</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span></span>
+<span><span class="va">Y</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span></span>
 <span></span>
 <span><span class="co">## High dimension mediators</span></span>
-<span><span class="va">M_matrix</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span></span>
+<span><span class="va">M</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span></span>
 <span></span>
 <span><span class="co">## Covariates</span></span>
 <span><span class="va">age</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">age</span></span>
@@ -119,8 +118,9 @@ and elbow procedure apply to screeplot.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Number of Latent factor estimation</span></span>
 <span></span>
-<span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">M_matrix</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>,</span>
+<span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">M</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>,</span>
+<span>     type <span class="op">=</span> <span class="st">"b"</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">'Principal Component'</span>,</span>
 <span>     ylab <span class="op">=</span> <span class="st">"Explained variance"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hdmax2_multivariate_files/figure-html/pca%20for%20latent%20factor-1.png" width="700"></p>
@@ -139,21 +139,22 @@ outcome</em><a class="anchor" aria-label="anchor" href="#first-use-case-categori
 effects of exposure <span class="math inline">\(X\)</span> on a matrix
 <span class="math inline">\(M\)</span> of potential mediators, and the
 effect of each potential mediators on outcome <span class="math inline">\(Y\)</span>. Covariables can be included or not,
-for the example we decided to include two covariates defined above.
-Exposure is categorial , for the example we kept vector with character
-type that will be transformed in factor inside function, but users can
-apply transformation to factor if needed (to order categories).</p>
+for the example we decide to include two covariates defined above.
+Exposure is categorial, for the example we choose a vector with
+character type that will be transformed in factor inside function, but
+users can apply transformation to factor if needed (to order
+categories).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Exposures is categorial, character vector</span></span>
-<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_categorial</span></span>
+<span><span class="va">X</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_categorial</span></span>
 <span></span>
 <span></span>
 <span><span class="va">detailed</span> <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">gender</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X_matrix</span>,</span>
-<span>                              Y <span class="op">=</span> <span class="va">Y_matrix</span>,</span>
-<span>                              M <span class="op">=</span> <span class="va">M_matrix</span>,</span>
+<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>,</span>
+<span>                              Y <span class="op">=</span> <span class="va">Y</span>,</span>
+<span>                              M <span class="op">=</span> <span class="va">M</span>,</span>
 <span>                              K <span class="op">=</span> <span class="va">K</span>,</span>
 <span>                              detailed <span class="op">=</span> <span class="va">detailed</span>,  <span class="co"># indicates the exposure is multivariate</span></span>
 <span>                              covar <span class="op">=</span> <span class="va">covar</span><span class="op">)</span></span>
@@ -181,13 +182,13 @@ apply transformation to factor if needed (to order categories).</p>
 </h3>
 <p>Step 1 provides an object which contains results from the two
 regression (pvalues, fscores, zscores), latent factor estimation from
-first regression, function inputs, and more important max-squared test
-pvalues results. This last result allow to select mediators which user’s
-choosen method. For this example we selected top ten of more significant
-pvalues from max-squared test.</p>
+first regression, function inputs, and more important
+<em>max-squared</em> test pvalues results. This last result allow to
+select mediators which user’s choosen method. For this example we select
+top ten of more significant pvalues from <em>max-squared</em> test.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
-<span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M_matrix</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            cg00252121 cg00691940 cg00059662 cg00098070 cg00513564 cg00014667</span></span>
 <span><span class="co">#&gt; GSM1051525  0.5620420  0.9064152  0.7545270  0.8573723  0.7201085  0.7992167</span></span>
@@ -209,7 +210,7 @@ pvalues from max-squared test.</p>
 </h3>
 <p>The function <strong>estimate_effect</strong> estimate the individual
 indirect effect of mediators but also overall effects of selected
-mediators..</p>
+mediators.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">object</span> <span class="op">=</span> <span class="va">hdmax2_step1</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="va">mediators_top10</span></span>
@@ -320,8 +321,8 @@ mediators..</p>
 <span><span class="co">#&gt; 2 2 (1-1,2-2) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 3 3 (2-2,1-1) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 4 4 (2-2,2-2) arrange gtable[layout]</span></span></code></pre>
-<p>We obtained three sets, for each category of categorial exposure
-(minus the reference category), of 4 plots:</p>
+<p>We obtain three series, for each category of categorial exposure
+(minus the reference category), of 4-set plots:</p>
 <ul>
 <li><p><strong>A</strong> Estimates of indirect effect (ACME) and
 <strong>B</strong> proportions of mediated effect (PM) for the top 10
@@ -354,15 +355,17 @@ outcome</em><a class="anchor" aria-label="anchor" href="#second-use-case-multiva
 effects of exposure <span class="math inline">\(X\)</span> on a matrix
 <span class="math inline">\(M\)</span> of potential mediators, and the
 effect of each potential mediators on outcome <span class="math inline">\(Y\)</span>. Covariables can be included.</p>
+<p>For this second example we generate an exposure that is data frame
+with a continuous and a binary variables.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## multivariate Exposures (continuous + binary)</span></span>
-<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X1 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span>, X2 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_binary</span><span class="op">)</span></span>
+<span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X1 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span>, X2 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_binary</span><span class="op">)</span></span>
 <span><span class="va">detailed</span> <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">gender</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X_matrix</span> ,</span>
-<span>                              Y <span class="op">=</span> <span class="va">Y_matrix</span>,</span>
-<span>                              M <span class="op">=</span> <span class="va">M_matrix</span>,</span>
+<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span> ,</span>
+<span>                              Y <span class="op">=</span> <span class="va">Y</span>,</span>
+<span>                              M <span class="op">=</span> <span class="va">M</span>,</span>
 <span>                              K <span class="op">=</span> <span class="va">K</span>,</span>
 <span>                              detailed <span class="op">=</span> <span class="va">detailed</span>,  <span class="co"># indicates the exposure is multivariate</span></span>
 <span>                              covar <span class="op">=</span> <span class="va">covar</span><span class="op">)</span></span>
@@ -389,11 +392,15 @@ effect of each potential mediators on outcome <span class="math inline">\(Y\)</s
 <div class="section level3">
 <h3 id="selection-of-a-subset-of-mediators-1">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators-1"></a>
 </h3>
-<p>In this example, we will consider the 10 first selected
-mediators.</p>
+<p>Step 1 provides an object which contains results from the two
+regression (pvalues, fscores, zscores), latent factor estimation from
+first regression, function inputs, and more important
+<em>max-squared</em> test pvalues results. This last result allow to
+select mediators which user’s choosen method. For this example we select
+top ten of more significant pvalues from <em>max-squared</em> test.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
-<span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M_matrix</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            cg00053507 cg00893424 cg00525681 cg00268831 cg00571178 cg00760872</span></span>
 <span><span class="co">#&gt; GSM1051525 0.11462689  0.8074170  0.5209005  0.7346605  0.8717074  0.3227306</span></span>
@@ -414,7 +421,8 @@ mediators.</p>
 <h3 id="step-2-estimation-of-the-indirect-effect-1">STEP 2 : estimation of the indirect effect<a class="anchor" aria-label="anchor" href="#step-2-estimation-of-the-indirect-effect-1"></a>
 </h3>
 <p>The function <strong>estimate_effect</strong> estimate the individual
-indirect effect of mediators.</p>
+indirect effect of mediators but also overall effects of selected
+mediators.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">object</span> <span class="op">=</span> <span class="va">hdmax2_step1</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="va">mediators_top10</span></span>
@@ -499,8 +507,8 @@ indirect effect of mediators.</p>
 <span><span class="co">#&gt; 2 2 (1-1,2-2) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 3 3 (2-2,1-1) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 4 4 (2-2,2-2) arrange gtable[layout]</span></span></code></pre>
-<p>We obtained two sets, for each variables of multivariate exposure, of
-4 plots:</p>
+<p>We obtain two series, for each variables of multivariate exposure, of
+4-set plots:</p>
 <ul>
 <li><p><strong>A</strong> Estimates of indirect effect (ACME) and
 <strong>B</strong> proportions of mediated effect (PM) for the top 10
