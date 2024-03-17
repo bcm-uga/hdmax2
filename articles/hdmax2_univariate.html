@@ -93,7 +93,10 @@ github repository</p>
 </h2>
 <p>We simulated 100 samples and 500 potential mediators, with various
 type of exposures (continuous or binary) and outcomes (continuous or
-binary).</p>
+binary). For this example we will use a binary exposure, a continuous
+outcome and two covariates (age and gender).</p>
+<p>We will define the K number of estimeted latent factors with a PCA
+and elbow procedure apply to screeplot.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
@@ -101,10 +104,17 @@ binary).</p>
 <span><span class="co">## High dimension mediators</span></span>
 <span><span class="va">M_matrix</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span></span>
 <span></span>
+<span><span class="co">## Exposures</span></span>
+<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_binary</span></span>
+<span></span>
+<span><span class="co">## Outcomes</span></span>
+<span><span class="va">Y_matrix</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span></span>
+<span></span>
+<span></span>
 <span><span class="co">## Covariates</span></span>
 <span><span class="va">age</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">age</span></span>
 <span><span class="va">gender</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">gender</span></span>
-<span></span>
+<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">gender</span><span class="op">)</span></span>
 <span><span class="co">## Number of Latent factore estimation</span></span>
 <span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">M_matrix</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>,</span>
@@ -124,19 +134,11 @@ outcome</em><a class="anchor" aria-label="anchor" href="#first-use-case-binary-e
 <h3 id="step-1-run-association-studies">STEP 1: Run association studies<a class="anchor" aria-label="anchor" href="#step-1-run-association-studies"></a>
 </h3>
 <p>The <strong>run_AS</strong> function is applied to estimate the
-effects of exposuire <span class="math inline">\(X\)</span> on a matrix
+effects of exposure <span class="math inline">\(X\)</span> on a matrix
 <span class="math inline">\(M\)</span> of potential mediators, and the
 effect of each potential mediators on outcome <span class="math inline">\(Y\)</span>. Covariables can be included.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## Exposures</span></span>
-<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_binary</span></span>
-<span></span>
-<span><span class="co">## Outcomes</span></span>
-<span><span class="va">Y_matrix</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span></span>
-<span></span>
-<span><span class="co">## covariates</span></span>
-<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">gender</span><span class="op">)</span></span>
-<span></span>
+<code class="sourceCode R"><span></span>
 <span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X_matrix</span> ,</span>
 <span>                Y <span class="op">=</span> <span class="va">Y_matrix</span>,</span>
 <span>                 M <span class="op">=</span> <span class="va">M_matrix</span>, </span>
@@ -158,8 +160,12 @@ effect of each potential mediators on outcome <span class="math inline">\(Y\)</s
 <div class="section level3">
 <h3 id="selection-of-a-subset-of-mediators">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators"></a>
 </h3>
-<p>In this example, we will consider the 10 first selected
-mediators.</p>
+<p>Step 1 provides an object which contains results from the two
+regression (pvalues, fscores, zscores), latent factor estimation from
+first regression, function inputs, and more important max-squared test
+pvalues results. This last result allow to select mediators which user’s
+choosen method. For this example we selected top ten of more significant
+pvalues from max-squared test.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
 <span><span class="co">## top 10 selecting mediators</span></span>
@@ -194,15 +200,25 @@ mediators.</p>
 <span>                                    m <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Estimating indirect effect for univariate exposome."</span></span>
 <span><span class="co">#&gt; [1] "The input exposome is continuous or binary"</span></span>
+<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 1"</span></span>
 <span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 1"</span></span>
+<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 2"</span></span>
 <span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 2"</span></span>
+<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 3"</span></span>
 <span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 3"</span></span>
+<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 4"</span></span>
 <span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 4"</span></span>
+<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 5"</span></span>
 <span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 5"</span></span>
+<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 6"</span></span>
 <span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 6"</span></span>
+<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 7"</span></span>
 <span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 7"</span></span>
+<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 8"</span></span>
 <span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 8"</span></span>
+<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 9"</span></span>
 <span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 9"</span></span>
+<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 10"</span></span>
 <span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 10"</span></span>
 <span><span class="co">#&gt; [1] "Computing ODE and OTE for continuous outcome."</span></span></code></pre></div>
 </div>
@@ -227,6 +243,27 @@ mediators.</p>
 <span><span class="co">#&gt; 2 2 (1-1,2-2) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 3 3 (2-2,1-1) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 4 4 (2-2,2-2) arrange gtable[layout]</span></span></code></pre>
+<p>We obtained one set of 4 plots:</p>
+<ul>
+<li><p><strong>A</strong> Estimates of indirect effect (ACME)
+and</p></li>
+<li><p><strong>B</strong> proportions of mediated effect (PM) for the
+top 10 mediators. The effect estimate is represented by a dot and its
+95% CI by the bar. Symbols correspond to the significance cut off of 5%
+(square for p-value <span class="math inline">\(\geq 0.05\)</span>,
+circle p-value <span class="math inline">\(&lt; 0.05\)</span>). Colors
+correspond to the sign of the effect (green for estimated effect <span class="math inline">\(\leq 0\)</span> , red for estimated effect <span class="math inline">\(&gt; 0\)</span>).</p></li>
+<li><p><strong>C</strong> Effect sizes of Overall Direct Effect (ODE),
+Overall Indirect Effect (OIE) and Overall Total Effect (OTE). Error bars
+correspond to standard deviation (ODE and OTE) or confidence interval
+(OIE).</p></li>
+<li><p><strong>D</strong> Indirect effect sizes for the selected
+mediators. Black corresponds to the ACME, violet to the effect of
+exposure X on mediator M in the model <span class="math inline">\(X \sim
+M\)</span>, and blue corresponds to the effect of mediator M on outcome
+Y in the model <span class="math inline">\(Y \sim M +
+X\)</span>.</p></li>
+</ul>
 <p>##TODO comments about plots</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -261,7 +298,7 @@ mediators.</p>
 <span><span class="co">#&gt; [17] checkmate_2.3.1   desc_1.4.3        lifecycle_1.0.4   farver_2.1.1     </span></span>
 <span><span class="co">#&gt; [21] compiler_4.3.3    stringr_1.5.1     hdmax2_2.0.0.9000 textshaping_0.3.7</span></span>
 <span><span class="co">#&gt; [25] prettydoc_0.4.1   munsell_0.5.0     mediation_4.5.0   htmltools_0.5.7  </span></span>
-<span><span class="co">#&gt; [29] sass_0.4.8        yaml_2.3.8        htmlTable_2.4.2   Formula_1.2-5    </span></span>
+<span><span class="co">#&gt; [29] sass_0.4.9        yaml_2.3.8        htmlTable_2.4.2   Formula_1.2-5    </span></span>
 <span><span class="co">#&gt; [33] pillar_1.9.0      pkgdown_2.0.7     nloptr_2.0.3      jquerylib_0.1.4  </span></span>
 <span><span class="co">#&gt; [37] MASS_7.3-60.0.1   cachem_1.0.8      Hmisc_5.1-2       rpart_4.1.23     </span></span>
 <span><span class="co">#&gt; [41] boot_1.3-29       nlme_3.1-164      tidyselect_1.2.1  digest_0.6.35    </span></span>
