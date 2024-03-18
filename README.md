@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/bcm-uga/hdmax2/package/hdmax2_hex.png" width="130" align="right">
 
-R package {hdmax2} performs high dimension mediation analysis. This package allows users to estimate the indirect effects of mediators, calculate the overall indirect effect of mediators, and facilitates the execution of high-dimensional mediation analysis. 
+R package `hdmax2` performs high dimension mediation analysis. This package allows users to estimate the indirect effects of mediators, calculate the overall indirect effect of mediators, and facilitates the execution of high-dimensional mediation analysis. 
 
 The HDMAX2 method includes unobserved confounding factors through a latent factor mixed model approach. It supports the use of exposures of various types and the consideration of both continuous and binary outcomes.
 
@@ -62,7 +62,7 @@ Please open an issue if you find a bug.
 
 ## Jumentier et al. 2023 release access
 
-To access code choose v1.0.0.0 in tags tab.
+To access this code version choose v1.0.0.0 in tags tab.
 
 To install this version:
 ```
