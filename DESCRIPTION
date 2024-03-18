@@ -23,7 +23,7 @@ Imports:
     IRanges,
     gridExtra,
     fdrtool,
-    LEA
+    Smisc
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr

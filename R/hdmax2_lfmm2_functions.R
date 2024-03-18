@@ -25,7 +25,7 @@ lfmm2_med = function(input,
   ## Check input response matrix 
   ## LEA  
   if (is.character(input)){
-    Y <- LEA::read.lfmm(input)
+    Y <- read.lfmm(input)
     lst.unique <- unique(as.numeric(Y))
     if (9 %in% lst.unique){
       stop("'input' file contains missing data (9's). Use the 'impute()' function to impute them.")
@@ -49,7 +49,7 @@ lfmm2_med = function(input,
   ## Check independent/covariate env matrix  
   ## LEA 
   if (is.character(env)){
-    X <- LEA::read.env(env)
+    X <- read.env(env)
     if (anyNA(X)){
       stop("'env' file contains missing data (NA).")
     }
@@ -176,7 +176,7 @@ lfmm2_med_test= function(object,
   ## LEA  
   if (is.character(input)){
     warning("Reading large input files with 'read.lfmm()' may be slow. See 'data.table::fread()' for fast import.")
-    Y <- LEA::read.lfmm(input)
+    Y <- read.lfmm(input)
     lst.unique <- unique(as.numeric(Y))
     if (9 %in% lst.unique){
       stop("'input' file contains missing data (9's). Use the 'impute()' function to impute them.")
@@ -200,7 +200,7 @@ lfmm2_med_test= function(object,
   ## Check independent/covariate matrix  
   ## LEA 
   if (is.character(env)){
-    X <- LEA::read.env(env)
+    X <- read.env(env)
     if (anyNA(X)){
       stop("'env' file contains missing data (NA).")
     }
@@ -322,4 +322,47 @@ lfmm2_med_test= function(object,
   
   res <- list(pvalues = p_value, zscores = z_score, fscores = f_score, adj.r.squared = r_squared,  gif = gif)
   return(res)
+}
+
+
+read.env <- function(input.file) {
+  
+  # test arguments
+  if(missing(input.file))
+    stop("'input.file' argument is missing.")
+  else if (!is.character(input.file))
+    stop("'input.file' argument has to be of type character.")
+  # check extension 
+  test_extension(input.file, "env")
+  
+  return(as.matrix(read.table(input.file)));
+}
+
+read.lfmm <- function(input.file) {
+  
+  # test arguments
+  if(missing(input.file))
+    stop("'input.file' argument is missing.")
+  else if (!is.character(input.file))
+    stop("'input.file' argument has to be of type character.")
+  # check extension 
+  test_extension(input.file, "lfmm")
+  
+  return(as.matrix(read.table(input.file)))
+}
+
+
+test_extension <- function(name, extension)
+{
+  # obtain the extension of name
+  ext = Smisc::getExtension(basename(name))
+  
+  # if not the correct extension, stop
+  if (ext != extension) {
+    p = paste("'input_file' format and extension have to be \".", 
+              extension, "\" (not \".",ext,"\").", sep="")
+    stop(p)
+  } 
+  
+  return(ext);
 }
