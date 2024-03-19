@@ -123,7 +123,7 @@ is unsuccessful, or could be complementary analysis.</p>
 <span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">16</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="helper_functions_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># choosen number of dimension</span></span>
+<code class="sourceCode R"><span><span class="co"># chosen number of dimension</span></span>
 <span><span class="va">K</span><span class="op">=</span><span class="fl">5</span></span>
 <span></span>
 <span><span class="co">## run hdmax2 step1</span></span>
@@ -212,7 +212,7 @@ could be use to estimate different effects of AMR. Also
 <span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">)</span></span>
+<span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, plot_type<span class="op">=</span> <span class="st">"all_plot"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "hdmax2 plot for univariate exposome"</span></span></code></pre></div>
 <p><img src="helper_functions_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; TableGrob (2 x 2) "arrange": 4 grobs</span></span>
@@ -230,8 +230,10 @@ could be use to estimate different effects of AMR. Also
 <p>Several methods can be use to select potential mediators from step1
 results of our method, in our main use cases we simply select top 10
 mediators to simplify the narrative. Among available methods to select
-mediators from mediation test pvalues, we can use FDR control (False
-Discovery Rate).</p>
+mediators from mediation test p-values, we can use FDR (False Discovery
+Rate) control. Q-value is obtained from <em>max-squared</em> test
+p-values from step 1 with <code>fdrtools::fdrtools</code> function then
+bounded by chosen threshold.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>

@@ -169,7 +169,6 @@ categories).</p>
 <span><span class="co">#&gt; [1] "Running second regression."</span></span>
 <span><span class="co">#&gt; [1] "Running max-squared test."</span></span>
 <span><span class="co">#&gt; [1] "Not generating max2 pvalues for each explanatory variable."</span></span>
-<span></span>
 <span> </span>
 <span><span class="co"># # max2 test results</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
@@ -183,7 +182,7 @@ categories).</p>
 regression (pvalues, fscores, zscores), latent factor estimation from
 first regression, function inputs, and more important
 <em>max-squared</em> test pvalues results. This last result allow to
-select mediators which user’s choosen method. For this example we select
+select mediators which user’s chosen method. For this example we select
 top ten of more significant pvalues from <em>max-squared</em> test.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
@@ -294,7 +293,7 @@ mediators.</p>
 </ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">)</span></span>
+<span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, plot_type<span class="op">=</span> <span class="st">"all_plot"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "hdmax2 plot for univariate categorial exposome"</span></span></code></pre></div>
 <p><img src="hdmax2_multivariate_files/figure-html/plot%20results-1.png" width="700"><img src="hdmax2_multivariate_files/figure-html/plot%20results-2.png" width="700"><img src="hdmax2_multivariate_files/figure-html/plot%20results-3.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; [[1]]</span></span>
@@ -354,8 +353,8 @@ outcome</em><a class="anchor" aria-label="anchor" href="#second-use-case-multiva
 effects of exposure <span class="math inline">\(X\)</span> on a matrix
 <span class="math inline">\(M\)</span> of potential mediators, and the
 effect of each potential mediators on outcome <span class="math inline">\(Y\)</span>. Covariables can be included.</p>
-<p>For this second example we generate an exposure that is data frame
-with a continuous and a binary variables.</p>
+<p>For this example we generate an exposure that is data frame with a
+continuous and a binary outcome.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## multivariate Exposures (continuous + binary)</span></span>
 <span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X1 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span>, X2 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_binary</span><span class="op">)</span></span>
@@ -488,7 +487,7 @@ mediators.</p>
 </ul>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">)</span></span>
+<span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, plot_type<span class="op">=</span> <span class="st">"all_plot"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "hdmax2 plot for multivariate exposome"</span></span></code></pre></div>
 <p><img src="hdmax2_multivariate_files/figure-html/ex2%20plot%20results-1.png" width="700"><img src="hdmax2_multivariate_files/figure-html/ex2%20plot%20results-2.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; $X1</span></span>

@@ -90,17 +90,19 @@ R
 </h2>
 <pre><code><span><span class="co"># load data</span></span>
 <span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="reference/simu_data.html">simu_data</a></span></span>
-<span><span class="va">X_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">)</span></span>
-<span><span class="va">Y_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span><span class="op">)</span></span>
-<span><span class="va">M_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">M</span><span class="op">)</span></span>
+<span><span class="va">X</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span></span>
+<span><span class="va">Y</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span></span>
+<span><span class="va">M</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span></span>
+<span><span class="va">K</span> <span class="op">=</span> <span class="fl">5</span></span>
 <span></span>
 <span><span class="co"># Run step 1</span></span>
-<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="reference/run_AS.html">run_AS</a></span><span class="op">(</span>X_matrix <span class="op">=</span> <span class="va">X_matrix</span> ,</span>
-<span>                Y_matrix <span class="op">=</span> <span class="va">Y_matrix</span>,</span>
-<span>                 M_matrix <span class="op">=</span> <span class="va">M_matrix</span><span class="op">)</span></span>
+<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>,</span>
+<span>                              Y <span class="op">=</span> <span class="va">Y</span>,</span>
+<span>                              M <span class="op">=</span> <span class="va">M</span>,</span>
+<span>                              K <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Select mediators</span></span>
-<span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M_matrix</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Run step 2</span></span>
