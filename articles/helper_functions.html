@@ -275,14 +275,19 @@ Discovery Rate).</p>
 <span><span class="co">#&gt;  0.7637137  0.7637137  0.7679389  0.7758579  0.7965575</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="how-to-transform-a-categorial-variable-in-ordered-factor">How to transform a categorial variable in ordered factor ?<a class="anchor" aria-label="anchor" href="#how-to-transform-a-categorial-variable-in-ordered-factor"></a>
+<h2 id="how-to-transform-a-categorial-variable-into-an-ordered-factor">How to transform a categorial variable into an ordered factor ?<a class="anchor" aria-label="anchor" href="#how-to-transform-a-categorial-variable-into-an-ordered-factor"></a>
 </h2>
-<p>When categorial variables are used in our models, we must go through
-design matrices, the <code>run_AS</code> and
-<code>estimate_effect</code> functions can transform character vector
-when order doesn’t matter for categories. Otherwise here’s a simply way
-to transform character vector in factor and order categories as you
-want.</p>
+<p>When categorical variables are used as exposure variables,
+<code>hdmax2</code> uses the first category as a reference (intercept)
+to calculate the effects associated with the variable’s other
+categories. The functions <code>HDMAX2::run_AS</code> and
+<code>HDMAX2::estimate_effect</code> will transform the character vector
+you have used (if any) into a factor, with an arbitrary ordering of the
+categories. If order is important to you, here’s a simple way to turn
+your character vector into a factor and order the categories as you
+wish. You can then use this variable as input to the hdmax2
+functions.</p>
+<p>Translated with www.DeepL.com/Translator (free version)</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
 <span></span>
