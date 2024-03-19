@@ -146,9 +146,12 @@ candidate_mediator
 
 ```
 
-## How to transform a categorial variable in ordered factor ?
+## How to transform a categorial variable into an ordered factor ?
 
-When categorial variables are used in our models, we must go through design matrices, the `run_AS` and `estimate_effect` functions can transform character vector when order doesn't matter for categories. Otherwise here's a simply way to transform character vector in factor and order categories as you want. 
+When categorical variables are used as exposure variables, `hdmax2` uses the first category as a reference (intercept) to calculate the effects associated with the variable's other categories. The functions `HDMAX2::run_AS` and `HDMAX2::estimate_effect` will transform the character vector you have used (if any) into a factor, with an arbitrary ordering of the categories.  If order is important to you, here's a simple way to turn your character vector into a factor and order the categories as you wish. You can then use this variable as input to the hdmax2 functions.
+
+
+Translated with www.DeepL.com/Translator (free version)
 
 ```{r}
 simu_data = hdmax2::simu_data
