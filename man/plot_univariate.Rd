@@ -5,10 +5,12 @@
 \title{Summary plot for univariate exposure variables
 This function draw a summary plot of hdmax2}
 \usage{
-plot_univariate(object)
+plot_univariate(object, plot_type)
 }
 \arguments{
 \item{object}{results from hdmax2 step 2}
+
+\item{plot_type}{"all_plot" by default generate all proposed plots , elsewhere choose one individual plot among : "plot_ACME", "plot_Prop_Med", "plot_overall_effects", "plot_effect_size"}
 }
 \value{
 Summary plot for ACME, PM, OIE, effects interpretation

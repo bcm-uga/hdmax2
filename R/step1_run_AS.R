@@ -103,7 +103,7 @@ run_AS = function(X,
   if (is.vector(X)){
     expo_var_n = 1
     expo_var_types =  typeof(X)
-    expo_var_ids = 1
+    expo_var_ids = "univariate"
     if (length(unique(X))<=1){
       stop("Categorial exposome must have at least two levels")
     }
@@ -125,7 +125,7 @@ run_AS = function(X,
   } else if (is.factor(X)){
     expo_var_n = 1
     expo_var_types =  typeof(X)
-    expo_var_ids = 1
+    expo_var_ids = "univariate"
     print("The input exposome is categorial")
     # model matrix transformation (-1 column to avoid colinearity)
     X = model.matrix(~X)
@@ -227,6 +227,25 @@ run_AS = function(X,
                                 covar = covar,
                                 full = TRUE, #parameter to compute a single p-value for the global categorial design matrix using partial regressions
                                 genomic.control = genomic.control)
+      if(detailed == TRUE){
+        
+        print("Generating detailed pvalues for each explanatory variable.")
+        
+        mod.lfmm1 = lfmm2_med(input = M, 
+                              env = X, 
+                              K = K,
+                              effect.sizes = effect.sizes)
+        res_reg1 = lfmm2_med_test(mod.lfmm1, 
+                                  input = M, 
+                                  env = X,
+                                  full = FALSE,
+                                  covar = covar,
+                                  genomic.control = genomic.control)
+        pvals_1 = as.matrix(res_reg1$pvalues)
+        names(pvals_1) = colnames(M)
+      } else {
+        pvals_1 = NA
+      }
     } else if (expo_var_types== "integer"||expo_var_types== "logical"|| expo_var_types== "double"){
       
       mod.lfmm1 = lfmm2_med(input = M, 
@@ -369,13 +388,22 @@ run_AS = function(X,
   if (detailed == TRUE){
     print("Generating max2 pvalues for each explanatory variable.")
     max2_detailed = list()
+    if(expo_var_n == 1){
+      for (x in 1:dim(X)[2]){
+        max2_pval <- apply(cbind(pvals_1[x,], pval2), 1, max)^2
+        names(max2_pval) = colnames(M)
+        max2_detailed[[colnames(Xs)[x]]] = max2_pval 
+      }
+      res[[4]] = max2_detailed
+    } else {
     for (x in 1:dim(Xs)[2]){
       max2_pval <- apply(cbind(pvals_1[x,], pval2), 1, max)^2
       names(max2_pval) = colnames(M)
       max2_detailed[[colnames(Xs)[x]]] = max2_pval 
     }
     res[[4]] = max2_detailed
-  } else {
+  } 
+    } else {
     print("Not generating max2 pvalues for each explanatory variable.")
     res[[4]] = NA
   }

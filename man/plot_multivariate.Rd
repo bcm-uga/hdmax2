@@ -5,7 +5,7 @@
 \title{Summary plot for multivariate exposure variables
 This function draw a summary plot of hdmax2}
 \usage{
-plot_multivariate(object)
+plot_multivariate(object, plot_type)
 }
 \arguments{
 \item{object}{results from hdmax2 step 2}

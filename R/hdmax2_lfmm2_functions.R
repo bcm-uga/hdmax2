@@ -144,7 +144,6 @@ lfmm2_med = function(input,
 ##' @param full compute partial regression FALSE/TRUE
 ##' @return an object with the following attributes 
 ##' @importFrom stats binomial glm lm median pchisq pf prcomp qchisq qf
-##' @importFrom base strsplit
 ##' @importFrom utils read.table
 ##' @export
 ##' @author Florence Pittion, Magali Richard, Olivier Francois

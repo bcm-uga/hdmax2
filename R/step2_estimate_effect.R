@@ -73,17 +73,8 @@ estimate_effect <- function(object , m, boots = 100) {
   ncol_var = length(expo_var_ids)
   Y_type = object$input$outcome_var_type
   
-  ACMEs = list()
-  ADEs = list()
-  PMs = list()
-  TEs = list()
-  xms = list()
-  mys = list()
-  oies = list()
-  oies_med = list()
-  oies_sd = list()
-  otes = list()
-  odes = list()
+  
+  effects = list()
   # TODO x = as.dataframe de X
   
   for(expo_var_id in expo_var_ids){
@@ -140,17 +131,8 @@ estimate_effect <- function(object , m, boots = 100) {
       X = X_dm[,-1]
       cn = colnames(X)
       
-      ACME_cat = list()
-      ADE_cat = list()
-      PM_cat = list()
-      TE_cat = list()
-      xm_cat = list()
-      my_cat = list()
-      oie_cat = list()
-      oie_med_cat = list()
-      oie_sd_cat = list()
-      ote_cat = list()
-      ode_cat = list()
+        
+      k_effects = list()
       
       for (k in 1:length(cn)) {
         
@@ -269,18 +251,18 @@ estimate_effect <- function(object , m, boots = 100) {
         
         if(Y_type == "continuous") {
           print("Computing ODE and OTE for continuous outcome.")
-          data_tot = data.frame(X = X, Y= Y, covars = covars)
-          mod_total_effect = stats::lm(Y ~ . , data = data_tot)
-          data_tot2 = data.frame(X = X, Y= Y, M = M, covars = covars)
-          mod_direct_effect = stats::lm(Y ~ ., data = data_tot2)
+          data_total = data.frame(X = X, Y= Y, covars = covars)
+          mod_total_effect = stats::lm(Y ~ . , data =  data_total)
+          data_direct = data.frame(X = X, Y= Y, M = M, covars = covars)
+          mod_direct_effect = stats::lm(Y ~ ., data =  data_direct)
         }
         
         if(Y_type == "binary") {
           print("Computing ODE and OTE for binary outcome.")
-          data_tot = data.frame(X = X, Y= Y, covars = covars)
-          mod_total_effect = stats::glm(Y ~ . , family = "binomial",  data = data_tot)
-          data_tot2 = data.frame(X = X, Y= Y, M = M ,covars = covars)
-          mod_direct_effect = stats::glm(Y ~ . , family = "binomial",  data = data_tot2)
+           data_total = data.frame(X = X, Y= Y, covars = covars)
+          mod_total_effect = stats::glm(Y ~ . , family = "binomial",  data =  data_total)
+           data_direct = data.frame(X = X, Y= Y, M = M ,covars = covars)
+          mod_direct_effect = stats::glm(Y ~ . , family = "binomial",  data =  data_direct)
         }
         
         ote = summary(mod_total_effect)$coefficients[2,]
@@ -290,30 +272,15 @@ estimate_effect <- function(object , m, boots = 100) {
         oie_med = median(as.vector(acme_sum))
         oie_sd = sd(as.vector(acme_sum))
         
-        ACME_cat[[k]] = ACME
-        ADE_cat[[k]] = ADE
-        PM_cat[[k]] = PM
-        TE_cat[[k]] = TE
-        xm_cat[[k]] = xm
-        my_cat[[k]] = my
-        oie_cat[[k]] = oie
-        oie_med_cat[[k]] = oie_med
-        oie_sd_cat[[k]] = oie_sd
-        ote_cat[[k]] = ote
-        ode_cat[[k]] = ode
+        tmp = list(ACME=ACME, ADE=ADE, PM=PM, TE=TE, xm=xm, my=my, oie=oie, oie_med=oie_med, oie_sd=oie_sd, ote=ote, ode=ode)
+       
+        
+        k_effects[[paste0("cat_", k)]] = tmp
+        
       }
       
-      ACMEs[[expo_var_id]] = ACME_cat
-      ADEs[[expo_var_id]] = ADE_cat
-      PMs[[expo_var_id]] = PM_cat
-      TEs[[expo_var_id]] = TE_cat
-      xms[[expo_var_id]] = xm_cat
-      mys[[expo_var_id]] = my_cat
-      oies[[expo_var_id]] =  oie_cat
-      oies_med[[expo_var_id]] = oie_med_cat
-      oies_sd[[expo_var_id]] = oie_sd_cat
-      otes[[expo_var_id]] = ote_cat
-      odes[[expo_var_id]] = ode_cat
+     effects[[expo_var_id]] = k_effects
+      
       
     } else if (expo_var_type== "integer"||expo_var_type== "logical"||expo_var_type== "double"){
       print("The input exposome is continuous or binary" )
@@ -376,12 +343,8 @@ estimate_effect <- function(object , m, boots = 100) {
       xm$feat <- colnames(M)
       my$feat <- colnames(M)
       
-      ACMEs[[expo_var_id]] = ACME
-      ADEs[[expo_var_id]] = ADE
-      PMs[[expo_var_id]] = PM
-      TEs[[expo_var_id]] = TE
-      xms[[expo_var_id]] = xm
-      mys[[expo_var_id]] = my
+      
+      
       
       
       ### Compute OIE by bootstrap
@@ -441,18 +404,18 @@ estimate_effect <- function(object , m, boots = 100) {
       
       if(Y_type == "continuous") {
         print("Computing ODE and OTE for continuous outcome.")
-        data_tot = data.frame(X =X, Y= Y, covars = covars)
-        mod_total_effect = stats::lm(Y ~ . , data = data_tot)
-        data_tot2 = data.frame(X =X, Y= Y, M =M ,covars = covars)
-        mod_direct_effect = stats::lm(Y ~ ., data = data_tot2)
+         data_total = data.frame(X =X, Y= Y, covars = covars)
+        mod_total_effect = stats::lm(Y ~ . , data =  data_total)
+         data_direct = data.frame(X =X, Y= Y, M =M ,covars = covars)
+        mod_direct_effect = stats::lm(Y ~ ., data =  data_direct)
       }
       
       if(Y_type == "binary") {
         print("Computing ODE and OTE for binary outcome.")
-        data_tot = data.frame(X =X, Y= Y, covars = covars)
-        mod_total_effect = stats::glm(Y ~ . , family = "binomial",  data = data_tot)
-        data_tot2 = data.frame(X =X, Y= Y, M = M ,covars = covars)
-        mod_direct_effect = stats::glm(Y ~ . , family = "binomial", , data = data_tot2)
+         data_total = data.frame(X =X, Y= Y, covars = covars)
+        mod_total_effect = stats::glm(Y ~ . , family = "binomial",  data =  data_total)
+         data_direct = data.frame(X =X, Y= Y, M = M ,covars = covars)
+        mod_direct_effect = stats::glm(Y ~ . , family = "binomial", , data =  data_direct)
       }
       
       ote = summary(mod_total_effect)$coefficients[2,]
@@ -462,27 +425,24 @@ estimate_effect <- function(object , m, boots = 100) {
       oie_med = median(as.vector(acme_sum))
       oie_sd = sd(as.vector(acme_sum))
       
-      oies[[expo_var_id]]= oie
-      oies_med[[expo_var_id]] = oie_med
-      oies_sd[[expo_var_id]] = oie_sd
-      otes[[expo_var_id]] = ote
-      odes[[expo_var_id]] = ode
+      # oies[[expo_var_id]]= oie
+      # oies_med[[expo_var_id]] = oie_med
+      # oies_sd[[expo_var_id]] = oie_sd
+      # otes[[expo_var_id]] = ote
+      # odes[[expo_var_id]] = ode
+      
+      tmp = list(ACME=ACME, ADE=ADE, PM=PM, TE=TE, xm=xm, my=my, oie=oie, oie_med=oie_med, oie_sd=oie_sd, ote=ote, ode=ode)
+      
+      
+      
+      effects[[expo_var_id]] = tmp
+      
     }
   }
   
-  obj = list(ACME = ACMEs,
-             ADE = ADEs,
-             PM = PMs,
-             TE = TEs,
-             xm = xms,
-             my = mys,
-             oie = oies,
-             oie_med = oies_med,
-             oie_sd = oies_sd,
-             ote = otes,
-             ode = odes,
-             input = object$input
-  )
+  obj = list(effects = effects,
+             input = object$input)
+  
   class(obj) = "hdmax2_step2"
   
   return(obj)

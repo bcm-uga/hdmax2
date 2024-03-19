@@ -5,7 +5,7 @@
 \title{Summary plot for HDMAX2
 This function draw a summary plot of hdmax2}
 \usage{
-plot_hdmax2(object)
+plot_hdmax2(object, plot_type)
 }
 \arguments{
 \item{object}{results from hdmax2 step 2}

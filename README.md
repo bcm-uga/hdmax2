@@ -34,17 +34,19 @@ R
 ```
 # load data
 simu_data = hdmax2::simu_data
-X_matrix = as.matrix(simu_data$X_continuous)
-Y_matrix = as.matrix(simu_data$Y_continuous)
-M_matrix = as.matrix(simu_data$M)
+X = simu_data$X_continuous
+Y = simu_data$Y_continuous
+M = simu_data$M
+K = 5
 
 # Run step 1
-hdmax2_step1 = hdmax2::run_AS(X_matrix = X_matrix ,
-                Y_matrix = Y_matrix,
-                 M_matrix = M_matrix)
+hdmax2_step1 = hdmax2::run_AS(X = X,
+                              Y = Y,
+                              M = M,
+                              K = K)
 
 # Select mediators
-mediators_top10 = M_matrix[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+mediators_top10 = M[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
 head(mediators_top10)
 
 # Run step 2

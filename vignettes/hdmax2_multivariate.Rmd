@@ -100,7 +100,6 @@ hdmax2_step1 = hdmax2::run_AS(X = X,
                               K = K,
                               detailed = detailed,  # indicates the exposure is multivariate
                               covar = covar)
-
  
 # # max2 test results
 head(hdmax2_step1$max2_pvalues)
@@ -111,7 +110,7 @@ head(hdmax2_step1$max2_pvalues)
 
 ### Selection of a subset of mediators
 
-Step 1 provides an object which contains results from the two regression (pvalues, fscores, zscores), latent factor estimation from first regression, function inputs, and more important *max-squared* test pvalues results. This last result allow to select mediators which user's choosen method. For this example we select top ten of more significant pvalues from *max-squared* test.
+Step 1 provides an object which contains results from the two regression (pvalues, fscores, zscores), latent factor estimation from first regression, function inputs, and more important *max-squared* test pvalues results. This last result allow to select mediators which user's chosen method. For this example we select top ten of more significant pvalues from *max-squared* test.
 
 
 
@@ -149,8 +148,7 @@ We propose a set of plots which include:
 
 ```{r, plot results}
 library(ggplot2)
-hdmax2::plot_hdmax2(hdmax2_step2)
-
+hdmax2::plot_hdmax2(hdmax2_step2, plot_type= "all_plot")
 
 ```
 We obtain three series, for each category of categorial exposure (minus the reference category), of 4-set plots:
@@ -172,7 +170,7 @@ We obtain three series, for each category of categorial exposure (minus the refe
 
 The **run_AS** function is applied to estimate the effects of exposure $X$ on a matrix $M$ of potential mediators, and the effect of each potential mediators on outcome $Y$. Covariables can be included. 
 
-For this second example we generate an exposure that is data frame with a continuous and a binary variables. 
+For this example we generate an exposure that is data frame with a continuous and a binary outcome. 
 
 ```{r, ex2 step 1 }
 ## multivariate Exposures (continuous + binary)
@@ -214,6 +212,7 @@ object = hdmax2_step1
 m = mediators_top10
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
                                        m = mediators_top10)
+
 ```
 
 ### Plot
@@ -231,8 +230,7 @@ We propose a set of plots which include:
 
 ```{r, ex2 plot results}
 library(ggplot2)
-hdmax2::plot_hdmax2(hdmax2_step2)
-
+hdmax2::plot_hdmax2(hdmax2_step2, plot_type= "all_plot")
 ```
 
 We obtain two series, for each variables of multivariate exposure, of 4-set plots:
@@ -248,3 +246,4 @@ We obtain two series, for each variables of multivariate exposure, of 4-set plot
 ```{r}
 sessionInfo()
 ```
+
