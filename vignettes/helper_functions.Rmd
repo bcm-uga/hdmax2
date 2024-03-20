@@ -49,7 +49,7 @@ We simulated 500 samples and 1000 potential DNA methylation mediators, with vari
 Identify Aggregated Methylated regions (AMR) with AMR_search function which uses from the P-values from *max-squared* test compute in `run_AS` function and using a adapted comb-p method (comb-p is a tool that manipulates BED files of possibly irregularly spaced P-values and calculates auto-correlation, combines adjacent P-values, performs false discovery adjustment, finds regions of enrichment and assigns significance to those regions). AMR identification could be useful in Epigenomic Wide Association Studies when single CpG mediation is unsuccessful, or could be complementary analysis.
 
 
-```{r}
+```{r AMR , message=FALSE}
 data = hdmax2::helper_ex
 
 #Artificial reduction of dataset size to pass the github action check when building hdmax2 website
@@ -72,11 +72,6 @@ hdmax2_step1 = hdmax2::run_AS(X = data$exposure,
                               K = K)
 
 ##Detecting AMR
-chr = data$annotation$chr
-start = data$annotation$start
-end = data$annotation$end
-pval = hdmax2_step1$max2_pvalues
-cpg = data$annotation$cpg
 seed = 0.6 #Careful to change this parameter when working with real data
 res.amr_search = hdmax2::AMR_search(chr = data$annotation$chr,
                                     start = data$annotation$start,
@@ -105,32 +100,26 @@ res.arm_build$CpG_for_each_AMR
 Like with single mediators analysis *esimate_effect* function could be use to estimate different effects of AMR. Also `plot_hdmax2` can be applied to step2 results.
 
 
-```{r}
+```{r step2, message=FALSE, warning=FALSE}
 ## run hdmax2 step2
-
 object = hdmax2_step1
 mediators_top10 = data$methylation[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
 m = as.matrix(res.arm_build$AMR_mean)
 boots = 100
-sims = 100
 ## selected mediators effects estimation
 
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
                                        m = m,
                                        boots = 100)
-
-
 library(ggplot2)
 hdmax2::plot_hdmax2(hdmax2_step2, plot_type= "all_plot")
-
-
 ```
 
 ## How to select potential mediators using q-values and FDR control ?
 
 Several methods can be use to select potential mediators from step1 results of our method, in our main use cases we simply select top 10 mediators to simplify the narrative. Among available methods to select mediators from mediation test p-values, we can use FDR (False Discovery Rate) control. Q-value is obtained  from *max-squared* test p-values from step 1 with `fdrtools::fdrtools` function then bounded by chosen threshold. 
 
-```{r}
+```{r FDR, message=FALSE}
 
 data = hdmax2::simu_data
 ## run hdmax2 step1
@@ -153,7 +142,7 @@ When categorical variables are used as exposure variables, `hdmax2` uses the fir
 
 Translated with www.DeepL.com/Translator (free version)
 
-```{r}
+```{r factor, message=FALSE}
 simu_data = hdmax2::simu_data
 
 # inverse alphabetical order for example
