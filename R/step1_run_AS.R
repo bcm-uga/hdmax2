@@ -131,6 +131,7 @@ run_AS = function(X,
     X = model.matrix(~X)
     X = X[,-1]
     new_expo_var_type = typeof(X)
+    
   } else if(is.data.frame(X)){
     expo_var_n = dim(X)[2]
     expo_var_ids = colnames(X)
@@ -197,7 +198,11 @@ run_AS = function(X,
   
   # Exposure and Outcome after pretreatment
   if(expo_var_n == 1){
-    X_output = X
+    if(is.data.frame(X)){
+      X_output = Xs
+    } else {
+      X_output = X
+    }
   }
   if(expo_var_n > 1){
     X_output = Xs
@@ -246,7 +251,7 @@ run_AS = function(X,
       } else {
         pvals_1 = NA
       }
-    } else if (expo_var_types== "integer"||expo_var_types== "logical"|| expo_var_types== "double"){
+    } else if (is.vector(X) && (expo_var_types== "integer"||expo_var_types== "logical"|| expo_var_types== "double")){
       
       mod.lfmm1 = lfmm2_med(input = M, 
                             env = X, 
@@ -255,6 +260,20 @@ run_AS = function(X,
       res_reg1 = lfmm2_med_test(mod.lfmm1, 
                                 input = M, 
                                 env = X,
+                                covar = covar,
+                                genomic.control = genomic.control)
+      
+      
+      
+    }else if (is.data.frame(X) && (expo_var_types== "integer"||expo_var_types== "logical"|| expo_var_types== "double")){
+      
+      mod.lfmm1 = lfmm2_med(input = M, 
+                            env = Xs, 
+                            K = K,
+                            effect.sizes = effect.sizes)
+      res_reg1 = lfmm2_med_test(mod.lfmm1, 
+                                input = M, 
+                                env = Xs,
                                 covar = covar,
                                 genomic.control = genomic.control)
     }
@@ -351,12 +370,30 @@ run_AS = function(X,
   
   message("Running second regression.")
   
-  res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
-                            input = M, 
-                            env = cbind(X, Y),
-                            covar = covar,
-                            genomic.control = genomic.control,
-                            full = FALSE)
+  if(expo_var_n == 1){
+    if(is.vector(X)||is.factor(X)){
+      res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
+                                input = M, 
+                                env = cbind(X, Y),
+                                covar = covar,
+                                genomic.control = genomic.control,
+                                full = FALSE)
+    }else if(is.data.frame(X)){
+      res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
+                                input = M, 
+                                env = cbind(Xs, Y),
+                                covar = covar,
+                                genomic.control = genomic.control,
+                                full = FALSE)
+    }
+  }else if(expo_var_n > 1){
+    res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
+                              input = M, 
+                              env = cbind(Xs, Y),
+                              covar = covar,
+                              genomic.control = genomic.control,
+                              full = FALSE)
+  }
   pval2 = as.double(res_reg2$pvalues[2,])
   names(pval2) = colnames(M)
   zscores2 = res_reg2$zscores
