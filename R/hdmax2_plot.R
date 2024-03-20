@@ -113,7 +113,7 @@ plot_univariate <- function(object,  plot_type= "all_plot") {
       )
     ) +
     geom_vline(xintercept = 0, linetype = "dashed") +
-    geom_errorbarh(aes(xmin = object$effects[[1]]$ACME$CI_2.5, xmax = object$effects[[1]]$ACME$CI_97.5), color = "darkred", height = 0.5) +
+    geom_errorbarh(aes(xmin = object$effects[[1]]$ACME$CI_2.5, xmax = object$effects[[1]]$ACME$CI_97.5), color = "darkred", height = 0.1) +
     geom_point(size = 2.8, color = "darkred") +
     theme_bw() +
     labs(title = "A. ACME (Average Causal Mediation Effect)", y = "Mediators", x =
@@ -142,7 +142,7 @@ plot_univariate <- function(object,  plot_type= "all_plot") {
                       shape = ifelse(pval <= 0.05, "pval <= 0.05", "n.s.")
                     )) +
     geom_vline(xintercept = 0, linetype = "dashed") +
-    geom_errorbarh(aes(xmin = object$effects[[1]]$PM$CI_2.5, xmax = object$effects[[1]]$PM$CI_97.5) , color = "darkred", height = 0.5) +
+    geom_errorbarh(aes(xmin = object$effects[[1]]$PM$CI_2.5, xmax = object$effects[[1]]$PM$CI_97.5) , color = "darkred", height = 0.1) +
     geom_point(size = 2.8, color = "darkred") +
     theme_bw() +
     labs(title = "B. Proportion Mediated (%)", y = "Mediators", x = "Est. proportion [CI 2.5-97.5]") +
@@ -323,7 +323,7 @@ plot_univariate_cat <- function(object,  plot_type= "all_plot") {
           shape = ifelse(pval <= 0.05, "pval <= 0.05", "n.s.")
                          ))+
       geom_vline(xintercept = 0, linetype = "dashed") +
-      geom_errorbarh(aes(xmin = object$effects$univariate[[k]]$ACME$CI_2.5, xmax = object$effects$univariate[[k]]$ACME$CI_97.5), color = "darkred", height = 0.5) +
+      geom_errorbarh(aes(xmin = object$effects$univariate[[k]]$ACME$CI_2.5, xmax = object$effects$univariate[[k]]$ACME$CI_97.5), color = "darkred", height = 0.1) +
       geom_point(size = 2.8, color = "darkred") +
       theme_bw() +
       labs(title = "A. ACME (Average Causal Mediation Effect)", y = "Mediators", x =
@@ -353,7 +353,7 @@ plot_univariate_cat <- function(object,  plot_type= "all_plot") {
                         shape = ifelse(pval <= 0.05, "pval <= 0.05", "n.s.")
                       )) +
       geom_vline(xintercept = 0, linetype = "dashed") +
-      geom_errorbarh(aes(xmin = object$effects$univariate[[k]]$PM$CI_2.5, xmax = object$effects$univariate[[k]]$PM$CI_97.5), color = "darkred", height = 0.5) +
+      geom_errorbarh(aes(xmin = object$effects$univariate[[k]]$PM$CI_2.5, xmax = object$effects$univariate[[k]]$PM$CI_97.5), color = "darkred", height = 0.1) +
       geom_point(size = 2.8, color = "darkred") +
       theme_bw() +
       labs(title = "B. Proportion Mediated (%)", y = "Mediators", x = "Est. proportion [CI 2.5-97.5]") +
@@ -539,7 +539,7 @@ plot_multivariate <- function(object,  plot_type= "all_plot") {
                                                                    #shape = pval <= 0.05
                                                                    shape = ifelse(pval <= 0.05, "pval <= 0.05", "n.s."))) +
       geom_vline(xintercept = 0, linetype = "dashed") +
-      geom_errorbarh(aes(xmin = object$effects[[var_name]]$ACME$CI_2.5, xmax = object$effects[[var_name]]$ACME$CI_97.5), color = "darkred",  height = 0.5) +
+      geom_errorbarh(aes(xmin = object$effects[[var_name]]$ACME$CI_2.5, xmax = object$effects[[var_name]]$ACME$CI_97.5), color = "darkred",  height = 0.1) +
       geom_point(size = 2.8, color = "darkred") +
       theme_bw() +
       labs(title = paste0("A. ACME of ", var_name), y = "Mediators", x="Est. effect [CI 2.5-97.5]") +
@@ -560,7 +560,7 @@ plot_multivariate <- function(object,  plot_type= "all_plot") {
                                                                #shape = pval <= 0.05
                                                                shape = ifelse(pval <= 0.05, "pval <= 0.05", "n.s."))) +
       geom_vline(xintercept = 0, linetype = "dashed") +
-      geom_errorbarh(aes(xmin = object$effects[[var_name]]$PM$CI_2.5, xmax = object$effects[[var_name]]$PM$CI_97.5), color = "darkred",  height = 0.5) +
+      geom_errorbarh(aes(xmin = object$effects[[var_name]]$PM$CI_2.5, xmax = object$effects[[var_name]]$PM$CI_97.5), color = "darkred",  height = 0.1) +
       geom_point(size = 2.8, color = "darkred") +
       theme_bw() +
       labs(title = paste0("B. PM of ", var_name), y = "Mediators", x="Est. proportion [CI 2.5-97.5]") +
