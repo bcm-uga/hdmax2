@@ -5,10 +5,12 @@
 \title{Summary plot for HDMAX2
 This function draw a summary plot of hdmax2}
 \usage{
-plot_hdmax2(object, plot_type)
+plot_hdmax2(object, plot_type = "all_plot")
 }
 \arguments{
 \item{object}{results from hdmax2 step 2}
+
+\item{plot_type}{"all_plot" by default generate all proposed plots , elsewhere choose one individual plot among : "plot_ACME", "plot_Prop_Med", "plot_overall_effects", "plot_effect_size"}
 }
 \value{
 Summary plot for ACME, PM, OIE, effects interpretation
@@ -35,7 +37,7 @@ mediators_top10 = simu_data$M[, mediators_subset]
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
                                        m = mediators_top10)
 # Generate plot
-hdmax2::plot_hdmax2(hdmax2_step2)
+hdmax2::plot_hdmax2(hdmax2_step2, plot_type = "all_plot")
 
 }
 \author{

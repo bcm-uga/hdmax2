@@ -5,7 +5,7 @@
 \title{Summary plot for univariate exposure variables
 This function draw a summary plot of hdmax2}
 \usage{
-plot_univariate_cat(object, plot_type)
+plot_univariate_cat(object, plot_type = "all_plot")
 }
 \arguments{
 \item{object}{results from hdmax2 step 2}
@@ -37,7 +37,7 @@ mediators_top10 = simu_data$M[, mediators_subset]
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
                                        m = mediators_top10)
 # Generate plot
-hdmax2::plot_univariate_cat(hdmax2_step2)
+hdmax2::plot_univariate_cat(hdmax2_step2,  plot_type= "all_plot")
 
 }
 \author{

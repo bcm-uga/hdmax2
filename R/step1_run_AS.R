@@ -108,7 +108,7 @@ run_AS = function(X,
       stop("Categorial exposome must have at least two levels")
     }
     if (expo_var_types == "character"){
-      print("The input exposome is categorial")
+      message("The input exposome is categorial")
       # model matrix transformation (-1 column to avoid colinearity)
       X = as.factor(X)
       X = model.matrix(~X)
@@ -117,7 +117,7 @@ run_AS = function(X,
       
     } 
     else if (expo_var_types== "integer"||expo_var_types== "logical"||expo_var_types== "double"){
-      print("The input exposome is continuous or binary" )
+      message("The input exposome is continuous or binary" )
       X = as.numeric(X)
       new_expo_var_type = typeof(X)
     } 
@@ -126,7 +126,7 @@ run_AS = function(X,
     expo_var_n = 1
     expo_var_types =  typeof(X)
     expo_var_ids = "univariate"
-    print("The input exposome is categorial")
+    message("The input exposome is categorial")
     # model matrix transformation (-1 column to avoid colinearity)
     X = model.matrix(~X)
     X = X[,-1]
@@ -139,7 +139,7 @@ run_AS = function(X,
     Xs = c()
     for(expo_var in 1:expo_var_n) {
       if (expo_var_types[expo_var] == "character"){
-        print(paste("The input exposome no ", expo_var," is categorial"))
+        message(paste("The input exposome no ", expo_var," is categorial"))
         # model matrix transformation
         new_X = as.factor(X[,expo_var])
         new_X = model.matrix(~new_X)
@@ -147,13 +147,13 @@ run_AS = function(X,
         new_expo_var_type =  typeof(new_X)
         
       } else if (is.factor(X)){ 
-        print(paste("The input exposome no ", expo_var," is categorial"))
+        message(paste("The input exposome no ", expo_var," is categorial"))
         # model matrix transformation
         new_X = model.matrix(~new_X)
         new_X = new_X[,-1]
         new_expo_var_type =  typeof(new_X)
       } else if (expo_var_types[expo_var]== "integer"||expo_var_types[expo_var]== "logical"|| expo_var_types[expo_var]== "double"){
-        print(paste("The input exposome no ",expo_var, "is continuous or binary" ))
+        message(paste("The input exposome no ",expo_var, "is continuous or binary" ))
         new_X = X[,expo_var]
         new_expo_var_type = typeof(new_X)
       } 
@@ -172,23 +172,23 @@ run_AS = function(X,
   outcome_var_type = NULL
   
   if(is.logical(Y)){
-    print("The outcome vector is logical and tranformed in numeric, TRUE become 1 and FALSE become 0.")
+    message("The outcome vector is logical and tranformed in numeric, TRUE become 1 and FALSE become 0.")
     Y = as.matrix(as.numeric(Y))
     outcome_var_type = "binary"
   }
   
   if (all(Y %in% c(0, 1))) {
     if (is.integer(Y)) {
-      print("The outcome vector is integer and contains only 0s and 1s, it is assimilated as binary variable.")
+      message("The outcome vector is integer and contains only 0s and 1s, it is assimilated as binary variable.")
       Y = as.matrix(as.double(Y))
       outcome_var_type = "binary"
     } else if (is.double(Y)) {
-      print("The outcome vector is numeric and contains only 0s and 1s, it is assimilated as binary variable.")
+      message("The outcome vector is numeric and contains only 0s and 1s, it is assimilated as binary variable.")
       Y = as.matrix(Y)
       outcome_var_type = "binary"
     }
   } else if (is.integer(Y)||is.double(Y)) {
-    print("The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable.")
+    message("The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable.")
     Y = as.matrix(as.double(Y))
     outcome_var_type = "continuous"
   } else {
@@ -214,7 +214,7 @@ run_AS = function(X,
   
   if(expo_var_n == 1){
     
-    print("Running first regression with univariate explanatory variable.")
+    message("Running first regression with univariate explanatory variable.")
     if (expo_var_types == "character"|| is.factor(X_input)){
       
       mod.lfmm1 = lfmm2_med(input = M, 
@@ -229,7 +229,7 @@ run_AS = function(X,
                                 genomic.control = genomic.control)
       if(detailed == TRUE){
         
-        print("Generating detailed pvalues for each explanatory variable.")
+        message("Generating detailed pvalues for each explanatory variable.")
         
         mod.lfmm1 = lfmm2_med(input = M, 
                               env = X, 
@@ -278,7 +278,7 @@ run_AS = function(X,
   
   if(expo_var_n > 1){
     X = Xs
-    print("Running first regression with multivariate explanatory variables.")
+    message("Running first regression with multivariate explanatory variables.")
     
     # Computes a global pvalue for regression 1
     
@@ -309,7 +309,7 @@ run_AS = function(X,
     
     if(detailed == TRUE){
       
-      print("Generating detailed pvalues for each explanatory variable.")
+      message("Generating detailed pvalues for each explanatory variable.")
       
       mod.lfmm1 = lfmm2_med(input = M, 
                             env = X, 
@@ -349,7 +349,7 @@ run_AS = function(X,
 
   # The model run is actually M ~ X + Y, i.e. independent of the type of Y (continuous or binary)
   
-  print("Running second regression.")
+  message("Running second regression.")
   
   res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
                             input = M, 
@@ -377,7 +377,7 @@ run_AS = function(X,
   ### max-squared test ###
   ########################
   
-  print("Running max-squared test.")
+  message("Running max-squared test.")
   
   # max2 test for global model
   max2_pval <- apply(cbind(pval1, pval2), 1, max)^2
@@ -386,7 +386,7 @@ run_AS = function(X,
   res[[3]] = max2
   
   if (detailed == TRUE){
-    print("Generating max2 pvalues for each explanatory variable.")
+    message("Generating max2 pvalues for each explanatory variable.")
     max2_detailed = list()
     if(expo_var_n == 1){
       for (x in 1:dim(X)[2]){
@@ -404,7 +404,7 @@ run_AS = function(X,
     res[[4]] = max2_detailed
   } 
     } else {
-    print("Not generating max2 pvalues for each explanatory variable.")
+    message("Not generating max2 pvalues for each explanatory variable.")
     res[[4]] = NA
   }
   
@@ -432,16 +432,16 @@ run_AS = function(X,
 
 check_argument_exposure = function(argument){
   if(is.data.frame(argument)) {
-    print("The exposure argument is a data frame")
+    message("The exposure argument is a data frame")
     if (ncol(argument) == 1) {
-      print("The exposure argument is a data frame with a single column.")
+      message("The exposure argument is a data frame with a single column.")
     } else if (ncol(argument) > 1) {
-      print("The exposure argument is a data frame with more than one column.")
+      message("The exposure argument is a data frame with more than one column.")
     }
   } else if (is.vector(argument)) {
-    print("The exposure argument is a vector.")
+    message("The exposure argument is a vector.")
   } else if (is.factor(argument)) {
-    print("The exposure argument is a factor.")
+    message("The exposure argument is a factor.")
   } else {
     stop("The exposure  is not a data frame,  nor a vector ")
   }
@@ -449,16 +449,16 @@ check_argument_exposure = function(argument){
 
 check_argument_outcome = function(argument) {
   if (is.vector(argument)) {
-    print("The outcome argument is a vector.")
+    message("The outcome argument is a vector.")
   } else if (is.data.frame(argument)) {
     if (ncol(argument) == 1) {
-      print("The outcome argument is a data frame with a single column.")
+      message("The outcome argument is a data frame with a single column.")
     } else {
       stop("The outcome data frame must have a single column.")
     }
   } else if (is.matrix(argument)) {
     if (ncol(argument) == 1) {
-      print("The outcome matrix has a single column.")
+      message("The outcome matrix has a single column.")
     } else {
       stop("The outcome matrix must have a single column.")
     }
@@ -466,11 +466,11 @@ check_argument_outcome = function(argument) {
     stop("The outcome argument is neither a vector, nor a data frame, nor a matrix with a single column.")
   }
   if (is.numeric(argument)) {
-    print("The outcome argument is numeric")
+    message("The outcome argument is numeric")
   } else if (is.integer(argument)) {
-    print("The outcome argument is integer")
+    message("The outcome argument is integer")
   } else if (is.logical(argument)) {
-      print("The outcome argument is logical")
+      message("The outcome argument is logical")
   } else {
     stop("The outcome argument is neither numeric, nor integer, nor logical")
   }
@@ -478,7 +478,7 @@ check_argument_outcome = function(argument) {
 
 check_argument_mediators_matrix = function(argument){
   if(is.matrix(argument)){
-    print("Potential mediators matrix is actually a matrix")
+    message("Potential mediators matrix is actually a matrix")
   } else {
     stop("Potential mediators matrix must be a matrix")
   }
@@ -486,12 +486,12 @@ check_argument_mediators_matrix = function(argument){
 
 check_K = function(argument){
   if (!is.null(argument)) {
-    print(paste("provided K =",argument))
+    message(paste("provided K =",argument))
     if(is.integer(argument)) {
-      print("K value is integer")
+      message("K value is integer")
     } else {
       K= as.integer(argument)
-      print("K value has been transformed as integer")
+      message("K value has been transformed as integer")
     }
   } else {
     stop("K is not provided")

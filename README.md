@@ -23,37 +23,67 @@ R
 > install.packages("prettydoc")
 > install.packages("fdrtool")
 > install.packages("mediation")
-> devtools::install_github("bcm-uga/LEA")
+
 
 > devtools::install_github("bcm-uga/hdmax2")
 
 ```
 
 ## Usage
-
+Load our simulated data and choose K from pca analysis (for example) on potential mediators.
 ```
 # load data
 simu_data = hdmax2::simu_data
-X = simu_data$X_continuous
-Y = simu_data$Y_continuous
-M = simu_data$M
-K = 5
 
-# Run step 1
+# exposure
+X = simu_data$X_continuous
+
+# outcome
+Y = simu_data$Y_continuous
+
+# potential mediators
+M = simu_data$M
+
+# Observed confounding factors
+covar = simu_data$age
+
+# latent factor number estimated with pca 
+K = 5
+```
+
+### Run step 1
+
+Step 1 involves estimating latent factors using the `LFMM` algorithm. Subsequently, association studies are conducted between exposure and potential mediators, and between potential mediators and the outcome. These studies include both latent factors and observed confounding factors (when applicable). The mediation test using the *max-squared* test is performed using p-values obtained from the previous association studies.
+
+```
 hdmax2_step1 = hdmax2::run_AS(X = X,
                               Y = Y,
                               M = M,
                               K = K)
+```
 
-# Select mediators
+### Select mediators
+
+Mediators are selected using *max-squared* test p-values. Here's we choose to select top 10 p-values as dection method.
+
+```
 mediators_top10 = M[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
-head(mediators_top10)
 
-# Run step 2
+```
+### Run step 2
+
+With selected mediators step 2 proceed to different effect estimations.
+
+```
 hdmax2_step2 = hdmax2::estimate_effect(object =hdmax2_step1,
                                     m = mediators_top10)
+```
 
-# Plot results
+### Plot results
+
+Those effects can be analyze with proposed plots.
+
+```
 library(ggplot2)
 hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
 ```
@@ -64,7 +94,7 @@ Please open an issue if you find a bug.
 
 ## Jumentier et al. 2023 release access
 
-To access this code version choose v1.0.0.0 in tags tab.
+Previous code version associated with cited publication is always available. To access this code version choose v1.0.0.0 in tags tab.
 
 To install this version:
 ```

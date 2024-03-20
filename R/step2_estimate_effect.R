@@ -85,7 +85,7 @@ estimate_effect <- function(object , m, boots = 100) {
    }
     
     if( ncol_var == 1){
-      print("Estimating indirect effect for univariate exposome.")  
+      message("Estimating indirect effect for univariate exposome.")  
       
       if (is.null(object$input$covar)) {
         covars = data.frame(latent_factors = object$modele_1$U)
@@ -93,7 +93,7 @@ estimate_effect <- function(object , m, boots = 100) {
         covars = data.frame(obs_covar = object$input$covar, latent_factors = object$modele_1$U)
       } 
     } else if( ncol_var > 1){
-      print("Estimating indirect effect for multivariate exposome.") 
+      message("Estimating indirect effect for multivariate exposome.") 
       extra_expo_vars = expo_var_ids[-which(expo_var_ids %in% expo_var_id)]
       df_extra = X_mat[,which(expo_var_ids %in% extra_expo_vars)]
       if(is.vector(df_extra)){
@@ -102,12 +102,12 @@ estimate_effect <- function(object , m, boots = 100) {
       for(col in 1:dim(df_extra)[2]){
         if(typeof(df_extra[,col])=="character"){
           df_extra[,col] = as.factor(df_extra[,col])
-          print(paste("Categorial column " , col , " transformed in factors in covariable data frame"))
+          message(paste("Categorial column " , col , " transformed in factors in covariable data frame"))
         } else if (is.factor(df_extra[,col])) {
-          print(paste("Categorial column " , col , " is factors in covariable data frame"))
+          message(paste("Categorial column " , col , " is factors in covariable data frame"))
         } else if (typeof(df_extra[,col])=="integer"||typeof(df_extra[,col])== "logical"||typeof(df_extra[,col])== "double"){
           df_extra[,col] = as.numeric(df_extra[,col])
-          print(paste("Column " , col , " is Continuous or Binary in covariable data frame"))
+          message(paste("Column " , col , " is Continuous or Binary in covariable data frame"))
         }
       }
       if (is.null(object$input$covar)) {
@@ -120,14 +120,14 @@ estimate_effect <- function(object , m, boots = 100) {
     expo_var_type =  typeof(X)
     
     if (expo_var_type == "character"||is.factor(X)){
-      print("The input exposome is categorial")
+      message("The input exposome is categorial")
       if(is.factor(X)==FALSE){
       X_fact = as.factor(X)
       } else {
         X_fact = X
       }
       X_dm = stats::model.matrix(~X_fact)
-      print("categorial exposome design matrix transformation")
+      message("categorial exposome design matrix transformation")
       X = X_dm[,-1]
       cn = colnames(X)
       
@@ -152,14 +152,14 @@ estimate_effect <- function(object , m, boots = 100) {
           dat.y <- data.frame(Xk = X[,k], Xmk = X[,-k], Mi = M[, i], covars = covars, Y = Y)
           
           mod1 = stats::lm(Mi ~ Xk + ., data = dat.x)
-          print(paste0("Generate regression 1 for categorial exposure and mediator ", i))
+          message(paste0("Generate regression 1 for categorial exposure and mediator ", i))
           
           if(Y_type=="continuous"){
-            print(paste0("Generate regression 2 for continuous outcome and mediator ", i))   
+            message(paste0("Generate regression 2 for continuous outcome and mediator ", i))   
             mod2 <- stats::lm(Y ~ Xk + Mi + ., data = dat.y)
             
           } else if(Y_type=="binary"){
-            print(paste0("Generate regression 2 for binary outcome and mediator ", i))
+            message(paste0("Generate regression 2 for binary outcome and mediator ", i))
             mod2 <- stats::glm(Y ~ Xk + Mi + ., family = "binomial", data = dat.y)
           }
           
@@ -221,7 +221,7 @@ estimate_effect <- function(object , m, boots = 100) {
             mod2 <- tryCatch(
               stats::glm(Y ~ Xk + .,family = "binomial" , data = dat.1),
               warning = function(w) {
-                print(paste0("glm.fit produces warning, iteration ", i, " of bootstrap is not used"))
+                message(paste0("glm.fit produces warning, iteration ", i, " of bootstrap is not used"))
                 return(NULL)
               }
             )
@@ -250,7 +250,7 @@ estimate_effect <- function(object , m, boots = 100) {
         ### Compute ODE and OTE for the given model
         
         if(Y_type == "continuous") {
-          print("Computing ODE and OTE for continuous outcome.")
+          message("Computing ODE and OTE for continuous outcome.")
           data_total = data.frame(X = X, Y= Y, covars = covars)
           mod_total_effect = stats::lm(Y ~ . , data =  data_total)
           data_direct = data.frame(X = X, Y= Y, M = M, covars = covars)
@@ -258,7 +258,7 @@ estimate_effect <- function(object , m, boots = 100) {
         }
         
         if(Y_type == "binary") {
-          print("Computing ODE and OTE for binary outcome.")
+          message("Computing ODE and OTE for binary outcome.")
            data_total = data.frame(X = X, Y= Y, covars = covars)
           mod_total_effect = stats::glm(Y ~ . , family = "binomial",  data =  data_total)
            data_direct = data.frame(X = X, Y= Y, M = M ,covars = covars)
@@ -283,7 +283,7 @@ estimate_effect <- function(object , m, boots = 100) {
       
       
     } else if (expo_var_type== "integer"||expo_var_type== "logical"||expo_var_type== "double"){
-      print("The input exposome is continuous or binary" )
+      message("The input exposome is continuous or binary" )
       # boolean transformed as numeric
       X = as.numeric(X)
       
@@ -301,13 +301,13 @@ estimate_effect <- function(object , m, boots = 100) {
         dat.x <- data.frame(X = X, Mi = M[, i], covars = covars)
         dat.y <- data.frame(X = X, Mi = M[, i], covars = covars, Y = Y)
         mod1 = stats::lm(Mi ~ X + ., data = dat.x)
-        print(paste0("Generate regression 1 for continuous or binary exposure and mediator ", i))
+        message(paste0("Generate regression 1 for continuous or binary exposure and mediator ", i))
         
         if(Y_type=="continuous"){
-          print(paste0("Generate regression 2 for continuous outcome and mediator ", i))   
+          message(paste0("Generate regression 2 for continuous outcome and mediator ", i))   
           mod2 <- stats::lm(Y ~ X + Mi + ., data = dat.y)
         } else if(Y_type=="binary"){
-          print(paste0("Generate regression 2 for binary outcome and mediator ", i))
+          message(paste0("Generate regression 2 for binary outcome and mediator ", i))
           mod2 <- stats::glm(Y ~ X + Mi + ., family = "binomial", data = dat.y)
         }
         
@@ -373,7 +373,7 @@ estimate_effect <- function(object , m, boots = 100) {
           mod2 <- tryCatch(
             stats::glm(Y ~ .,family = "binomial" , data = dat.1),
             warning = function(w) {
-              print(paste0("glm.fit produces warning, iteration ", i, " of bootstrap is not used"))
+              message(paste0("glm.fit produces warning, iteration ", i, " of bootstrap is not used"))
               return(NULL)
             }
           )
@@ -403,7 +403,7 @@ estimate_effect <- function(object , m, boots = 100) {
       ### Compute ODE and OTE for the given model
       
       if(Y_type == "continuous") {
-        print("Computing ODE and OTE for continuous outcome.")
+        message("Computing ODE and OTE for continuous outcome.")
          data_total = data.frame(X =X, Y= Y, covars = covars)
         mod_total_effect = stats::lm(Y ~ . , data =  data_total)
          data_direct = data.frame(X =X, Y= Y, M =M ,covars = covars)
@@ -411,7 +411,7 @@ estimate_effect <- function(object , m, boots = 100) {
       }
       
       if(Y_type == "binary") {
-        print("Computing ODE and OTE for binary outcome.")
+        message("Computing ODE and OTE for binary outcome.")
          data_total = data.frame(X =X, Y= Y, covars = covars)
         mod_total_effect = stats::glm(Y ~ . , family = "binomial",  data =  data_total)
          data_direct = data.frame(X =X, Y= Y, M = M ,covars = covars)
