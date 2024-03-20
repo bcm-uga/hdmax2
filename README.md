@@ -35,7 +35,8 @@ R
 
 ## Usage
 
-```{r}
+
+```
 library(hdmax2)
 library(ggplot2)
 
