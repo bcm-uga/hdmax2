@@ -131,18 +131,18 @@ is unsuccessful, or could be complementary analysis.</p>
 <span>                              Y <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">phenotype</span>,</span>
 <span>                              M <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">methylation</span>, </span>
 <span>                              K <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "The exposure argument is a vector."</span></span>
-<span><span class="co">#&gt; [1] "The outcome argument is a vector."</span></span>
-<span><span class="co">#&gt; [1] "The outcome argument is numeric"</span></span>
-<span><span class="co">#&gt; [1] "Potential mediators matrix is actually a matrix"</span></span>
-<span><span class="co">#&gt; [1] "provided K = 5"</span></span>
-<span><span class="co">#&gt; [1] "K value has been transformed as integer"</span></span>
-<span><span class="co">#&gt; [1] "The input exposome is continuous or binary"</span></span>
-<span><span class="co">#&gt; [1] "The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable."</span></span>
-<span><span class="co">#&gt; [1] "Running first regression with univariate explanatory variable."</span></span>
-<span><span class="co">#&gt; [1] "Running second regression."</span></span>
-<span><span class="co">#&gt; [1] "Running max-squared test."</span></span>
-<span><span class="co">#&gt; [1] "Not generating max2 pvalues for each explanatory variable."</span></span>
+<span><span class="co">#&gt; The exposure argument is a vector.</span></span>
+<span><span class="co">#&gt; The outcome argument is a vector.</span></span>
+<span><span class="co">#&gt; The outcome argument is numeric</span></span>
+<span><span class="co">#&gt; Potential mediators matrix is actually a matrix</span></span>
+<span><span class="co">#&gt; provided K = 5</span></span>
+<span><span class="co">#&gt; K value has been transformed as integer</span></span>
+<span><span class="co">#&gt; The input exposome is continuous or binary</span></span>
+<span><span class="co">#&gt; The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable.</span></span>
+<span><span class="co">#&gt; Running first regression with univariate explanatory variable.</span></span>
+<span><span class="co">#&gt; Running second regression.</span></span>
+<span><span class="co">#&gt; Running max-squared test.</span></span>
+<span><span class="co">#&gt; Not generating max2 pvalues for each explanatory variable.</span></span>
 <span></span>
 <span><span class="co">##Detecting AMR</span></span>
 <span><span class="va">chr</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">chr</span></span>
@@ -202,13 +202,13 @@ could be use to estimate different effects of AMR. Also
 <span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
 <span>                                       m <span class="op">=</span> <span class="va">m</span>,</span>
 <span>                                       boots <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Estimating indirect effect for univariate exposome."</span></span>
-<span><span class="co">#&gt; [1] "The input exposome is continuous or binary"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 1"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 1"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 2"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 2"</span></span>
-<span><span class="co">#&gt; [1] "Computing ODE and OTE for continuous outcome."</span></span>
+<span><span class="co">#&gt; Estimating indirect effect for univariate exposome.</span></span>
+<span><span class="co">#&gt; The input exposome is continuous or binary</span></span>
+<span><span class="co">#&gt; Generate regression 1 for continuous or binary exposure and mediator 1</span></span>
+<span><span class="co">#&gt; Generate regression 2 for continuous outcome and mediator 1</span></span>
+<span><span class="co">#&gt; Generate regression 1 for continuous or binary exposure and mediator 2</span></span>
+<span><span class="co">#&gt; Generate regression 2 for continuous outcome and mediator 2</span></span>
+<span><span class="co">#&gt; Computing ODE and OTE for continuous outcome.</span></span>
 <span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -242,18 +242,18 @@ bounded by chosen threshold.</p>
 <span>                 Y <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">Y_continuous</span>,</span>
 <span>                 M <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">M</span>, </span>
 <span>                 K <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "The exposure argument is a vector."</span></span>
-<span><span class="co">#&gt; [1] "The outcome argument is a vector."</span></span>
-<span><span class="co">#&gt; [1] "The outcome argument is numeric"</span></span>
-<span><span class="co">#&gt; [1] "Potential mediators matrix is actually a matrix"</span></span>
-<span><span class="co">#&gt; [1] "provided K = 5"</span></span>
-<span><span class="co">#&gt; [1] "K value has been transformed as integer"</span></span>
-<span><span class="co">#&gt; [1] "The input exposome is continuous or binary"</span></span>
-<span><span class="co">#&gt; [1] "The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable."</span></span>
-<span><span class="co">#&gt; [1] "Running first regression with univariate explanatory variable."</span></span>
-<span><span class="co">#&gt; [1] "Running second regression."</span></span>
-<span><span class="co">#&gt; [1] "Running max-squared test."</span></span>
-<span><span class="co">#&gt; [1] "Not generating max2 pvalues for each explanatory variable."</span></span>
+<span><span class="co">#&gt; The exposure argument is a vector.</span></span>
+<span><span class="co">#&gt; The outcome argument is a vector.</span></span>
+<span><span class="co">#&gt; The outcome argument is numeric</span></span>
+<span><span class="co">#&gt; Potential mediators matrix is actually a matrix</span></span>
+<span><span class="co">#&gt; provided K = 5</span></span>
+<span><span class="co">#&gt; K value has been transformed as integer</span></span>
+<span><span class="co">#&gt; The input exposome is continuous or binary</span></span>
+<span><span class="co">#&gt; The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable.</span></span>
+<span><span class="co">#&gt; Running first regression with univariate explanatory variable.</span></span>
+<span><span class="co">#&gt; Running second regression.</span></span>
+<span><span class="co">#&gt; Running max-squared test.</span></span>
+<span><span class="co">#&gt; Not generating max2 pvalues for each explanatory variable.</span></span>
 <span></span>
 <span><span class="co">## Select candidate mediator  </span></span>
 <span><span class="va">qval</span> <span class="op">&lt;-</span> <span class="fu">fdrtool</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fdrtool/man/fdrtool.html" class="external-link">fdrtool</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span>, statistic <span class="op">=</span> <span class="st">"pvalue"</span>, plot <span class="op">=</span> <span class="cn">F</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">$</span><span class="va">qval</span></span>

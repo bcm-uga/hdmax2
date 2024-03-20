@@ -115,16 +115,16 @@ elbow procedure apply to screeplot.</p>
 <span><span class="co">## Covariates</span></span>
 <span><span class="va">age</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">age</span></span>
 <span><span class="va">gender</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">gender</span></span>
-<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">gender</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## Number of Latent factore estimation</span></span>
+<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">gender</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Number of Latent factore estimation</span></span>
 <span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">M</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>,</span>
 <span>     type <span class="op">=</span> <span class="st">"b"</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">'Principal Component'</span>,</span>
 <span>     ylab <span class="op">=</span> <span class="st">"Explained variance"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="hdmax2_univariate_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p><img src="hdmax2_univariate_files/figure-html/pca%20for%20latent%20factor-1.png" width="700"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">K</span><span class="op">=</span><span class="fl">5</span> <span class="co">#pca conclusion : it is better to select too many factors that too few</span></span></code></pre></div>
 </div>
@@ -139,25 +139,13 @@ outcome</em><a class="anchor" aria-label="anchor" href="#first-use-case-binary-e
 effects of exposure <span class="math inline">\(X\)</span> on a matrix
 <span class="math inline">\(M\)</span> of potential mediators, and the
 effect of each potential mediators on outcome <span class="math inline">\(Y\)</span>. Covariables can be included.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>,</span>
 <span>                              Y <span class="op">=</span> <span class="va">Y</span>,</span>
 <span>                              M <span class="op">=</span> <span class="va">M</span>, </span>
 <span>                              K <span class="op">=</span> <span class="va">K</span>,</span>
-<span>                              covar <span class="op">=</span> <span class="va">covar</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "The exposure argument is a vector."</span></span>
-<span><span class="co">#&gt; [1] "The outcome argument is a vector."</span></span>
-<span><span class="co">#&gt; [1] "The outcome argument is numeric"</span></span>
-<span><span class="co">#&gt; [1] "Potential mediators matrix is actually a matrix"</span></span>
-<span><span class="co">#&gt; [1] "provided K = 5"</span></span>
-<span><span class="co">#&gt; [1] "K value has been transformed as integer"</span></span>
-<span><span class="co">#&gt; [1] "The input exposome is continuous or binary"</span></span>
-<span><span class="co">#&gt; [1] "The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable."</span></span>
-<span><span class="co">#&gt; [1] "Running first regression with univariate explanatory variable."</span></span>
-<span><span class="co">#&gt; [1] "Running second regression."</span></span>
-<span><span class="co">#&gt; [1] "Running max-squared test."</span></span>
-<span><span class="co">#&gt; [1] "Not generating max2 pvalues for each explanatory variable."</span></span></code></pre></div>
+<span>                              covar <span class="op">=</span> <span class="va">covar</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="selection-of-a-subset-of-mediators">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators"></a>
@@ -168,7 +156,7 @@ first regression, function inputs, and more important max-squared test
 pvalues results. This last result allow to select mediators which user’s
 choosen method. For this example we selected top ten of more significant
 pvalues from max-squared test.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
 <span><span class="co">## top 10 selecting mediators</span></span>
 <span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
@@ -194,35 +182,12 @@ pvalues from max-squared test.</p>
 <p>The function <strong>estimate_effect</strong> estimate the individual
 indirect effect of mediators, but also overall effects of selected
 mediators.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">object</span> <span class="op">=</span> <span class="va">hdmax2_step1</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="va">mediators_top10</span></span>
 <span></span>
 <span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">object</span>,</span>
-<span>                                       m <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Estimating indirect effect for univariate exposome."</span></span>
-<span><span class="co">#&gt; [1] "The input exposome is continuous or binary"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 1"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 1"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 2"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 2"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 3"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 3"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 4"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 4"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 5"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 5"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 6"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 6"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 7"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 7"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 8"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 8"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 9"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 9"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 1 for continuous or binary exposure and mediator 10"</span></span>
-<span><span class="co">#&gt; [1] "Generate regression 2 for continuous outcome and mediator 10"</span></span>
-<span><span class="co">#&gt; [1] "Computing ODE and OTE for continuous outcome."</span></span></code></pre></div>
+<span>                                       m <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot">Plot<a class="anchor" aria-label="anchor" href="#plot"></a>
@@ -234,11 +199,11 @@ mediators.</p>
 <li><p>Comparison of ODE, OIE and OTE</p></li>
 <li><p>Mediators effect size representation</p></li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, plot_type <span class="op">=</span> <span class="st">"all_plot"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "hdmax2 plot for univariate exposome"</span></span></code></pre></div>
-<p><img src="hdmax2_univariate_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p><img src="hdmax2_univariate_files/figure-html/plot%20results-1.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; TableGrob (2 x 2) "arrange": 4 grobs</span></span>
 <span><span class="co">#&gt;   z     cells    name           grob</span></span>
 <span><span class="co">#&gt; 1 1 (1-1,1-1) arrange gtable[layout]</span></span>
@@ -266,7 +231,7 @@ Y in the model <span class="math inline">\(Y \sim M +
 X\)</span>.</p></li>
 </ul>
 <p>##TODO comments about plots</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.3.3 (2024-02-29)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
