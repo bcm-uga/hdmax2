@@ -62,8 +62,8 @@
 <div class="page-header"><h1 id="hdmax2">hdmax2<a class="anchor" aria-label="anchor" href="#hdmax2"></a>
 </h1></div>
 <p><img src="https://raw.githubusercontent.com/bcm-uga/hdmax2/package/hdmax2_hex.png" width="130" align="right"></p>
-<p>R package <code>hdmax2</code> performs high dimension mediation analysis. This package allows users to estimate the indirect effects of mediators, calculate the overall indirect effect of mediators, and facilitates the execution of high-dimensional mediation analysis.</p>
-<p>The HDMAX2 method includes unobserved confounding factors through a latent factor mixed model approach. It supports the use of exposures of various types and the consideration of both continuous and binary outcomes.</p>
+<p>The <code>R</code> package <code>hdmax2</code> offers powerful tools for conducting high-dimensional mediation analysis. This method investigates the causal pathways linking exposure variables to outcome variables through intermediary factors known as mediators. These mediators often stem from biological metrics like transcriptomes or methylomes, which present data in high dimensions.</p>
+<p>The package is capable of detecting individual mediators, accurately estimating the indirect effects of exposure variables associated with each mediator, and determining an overall indirect effect encompassing all detected mediators. Utilizing a latent factor mixed model methodology, the method effectively mitigates unobserved confounding factors. It accommodates exposures of diverse types and allows for the analysis of both continuous and binary outcomes.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -81,81 +81,86 @@ R
 &gt; install.packages("fdrtool")
 &gt; install.packages("mediation")
 
-
 &gt; devtools::install_github("bcm-uga/hdmax2")
-</code></pre>
+
+# Installing R packages from GitHub may require that users remove older versions and restart their R session
+# The package might have been installed in your computer (even though it does not work). Remove it using remove.packages()
+#  rs.restartR() if in RStudio</code></pre>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>Load our simulated data and choose K from pca analysis (for example) on potential mediators.</p>
-<pre><code><span><span class="co"># load data</span></span>
-<span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="reference/simu_data.html">simu_data</a></span></span>
-<span></span>
-<span><span class="co"># exposure</span></span>
-<span><span class="va">X</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span></span>
-<span></span>
-<span><span class="co"># outcome</span></span>
-<span><span class="va">Y</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span></span>
-<span></span>
-<span><span class="co"># potential mediators</span></span>
-<span><span class="va">M</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span></span>
-<span></span>
-<span><span class="co"># Observed confounding factors</span></span>
-<span><span class="va">covar</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">age</span></span>
-<span></span>
-<span><span class="co"># latent factor number estimated with pca </span></span>
-<span><span class="va">K</span> <span class="op">=</span> <span class="fl">5</span></span></code></pre>
-<div class="section level3">
-<h3 id="run-step-1">Run step 1<a class="anchor" aria-label="anchor" href="#run-step-1"></a>
-</h3>
-<p>Step 1 involves estimating latent factors using the <code>LFMM</code> algorithm. Subsequently, association studies are conducted between exposure and potential mediators, and between potential mediators and the outcome. These studies include both latent factors and observed confounding factors (when applicable). The mediation test using the <em>max-squared</em> test is performed using p-values obtained from the previous association studies.</p>
-<pre><code><span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>,</span>
-<span>                              Y <span class="op">=</span> <span class="va">Y</span>,</span>
-<span>                              M <span class="op">=</span> <span class="va">M</span>,</span>
-<span>                              K <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span></code></pre>
-</div>
-<div class="section level3">
-<h3 id="select-mediators">Select mediators<a class="anchor" aria-label="anchor" href="#select-mediators"></a>
-</h3>
-<p>Mediators are selected using <em>max-squared</em> test p-values. Here’s we choose to select top 10 p-values as dection method.</p>
-<pre><code><span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span></code></pre>
-</div>
-<div class="section level3">
-<h3 id="run-step-2">Run step 2<a class="anchor" aria-label="anchor" href="#run-step-2"></a>
-</h3>
-<p>With selected mediators step 2 proceed to different effect estimations.</p>
-<pre><code><span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span><span class="va">hdmax2_step1</span>,</span>
-<span>                                    m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></code></pre>
-</div>
-<div class="section level3">
-<h3 id="plot-results">Plot results<a class="anchor" aria-label="anchor" href="#plot-results"></a>
-</h3>
-<p>Those effects can be analyze with proposed plots.</p>
-<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, N_med <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre>
+<p>```{r} library(hdmax2) library(ggplot2)</p>
 </div>
 </div>
+<div class="section level1">
+<h1 id="loading-some-simulated-data">Loading some simulated data<a class="anchor" aria-label="anchor" href="#loading-some-simulated-data"></a>
+</h1>
+<p>attach(simu_data)</p>
+</div>
+<div class="section level1">
+<h1 id="exposure-variables">Exposure variables<a class="anchor" aria-label="anchor" href="#exposure-variables"></a>
+</h1>
+<p>X = X_continuous</p>
+</div>
+<div class="section level1">
+<h1 id="outcome-variable">Outcome variable<a class="anchor" aria-label="anchor" href="#outcome-variable"></a>
+</h1>
+<p>Y = Y_continuous</p>
+</div>
+<div class="section level1">
+<h1 id="intermediate-variables-including-mediators">Intermediate variables including mediators<a class="anchor" aria-label="anchor" href="#intermediate-variables-including-mediators"></a>
+</h1>
+<p>M = simu_data$M</p>
+</div>
+<div class="section level1">
+<h1 id="choose-k-latent-factors-number-from-pca-analysis-for-example-on-potential-mediators">Choose K (latent factors number) from pca analysis (for example) on potential mediators<a class="anchor" aria-label="anchor" href="#choose-k-latent-factors-number-from-pca-analysis-for-example-on-potential-mediators"></a>
+</h1>
+<p>K = 5</p>
+<p>detach(simu_data)</p>
+</div>
+<div class="section level1">
+<h1 id="computing-significance-values-for-intermediate-variables">Computing significance values for intermediate variables<a class="anchor" aria-label="anchor" href="#computing-significance-values-for-intermediate-variables"></a>
+</h1>
+</div>
+<div class="section level1">
+<h1 id="this-step-uses-lfmms-and-max-squared-tests">This step uses LFMMs and max-squared tests<a class="anchor" aria-label="anchor" href="#this-step-uses-lfmms-and-max-squared-tests"></a>
+</h1>
+<p>hdmax2_step1 = run_AS(X = X, Y = Y, M = M, K = K)</p>
+</div>
+<div class="section level1">
+<h1 id="selecting-mediators-ten-variables-having-the-lowest-p-values">Selecting mediators (ten variables having the lowest p-values)<a class="anchor" aria-label="anchor" href="#selecting-mediators-ten-variables-having-the-lowest-p-values"></a>
+</h1>
+<p>mediators_top10 = order(hdmax2_step1$max2_pvalues)[1:10] M_10 = M[,mediators_top10]</p>
+</div>
+<div class="section level1">
+<h1 id="ids-of-selected-mediators">Ids of selected mediators<a class="anchor" aria-label="anchor" href="#ids-of-selected-mediators"></a>
+</h1>
+<p>colnames(M_10)</p>
+</div>
+<div class="section level1">
+<h1 id="estimating-indirect-and-direct-effects-of-exposure-on-outcome">Estimating indirect and direct effects of exposure on outcome<a class="anchor" aria-label="anchor" href="#estimating-indirect-and-direct-effects-of-exposure-on-outcome"></a>
+</h1>
+<p>hdmax2_step2 = estimate_effect(object = hdmax2_step1, m = M_10)</p>
+</div>
+<div class="section level1">
+<h1 id="showing-some-results">Showing some results<a class="anchor" aria-label="anchor" href="#showing-some-results"></a>
+</h1>
+<p>plot_hdmax2(hdmax2_step2, plot_type = “all_plot”) ```</p>
 <div class="section level2">
 <h2 id="bug-report--help">Bug report / Help<a class="anchor" aria-label="anchor" href="#bug-report--help"></a>
 </h2>
-<p>Please open an issue if you find a bug.</p>
-</div>
-<div class="section level2">
-<h2 id="jumentier-et-al-2023-release-access">Jumentier et al. 2023 release access<a class="anchor" aria-label="anchor" href="#jumentier-et-al-2023-release-access"></a>
-</h2>
-<p>Previous code version associated with cited publication is always available. To access this code version choose v1.0.0.0 in tags tab.</p>
-<p>To install this version:</p>
-<pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"bcm-uga/hdmax2"</span>, ref<span class="op">=</span><span class="st">"v1.0.0.0"</span><span class="op">)</span></span></code></pre>
+<p>If you encounter a problem, please open a GitHub issue or contact the program developers.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <ul>
-<li>Jumentier B, CC Barrot, M Estavoyer, J Tost, B Heude, O Francois, and J Lepeule (2023). High-Dimensional Medi- 220 ation Analysis: A New Method Applied to Maternal Smoking, Placental DNA Methylation, and Birth Out- 221 comes. Environmental Health Perspectives 131 (). Publisher: Environmental Health Perspectives, 047011. 222 <a href="https://doi.org/10.1289/EHP11559" class="external-link uri">https://doi.org/10.1289/EHP11559</a>.</li>
+<li>Jumentier B, CC Barrot, M Estavoyer, J Tost, B Heude, O Francois, and J Lepeule (2023). High-Dimensional Mediation Analysis: A New Method Applied to Maternal Smoking, Placental DNA Methylation, and Birth Outcomes. Environmental Health Perspectives 131. Publisher: Environmental Health Perspectives, 047011. <a href="https://doi.org/10.1289/EHP11559" class="external-link uri">https://doi.org/10.1289/EHP11559</a>.</li>
 </ul>
 </div>
 </div>
+
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
