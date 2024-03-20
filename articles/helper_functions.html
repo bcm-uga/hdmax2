@@ -121,7 +121,7 @@ is unsuccessful, or could be complementary analysis.</p>
 <span>     xlab <span class="op">=</span> <span class="st">'Principal Component'</span>,</span>
 <span>     ylab <span class="op">=</span> <span class="st">"Explained variance"</span>,</span>
 <span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">16</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="helper_functions_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p><img src="helper_functions_files/figure-html/AMR%20-1.png" width="700"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># chosen number of dimension</span></span>
 <span><span class="va">K</span><span class="op">=</span><span class="fl">5</span></span>
@@ -131,25 +131,8 @@ is unsuccessful, or could be complementary analysis.</p>
 <span>                              Y <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">phenotype</span>,</span>
 <span>                              M <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">methylation</span>, </span>
 <span>                              K <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span>
-<span><span class="co">#&gt; The exposure argument is a vector.</span></span>
-<span><span class="co">#&gt; The outcome argument is a vector.</span></span>
-<span><span class="co">#&gt; The outcome argument is numeric</span></span>
-<span><span class="co">#&gt; Potential mediators matrix is actually a matrix</span></span>
-<span><span class="co">#&gt; provided K = 5</span></span>
-<span><span class="co">#&gt; K value has been transformed as integer</span></span>
-<span><span class="co">#&gt; The input exposome is continuous or binary</span></span>
-<span><span class="co">#&gt; The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable.</span></span>
-<span><span class="co">#&gt; Running first regression with univariate explanatory variable.</span></span>
-<span><span class="co">#&gt; Running second regression.</span></span>
-<span><span class="co">#&gt; Running max-squared test.</span></span>
-<span><span class="co">#&gt; Not generating max2 pvalues for each explanatory variable.</span></span>
 <span></span>
 <span><span class="co">##Detecting AMR</span></span>
-<span><span class="va">chr</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">chr</span></span>
-<span><span class="va">start</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">start</span></span>
-<span><span class="va">end</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">end</span></span>
-<span><span class="va">pval</span> <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span></span>
-<span><span class="va">cpg</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">cpg</span></span>
 <span><span class="va">seed</span> <span class="op">=</span> <span class="fl">0.6</span> <span class="co">#Careful to change this parameter when working with real data</span></span>
 <span><span class="va">res.amr_search</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/AMR_search.html">AMR_search</a></span><span class="op">(</span>chr <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">chr</span>,</span>
 <span>                                    start <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">start</span>,</span>
@@ -191,30 +174,19 @@ could be use to estimate different effects of AMR. Also
 <code>plot_hdmax2</code> can be applied to step2 results.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## run hdmax2 step2</span></span>
-<span></span>
 <span><span class="va">object</span> <span class="op">=</span> <span class="va">hdmax2_step1</span></span>
 <span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">methylation</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">res.arm_build</span><span class="op">$</span><span class="va">AMR_mean</span><span class="op">)</span></span>
 <span><span class="va">boots</span> <span class="op">=</span> <span class="fl">100</span></span>
-<span><span class="va">sims</span> <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="co">## selected mediators effects estimation</span></span>
 <span></span>
 <span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
 <span>                                       m <span class="op">=</span> <span class="va">m</span>,</span>
 <span>                                       boots <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Estimating indirect effect for univariate exposome.</span></span>
-<span><span class="co">#&gt; The input exposome is continuous or binary</span></span>
-<span><span class="co">#&gt; Generate regression 1 for continuous or binary exposure and mediator 1</span></span>
-<span><span class="co">#&gt; Generate regression 2 for continuous outcome and mediator 1</span></span>
-<span><span class="co">#&gt; Generate regression 1 for continuous or binary exposure and mediator 2</span></span>
-<span><span class="co">#&gt; Generate regression 2 for continuous outcome and mediator 2</span></span>
-<span><span class="co">#&gt; Computing ODE and OTE for continuous outcome.</span></span>
-<span></span>
-<span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, plot_type<span class="op">=</span> <span class="st">"all_plot"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "hdmax2 plot for univariate exposome"</span></span></code></pre></div>
-<p><img src="helper_functions_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p><img src="helper_functions_files/figure-html/step2-1.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; TableGrob (2 x 2) "arrange": 4 grobs</span></span>
 <span><span class="co">#&gt;   z     cells    name           grob</span></span>
 <span><span class="co">#&gt; 1 1 (1-1,1-1) arrange gtable[layout]</span></span>
@@ -242,18 +214,6 @@ bounded by chosen threshold.</p>
 <span>                 Y <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">Y_continuous</span>,</span>
 <span>                 M <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">M</span>, </span>
 <span>                 K <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span>
-<span><span class="co">#&gt; The exposure argument is a vector.</span></span>
-<span><span class="co">#&gt; The outcome argument is a vector.</span></span>
-<span><span class="co">#&gt; The outcome argument is numeric</span></span>
-<span><span class="co">#&gt; Potential mediators matrix is actually a matrix</span></span>
-<span><span class="co">#&gt; provided K = 5</span></span>
-<span><span class="co">#&gt; K value has been transformed as integer</span></span>
-<span><span class="co">#&gt; The input exposome is continuous or binary</span></span>
-<span><span class="co">#&gt; The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable.</span></span>
-<span><span class="co">#&gt; Running first regression with univariate explanatory variable.</span></span>
-<span><span class="co">#&gt; Running second regression.</span></span>
-<span><span class="co">#&gt; Running max-squared test.</span></span>
-<span><span class="co">#&gt; Not generating max2 pvalues for each explanatory variable.</span></span>
 <span></span>
 <span><span class="co">## Select candidate mediator  </span></span>
 <span><span class="va">qval</span> <span class="op">&lt;-</span> <span class="fu">fdrtool</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fdrtool/man/fdrtool.html" class="external-link">fdrtool</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span>, statistic <span class="op">=</span> <span class="st">"pvalue"</span>, plot <span class="op">=</span> <span class="cn">F</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">$</span><span class="va">qval</span></span>

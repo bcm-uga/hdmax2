@@ -201,7 +201,15 @@ mediators.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, plot_type<span class="op">=</span> <span class="st">"all_plot"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "hdmax2 plot for multivariate exposome"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "hdmax2 plot for multivariate exposome"</span></span>
+<span><span class="co">#&gt; Warning: The `guide` argument in `scale_*()` cannot be `FALSE`. This was deprecated in</span></span>
+<span><span class="co">#&gt; ggplot2 3.3.4.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use "none" instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">hdmax2</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue to the authors.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
 <p><img src="hdmax2_multivariate_files/figure-html/plot%20results-1.png" width="700"><img src="hdmax2_multivariate_files/figure-html/plot%20results-2.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; $X1</span></span>
 <span><span class="co">#&gt; TableGrob (2 x 2) "arrange": 4 grobs</span></span>
@@ -273,18 +281,19 @@ X\)</span>.</p></li>
 <span><span class="co">#&gt; [21] compiler_4.3.3    stringr_1.5.1     hdmax2_2.0.0.9000 textshaping_0.3.7</span></span>
 <span><span class="co">#&gt; [25] prettydoc_0.4.1   munsell_0.5.0     mediation_4.5.0   htmltools_0.5.7  </span></span>
 <span><span class="co">#&gt; [29] sass_0.4.9        yaml_2.3.8        htmlTable_2.4.2   Formula_1.2-5    </span></span>
-<span><span class="co">#&gt; [33] pillar_1.9.0      pkgdown_2.0.7     nloptr_2.0.3      jquerylib_0.1.4  </span></span>
-<span><span class="co">#&gt; [37] MASS_7.3-60.0.1   cachem_1.0.8      Hmisc_5.1-2       rpart_4.1.23     </span></span>
-<span><span class="co">#&gt; [41] boot_1.3-29       nlme_3.1-164      tidyselect_1.2.1  digest_0.6.35    </span></span>
-<span><span class="co">#&gt; [45] mvtnorm_1.2-4     stringi_1.8.3     dplyr_1.1.4       purrr_1.0.2      </span></span>
-<span><span class="co">#&gt; [49] labeling_0.4.3    splines_4.3.3     fastmap_1.1.1     grid_4.3.3       </span></span>
-<span><span class="co">#&gt; [53] colorspace_2.1-0  cli_3.6.2         magrittr_2.0.3    base64enc_0.1-3  </span></span>
-<span><span class="co">#&gt; [57] utf8_1.2.4        withr_3.0.0       foreign_0.8-86    scales_1.3.0     </span></span>
-<span><span class="co">#&gt; [61] backports_1.4.1   rmarkdown_2.26    nnet_7.3-19       lme4_1.1-35.1    </span></span>
-<span><span class="co">#&gt; [65] gridExtra_2.3     zoo_1.8-12        ragg_1.3.0        memoise_2.0.1    </span></span>
-<span><span class="co">#&gt; [69] evaluate_0.23     lpSolve_5.6.20    knitr_1.45        rlang_1.1.3      </span></span>
-<span><span class="co">#&gt; [73] Rcpp_1.0.12       glue_1.7.0        rstudioapi_0.15.0 minqa_1.2.6      </span></span>
-<span><span class="co">#&gt; [77] jsonlite_1.8.8    R6_2.5.1          systemfonts_1.0.6 fs_1.6.3</span></span></code></pre></div>
+<span><span class="co">#&gt; [33] crayon_1.5.2      pillar_1.9.0      pkgdown_2.0.7     nloptr_2.0.3     </span></span>
+<span><span class="co">#&gt; [37] jquerylib_0.1.4   MASS_7.3-60.0.1   cachem_1.0.8      Hmisc_5.1-2      </span></span>
+<span><span class="co">#&gt; [41] rpart_4.1.23      boot_1.3-29       nlme_3.1-164      tidyselect_1.2.1 </span></span>
+<span><span class="co">#&gt; [45] digest_0.6.35     mvtnorm_1.2-4     stringi_1.8.3     dplyr_1.1.4      </span></span>
+<span><span class="co">#&gt; [49] purrr_1.0.2       labeling_0.4.3    splines_4.3.3     fastmap_1.1.1    </span></span>
+<span><span class="co">#&gt; [53] grid_4.3.3        colorspace_2.1-0  cli_3.6.2         magrittr_2.0.3   </span></span>
+<span><span class="co">#&gt; [57] base64enc_0.1-3   utf8_1.2.4        withr_3.0.0       foreign_0.8-86   </span></span>
+<span><span class="co">#&gt; [61] scales_1.3.0      backports_1.4.1   rmarkdown_2.26    nnet_7.3-19      </span></span>
+<span><span class="co">#&gt; [65] lme4_1.1-35.1     gridExtra_2.3     zoo_1.8-12        ragg_1.3.0       </span></span>
+<span><span class="co">#&gt; [69] memoise_2.0.1     evaluate_0.23     lpSolve_5.6.20    knitr_1.45       </span></span>
+<span><span class="co">#&gt; [73] rlang_1.1.3       Rcpp_1.0.12       glue_1.7.0        rstudioapi_0.15.0</span></span>
+<span><span class="co">#&gt; [77] minqa_1.2.6       jsonlite_1.8.8    R6_2.5.1          systemfonts_1.0.6</span></span>
+<span><span class="co">#&gt; [81] fs_1.6.3</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
