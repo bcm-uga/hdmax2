@@ -102,11 +102,7 @@ hdmax2_step1 = hdmax2::run_AS(X = X ,
 
 ```
 
-```{r mediators}
-# # max2 test results
-head(hdmax2_step1$max2_pvalues)
 
-```
 ### Selection of a subset of mediators
 
 Step 1 provides an object which contains results from the two regression (pvalues, fscores, zscores), latent factor estimation from first regression, function inputs, and more important *max-squared* test pvalues results. This last result allow to select mediators which user's choosen method. For this example we select top ten of more significant pvalues from *max-squared* test.
