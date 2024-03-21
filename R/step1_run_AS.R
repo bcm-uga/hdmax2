@@ -371,7 +371,7 @@ run_AS = function(X,
   message("Running second regression.")
   
   if(expo_var_n == 1){
-    if(is.vector(X)||is.factor(X)){
+    if(is.vector(X)||is.factor(X)||is.matrix(X)){
       res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
                                 input = M, 
                                 env = cbind(X, Y),
