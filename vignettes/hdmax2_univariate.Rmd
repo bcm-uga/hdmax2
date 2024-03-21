@@ -85,7 +85,7 @@ The **run_AS** function is applied to estimate the effects of exposuire $X$ on a
  Y_type = "continuous"
  covar = cbind(age, gender)
 
-hdmax2_step1 = hdmax2::run_AS(X_matrix = X_matrix ,
+hdmax2_step1 = run_AS(X_matrix = X_matrix ,
                 Y_matrix = Y_matrix,
                  M_matrix = M_matrix, 
                  K = K,
@@ -115,7 +115,7 @@ The function **estimate_effect** estimate the individual indirect effect of medi
 object = hdmax2_step1
 m = mediators_top10
 
-hdmax2_step2 = hdmax2::estimate_effect(object = object,
+hdmax2_step2 = estimate_effect(object = object,
                                     m = m)
 
 ```
@@ -136,7 +136,8 @@ We propose a set of plots which include:
 
 ```{r}
 library(ggplot2)
-hdmax2::plot_hdmax2(hdmax2_step2, N_med = 10)
+
+plot_univariate(hdmax2_step2, N_med = 10)
 
 ```
 

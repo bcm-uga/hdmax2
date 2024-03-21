@@ -95,11 +95,12 @@ plot_univariate <- function(object, N_med = 10) {
         object$ACME$feat,
         #stats::reorder(object$ACME$feat, object$ACME$est),
         color = est <= 0,
-        shape = pval <= 0.05
+        #shape = pval <= 0.05
+        shape = ifelse(pval <= 0.05, "pval <= 0.05", "n.s."
       )
     ) +
     geom_vline(xintercept = 0, linetype = "dashed") +
-    geom_errorbarh(aes(xmin = object$ACME$CI_2.5, xmax = object$ACME$CI_97.5)) +
+    geom_errorbarh(aes(xmin = object$ACME$CI_2.5, xmax = object$ACME$CI_97.5), height = 0.3) +
     geom_point(size = 2.8) +
     theme_bw() +
     labs(title = "A. ACME (Average Causal Mediation Effect)", y = "Mediators", x =
@@ -111,7 +112,9 @@ plot_univariate <- function(object, N_med = 10) {
       panel.spacing = unit(0.01, "lines"),
       axis.ticks = element_blank()
     ) +
-    scale_color_manual(values = c("darkred", "darkgreen"))
+      scale_color_manual(values = c("darkred", "darkgreen"), guide = FALSE) +
+      scale_shape_manual(values = c("pval <= 0.05" = 16, "n.s." = 17), guide = guide_legend(title = "Significance"))
+    
   
   
   ## Plot the mediated proportion
@@ -123,10 +126,10 @@ plot_univariate <- function(object, N_med = 10) {
                       object$ACME$feat,
                       #stats::reorder(object$PM$feat, object$PM$est),
                       color = est <= 0,
-                      shape = pval <= 0.05
+                      #shape = pval <= 0.05         shape = ifelse(pval <= 0.05, "pval <= 0.05", "n.s."
                     )) +
     geom_vline(xintercept = 0, linetype = "dashed") +
-    geom_errorbarh(aes(xmin = object$PM$CI_2.5, xmax = object$PM$CI_97.5)) +
+    geom_errorbarh(aes(xmin = object$PM$CI_2.5, xmax = object$PM$CI_97.5), height = 0.3) +
     geom_point(size = 2.8) +
     theme_bw() +
     labs(title = "B. Proportion Mediated (%)", y = "Mediators", x = "Est. proportion [CI 2.5-97.5]") +
@@ -137,7 +140,9 @@ plot_univariate <- function(object, N_med = 10) {
       panel.spacing = unit(0.01, "lines"),
       axis.ticks = element_blank()
     ) +
-    scale_color_manual(values = c("darkred", "darkgreen"))
+    scale_color_manual(values = c("darkred", "darkgreen"), guide = FALSE) +
+    scale_shape_manual(values = c("pval <= 0.05" = 16, "n.s." = 17), guide = guide_legend(title = "Significance"))
+  
   
   ## Plot the overall effects
   
@@ -293,9 +298,16 @@ plot_multivariate <- function(object, N_med = 10) {
   
   for(var_name in var_names){
     
-    p_ACME <- ggplot2::ggplot(object$ACME[[var_name]], aes(object$ACME[[var_name]]$est, stats::reorder(object$ACME[[var_name]]$feat, object$ACME[[var_name]]$est), color = est <= 0, shape = pval <= 0.05)) +
+    p_ACME <- ggplot2::ggplot(object$ACME[[var_name]],
+                              aes(
+                                object$ACME[[var_name]]$est,
+                                stats::reorder(object$ACME[[var_name]]$feat, object$ACME[[var_name]]$est),
+                                color = est <= 0,
+                                #shape = pval <= 0.05
+                                shape = ifelse(pval <= 0.05, "pval <= 0.05", "n.s.")
+                              ) +
       geom_vline(xintercept = 0, linetype = "dashed") +
-      geom_errorbarh(aes(xmin = object$ACME[[var_name]]$CI_2.5, xmax = object$ACME[[var_name]]$CI_97.5)) +
+      geom_errorbarh(aes(xmin = object$ACME[[var_name]]$CI_2.5, xmax = object$ACME[[var_name]]$CI_97.5), height = 0.3) +
       geom_point(size = 2.8) +
       theme_bw() +
       labs(title = paste0("A. ACME of ", var_name), y = "Mediators", x="Est. effect [CI 2.5-97.5]") +
@@ -304,14 +316,25 @@ plot_multivariate <- function(object, N_med = 10) {
       theme(panel.border = element_blank(),
             panel.spacing = unit(0.01, "lines"),
             axis.ticks = element_blank()) +
-      scale_color_manual(values = c("darkred", "darkgreen"))
+        scale_color_manual(values = c("darkred", "darkgreen"), guide = FALSE) +
+        scale_shape_manual(values = c("pval <= 0.05" = 16, "n.s." = 17), guide = guide_legend(title = "Significance"))
+      
     
     
     ##Plot the mediated proportion
     
-    p_PM <- ggplot2::ggplot(object$PM[[var_name]], aes(object$PM[[var_name]]$est, stats::reorder(object$PM[[var_name]]$feat, object$PM[[var_name]]$est), color = est <= 0, shape = pval <= 0.05)) +
+    p_PM <-
+      ggplot2::ggplot(
+        object$PM[[var_name]],
+        aes(
+          object$PM[[var_name]]$est,
+          stats::reorder(object$PM[[var_name]]$feat, object$PM[[var_name]]$est),
+          color = est <= 0,
+          #shape = pval <= 0.05         
+          shape = ifelse(pval <= 0.05, "pval <= 0.05", "n.s."
+                         )) +
       geom_vline(xintercept = 0, linetype = "dashed") +
-      geom_errorbarh(aes(xmin = object$PM[[var_name]]$CI_2.5, xmax = object$PM[[var_name]]$CI_97.5)) +
+      geom_errorbarh(aes(xmin = object$PM[[var_name]]$CI_2.5, xmax = object$PM[[var_name]]$CI_97.5), height = 0.3) +
       geom_point(size = 2.8) +
       theme_bw() +
       labs(title = paste0("B. PM of ", var_name), y = "Mediators", x="Est. proportion [CI 2.5-97.5]") +
@@ -320,7 +343,9 @@ plot_multivariate <- function(object, N_med = 10) {
       theme(panel.border = element_blank(),
             panel.spacing = unit(0.01, "lines"),
             axis.ticks = element_blank()) +
-      scale_color_manual(values = c("darkred", "darkgreen")) 
+        scale_color_manual(values = c("darkred", "darkgreen"), guide = FALSE) +
+        scale_shape_manual(values = c("pval <= 0.05" = 16, "n.s." = 17), guide = guide_legend(title = "Significance"))
+      
     
     ##Plot the overall effects
     
