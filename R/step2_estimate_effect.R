@@ -359,19 +359,19 @@ estimate_effect <- function(object , m, boots = 100) {
         } else if (is.vector(X)) {
           samp <- sample(length(X), replace = T)
         }
-        data_samp <- data.frame(X = X[samp], m= m[samp, ], covars = covars[samp, ])
+        data_a <- data.frame(X = X, m= m, covars = covars)
         
         # effect A X -> M
-        mod1 <- stats::lm(m ~ X + . , data = data_samp)
+        mod1 <- stats::lm(m[samp, ] ~ ., data = data_a[samp, ])
         A <- t(sapply(summary(mod1), function(x) x$coeff[2, ]))
         A <- data.frame(feat = rownames(A), A)
         
         # effect B m -> Y
         if(Y_type=="binary"){
-          dat.1 <- data.frame(Y = Y[samp], X = X[samp], m=m[samp,], covars = covars[samp,])
+          data_b <- data.frame(X = X, m=m, covars = covars)
           #check that glm converges to include this iteration
           mod2 <- tryCatch(
-            stats::glm(Y ~ .,family = "binomial" , data = dat.1),
+            stats::glm(Y[samp] ~ .,family = "binomial" , data = data_b[samp, ]),
             warning = function(w) {
               message(paste0("glm.fit produces warning, iteration ", i, " of bootstrap is not used"))
               return(NULL)
@@ -384,8 +384,8 @@ estimate_effect <- function(object , m, boots = 100) {
         } 
         
         if(Y_type=="continuous"){
-          dat.1 <- data.frame(Y = Y[samp], X = X[samp], m=m[samp,], covars = covars[samp,])
-          mod2 <- stats::lm(Y ~ ., data = dat.1)
+          data_b<- data.frame( X = X[samp], m=m[samp,], covars = covars[samp,])
+          mod2 <- stats::lm(Y[samp] ~ ., data = data_b)
           B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
         }
         
