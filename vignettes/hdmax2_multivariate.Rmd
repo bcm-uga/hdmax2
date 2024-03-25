@@ -141,7 +141,7 @@ We propose a set of plots which include:
 - Mediators effect size representation
 
 
-```{r plot results}
+```{r plot results, fig.height=10, fig.width=10}
 library(ggplot2)
 hdmax2::plot_hdmax2(hdmax2_step2, plot_type= "all_plot")
 ```
