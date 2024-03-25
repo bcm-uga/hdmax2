@@ -208,9 +208,9 @@ estimate_effect <- function(object , m, boots = 100, ...) {
             samp <- sample(length(X[,k]), replace = T)
           }
           
-          data_samp <- data.frame(Xk = X[samp,k], X = X[samp,-k], m = m[samp, ], covars = covars[samp, ])
+          data_samp <- data.frame(Xk = X[samp,k], X = X[samp,-k], covars = covars[samp, ])
           # effect A X -> M
-          mod1 <- stats::lm(m ~ Xk + ., data = data_samp)
+          mod1 <- stats::lm(M[samp,] ~ Xk + ., data = data_samp)
           A <- t(sapply(summary(mod1), function(x) x$coeff[2, ]))
           A <- data.frame(feat = rownames(A), A)
           
@@ -227,14 +227,14 @@ estimate_effect <- function(object , m, boots = 100, ...) {
               }
             )
             if (!is.null( mod2)) { 
-              B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
+              B <- as.data.frame(summary(mod2)$coeff[3:(ncol(M) + 2), ])
             }
           } 
           
           if(Y_type=="continuous"){
             dat.1 <- data.frame(Y = Y[samp], Xk = X[samp,k], X = X[samp,-k], M=M[samp,], covars = covars[samp,])
             mod2 <- stats::lm(Y ~ Xk+ ., data = dat.1)
-            B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
+            B <- as.data.frame(summary(mod2)$coeff[3:(ncol(M) + 2), ])
           }
           
           colnames(B) <- c("B", "B_sd", "B_tv", "B_pv")
@@ -363,9 +363,16 @@ estimate_effect <- function(object , m, boots = 100, ...) {
         data_a <- data.frame(X = X, covars = covars)
         
         # effect A X -> M
-        mod1 <- stats::lm(m[samp, ] ~ ., data = data_a[samp, ])
-        A <- t(sapply(summary(mod1), function(x) x$coeff[2, ]))
-        A <- data.frame(feat = rownames(A), A)
+        mod1 <- stats::lm(M[samp, ] ~ ., data = data_a[samp, ])
+        if(dim(M)[2]>1) {
+          A <- t(sapply(summary(mod1), function(x)
+            x$coeff[2,]))
+          A <- data.frame(feat = rownames(A), A)
+        } else if (dim(M)[2] == 1) {
+          A = summary(mod1)$coeff[2, ]
+          #A <- data.frame(feat = names(A), A)
+        }
+        
         
         # effect B m -> Y
         if(Y_type=="binary"){
@@ -380,21 +387,30 @@ estimate_effect <- function(object , m, boots = 100, ...) {
           )
           
           if (!is.null( mod2)) { 
-            B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
+            B <- as.data.frame(summary(mod2)$coeff[3:(ncol(M) + 2), ])
           }
         } 
         
         if(Y_type=="continuous"){
-          data_b<- data.frame( X = X[samp], m=m[samp,], covars = covars[samp,])
-          mod2 <- stats::lm(Y[samp] ~ ., data = data_b)
-          B <- as.data.frame(summary(mod2)$coeff[3:(ncol(m) + 2), ])
+          data_b <- data.frame(X = X, M = M, covars = covars)
+          mod2 <- stats::lm(Y[samp] ~ ., data = data_b[samp, ])
+          B <- as.data.frame(summary(mod2)$coeff[3:(ncol(M) + 2), ])
         }
         
+        if(dim(M)[2]>1) {
         colnames(B) <- c("B", "B_sd", "B_tv", "B_pv")
         colnames(A)[2:5] <- c("A", "A_sd", "A_tv", "A_pv")
+        }else if (dim(M)[2] == 1) {
+          B = t(B)
+          colnames(B) <- c("B", "B_sd", "B_tv", "B_pv")
+          A = t(A)
+          colnames(A) <- c("A", "A_sd", "A_tv", "A_pv")
+        }
         
         ab <- cbind(A, B)
         rownames(ab) <- NULL
+        ab = as.data.frame(ab)
+        
         
         # effect A*B
         ab$AB <- ab$A * ab$B

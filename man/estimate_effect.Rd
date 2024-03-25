@@ -14,6 +14,8 @@ estimate_effect(object, m, boots = 100, ...)
 Response variables must be encoded as numeric. No NAs allowed.}
 
 \item{boots}{number of bootstrap}
+
+\item{...}{arguments for inner functions}
 }
 \value{
 hdmax2_step2 object
