@@ -25,7 +25,7 @@ lfmm2_med = function(input,
   ## Check input response matrix 
   ## LEA  
   if (is.character(input)){
-    Y <- LEA::read.lfmm(input)
+    Y <- read.lfmm(input)
     lst.unique <- unique(as.numeric(Y))
     if (9 %in% lst.unique){
       stop("'input' file contains missing data (9's). Use the 'impute()' function to impute them.")
@@ -49,7 +49,7 @@ lfmm2_med = function(input,
   ## Check independent/covariate env matrix  
   ## LEA 
   if (is.character(env)){
-    X <- LEA::read.env(env)
+    X <- read.env(env)
     if (anyNA(X)){
       stop("'env' file contains missing data (NA).")
     }
@@ -177,7 +177,7 @@ lfmm2_med_test= function(object,
   ## LEA  
   if (is.character(input)){
     warning("Reading large input files with 'read.lfmm()' may be slow. See 'data.table::fread()' for fast import.")
-    Y <- LEA::read.lfmm(input)
+    Y <- read.lfmm(input)
     lst.unique <- unique(as.numeric(Y))
     if (9 %in% lst.unique){
       stop("'input' file contains missing data (9's). Use the 'impute()' function to impute them.")
@@ -201,7 +201,7 @@ lfmm2_med_test= function(object,
   ## Check independent/covariate matrix  
   ## LEA 
   if (is.character(env)){
-    X <- LEA::read.env(env)
+    X <- read.env(env)
     if (anyNA(X)){
       stop("'env' file contains missing data (NA).")
     }
