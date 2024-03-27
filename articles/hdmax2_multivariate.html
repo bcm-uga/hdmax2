@@ -80,8 +80,8 @@ Pittion, Magali Richard, Olivier Francois</h4>
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>The <code>hdmax2</code> package is designed to accept exposure <span class="math inline">\(X\)</span> consisting of univariate data, which
-can be continuous, binary, as well as multivariate exposomes (which
-includes categorical variables).</p>
+can be continuous, binary or categorial as well as multivariate
+exposure.</p>
 <p>In this vignette, we treat example with a two variables exposure.</p>
 <p>To install the latest version of <code>hdmax2</code>, use the github
 repository</p>
@@ -91,13 +91,15 @@ repository</p>
 <div class="section level2">
 <h2 id="simulated-dataset">Simulated dataset<a class="anchor" aria-label="anchor" href="#simulated-dataset"></a>
 </h2>
-<p>We simulated 100 samples and 500 potential mediators, with various
-type of exposures (continuous, binary or categorial) and
-outcomes(continuous or binary).</p>
-<p>For the two examples we use a continuous outcome and two covariates
-(age and gender).</p>
-<p>We define the K number of estimated latent factors with a PCA and
-elbow procedure apply to screeplot.</p>
+<p>We simulated data for 100 samples and 500 potential mediators.</p>
+<p>For this example we use a two variables exposure (continuous and
+binary), a continuous outcome and two adjustment factors (age and
+gender). The matrix of potential mediators is an extract of real
+methylation data (TCGA PDAC samples).</p>
+<p>We define the <span class="math inline">\(K\)</span> number of
+estimated latent factors by performing a PCA on potential mediators
+matrix. The scree plot criterion looks for the “elbow” in the curve and
+selects all components just before the line flattens out, <span class="math inline">\(K\)</span> is chosen with this procedure.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
 <span></span>
@@ -129,34 +131,58 @@ outcome</em><a class="anchor" aria-label="anchor" href="#use-case-multivariate-e
 <div class="section level3">
 <h3 id="step-1-run-association-studies">STEP 1: Run association studies<a class="anchor" aria-label="anchor" href="#step-1-run-association-studies"></a>
 </h3>
-<p>The <strong>run_AS</strong> function is applied to estimate the
-effects of exposure <span class="math inline">\(X\)</span> on a matrix
-<span class="math inline">\(M\)</span> of potential mediators, and the
-effect of each potential mediators on outcome <span class="math inline">\(Y\)</span>. Covariables can be included.</p>
-<p>For this example we generate an exposure that is data frame with a
-continuous and a binary outcome.</p>
+<p>The <code>run_AS</code> function is applied to identify significant
+effects of exposure <span class="math inline">\(X\)</span> on potential
+mediators in <span class="math inline">\(M\)</span> matrix, and
+significant effect of potential mediators on outcome <span class="math inline">\(Y\)</span>. The <code>run_AS</code> function takes
+as inputs: <span class="math inline">\(X\)</span> for exposure, <span class="math inline">\(Y\)</span> for outcome, <span class="math inline">\(M\)</span> for the potential mediators matrix, and
+<span class="math inline">\(K\)</span> for the number of latent factors
+defined earlier. Adjustment factors (covariates) can be included.</p>
+<ul>
+<li>
+<span class="math inline">\(X\)</span> must be a data frame with
+<span class="math inline">\(n\)</span> rows 2 colums (for each exposure
+variable).</li>
+<li>
+<span class="math inline">\(Y\)</span> can be a vector or a matrix
+with <span class="math inline">\(n\)</span> rows and 1 column.</li>
+<li>
+<span class="math inline">\(M\)</span> must be a matrix with <span class="math inline">\(n\)</span> rows and <span class="math inline">\(p\)</span> columns (potential mediators).</li>
+<li>
+<span class="math inline">\(K\)</span> must be integer.</li>
+<li>
+<em>covar</em> must be numeric (data frame or matrix) with <span class="math inline">\(n\)</span> rows.</li>
+</ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## multivariate Exposures (continuous + binary)</span></span>
 <span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X1 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span>, X2 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_binary</span><span class="op">)</span></span>
-<span><span class="va">detailed</span> <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">gender</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span> ,</span>
 <span>                              Y <span class="op">=</span> <span class="va">Y</span>,</span>
 <span>                              M <span class="op">=</span> <span class="va">M</span>,</span>
 <span>                              K <span class="op">=</span> <span class="va">K</span>,</span>
-<span>                              detailed <span class="op">=</span> <span class="va">detailed</span>,  <span class="co"># indicates the exposure is multivariate</span></span>
 <span>                              covar <span class="op">=</span> <span class="va">covar</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="selection-of-a-subset-of-mediators">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators"></a>
 </h3>
-<p>Step 1 provides an object which contains results from the two
-regression (pvalues, fscores, zscores), latent factor estimation from
-first regression, function inputs, and more important
-<em>max-squared</em> test pvalues results. This last result allow to
-select mediators which user’s choosen method. For this example we select
-top ten of more significant pvalues from <em>max-squared</em> test.</p>
+<p>Step 1 provides an object containing:</p>
+<ul>
+<li><p>Results from the two association studies (<span class="math inline">\(P\)</span>-values, fscores, zscores),</p></li>
+<li><p>Latent factors estimation matrix (<span class="math inline">\(p\)</span> rows and <span class="math inline">\(k\)</span> columns) from first
+regression,</p></li>
+<li><p><code>run_AS</code> function’s inputs,</p></li>
+<li><p>and <em>max-squared</em> test <span class="math inline">\(P\)</span>-values results.</p></li>
+</ul>
+<p>These <span class="math inline">\(P\)</span>-values are used in the
+selection of mediators for the user’s chosen method.</p>
+<p>Numerous selection methods are available, such as FDR control. Also
+in the context of methylation data, it’s feasible to aggregate
+methylation probes. Refer to the <em>helper_functions</em> vignette for
+assistance FDR control and AMR researching procedure.</p>
+<p>In this instance, we opted for the top ten most significant <span class="math inline">\(P\)</span>-values from the <em>max-squared</em>
+test as an example.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
 <span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
@@ -179,22 +205,38 @@ top ten of more significant pvalues from <em>max-squared</em> test.</p>
 <div class="section level3">
 <h3 id="step-2-estimation-of-the-indirect-effect">STEP 2 : estimation of the indirect effect<a class="anchor" aria-label="anchor" href="#step-2-estimation-of-the-indirect-effect"></a>
 </h3>
-<p>The function <strong>estimate_effect</strong> estimate the individual
-indirect effect of mediators but also overall effects of selected
-mediators.</p>
+<p>The function <code>estimate_effect</code> estimate the individual
+indirect effect of mediators, but also overall effects of selected
+mediators. The function <code>estimate_effect</code> takes as inputs,
+step 1 object and selected mediators matrix <span class="math inline">\(M^s\)</span> from chosen selection method apply on
+<em>max-squared</em> test <span class="math inline">\(P\)</span>-values.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">object</span> <span class="op">=</span> <span class="va">hdmax2_step1</span></span>
-<span><span class="va">m</span> <span class="op">=</span> <span class="va">mediators_top10</span></span>
+<code class="sourceCode R"><span></span>
 <span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
 <span>                                       m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></code></pre></div>
+<p>This step use <code><a href="https://rdrr.io/pkg/mediation/man/mediate.html" class="external-link">mediation::mediate</a></code> function to obtain
+several effects estimation:</p>
+<ul>
+<li><p>ACME Average Causal Mediation Effect</p></li>
+<li><p>PM Proportion Mediate</p></li>
+<li><p>TE total effect</p></li>
+<li><p>ADE Average Direct Effect</p></li>
+</ul>
+<p>This step also compute Overall effects :</p>
+<ul>
+<li><p>OIE (Indirect effect)</p></li>
+<li><p>ODE (Direct Effect)</p></li>
+<li><p>OTE (Total Effect)</p></li>
+</ul>
+<p>And regression effects size.</p>
 </div>
 <div class="section level3">
-<h3 id="plot">Plot<a class="anchor" aria-label="anchor" href="#plot"></a>
+<h3 id="vizualisation-of-results">Vizualisation of results<a class="anchor" aria-label="anchor" href="#vizualisation-of-results"></a>
 </h3>
-<p>We propose a set of plots which include:</p>
+<p>We propose a set of plots which including:</p>
 <ul>
-<li><p>Forest plot of mediators ACME</p></li>
-<li><p>Forest plot of mediators PM</p></li>
+<li><p>Mediators ACME Forest plot</p></li>
+<li><p>Mediators PM Forest plot</p></li>
 <li><p>Comparison of ODE, OIE and OTE</p></li>
 <li><p>Mediators effect size representation</p></li>
 </ul>
@@ -226,8 +268,6 @@ mediators.</p>
 <span><span class="co">#&gt; 2 2 (1-1,2-2) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 3 3 (2-2,1-1) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 4 4 (2-2,2-2) arrange gtable[layout]</span></span></code></pre>
-<p>We obtain two series, for each variables of multivariate exposure, of
-4-set plots:</p>
 <ul>
 <li><p><strong>A</strong> Estimates of indirect effect (ACME) and
 <strong>B</strong> proportions of mediated effect (PM) for the top 10
@@ -242,58 +282,15 @@ correspond to standard deviation (ODE and OTE) or confidence interval
 (OIE).</p></li>
 <li><p><strong>D</strong> Indirect effect sizes for the selected
 mediators. Black corresponds to the ACME, violet to the effect of
-exposure X on mediator M in the model <span class="math inline">\(X \sim
-M\)</span>, and blue corresponds to the effect of mediator M on outcome
-Y in the model <span class="math inline">\(Y \sim M +
-X\)</span>.</p></li>
+exposure <span class="math inline">\(X\)</span> on mediator <span class="math inline">\(M\)</span>, and blue corresponds to the effect of
+mediator <span class="math inline">\(M\)</span> on outcome <span class="math inline">\(Y\)</span>.</p></li>
 </ul>
+<p>In the <code>plot_hdmax2</code> function it is possible to produce
+the 4-plots set or each individual plot with <em>plot_type</em>
+argument.</p>
+<p>For each exposure variable a set of plot is performed.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R version 4.3.3 (2024-02-29)</span></span>
-<span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
-<span><span class="co">#&gt; Running under: Ubuntu 22.04.4 LTS</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Matrix products: default</span></span>
-<span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
-<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; locale:</span></span>
-<span><span class="co">#&gt;  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
-<span><span class="co">#&gt;  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   </span></span>
-<span><span class="co">#&gt;  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          </span></span>
-<span><span class="co">#&gt; [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; time zone: UTC</span></span>
-<span><span class="co">#&gt; tzcode source: system (glibc)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; attached base packages:</span></span>
-<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] ggplot2_3.5.0</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] gtable_0.3.4      xfun_0.42         bslib_0.6.2       htmlwidgets_1.6.4</span></span>
-<span><span class="co">#&gt;  [5] lattice_0.22-5    vctrs_0.6.5       tools_4.3.3       generics_0.1.3   </span></span>
-<span><span class="co">#&gt;  [9] sandwich_3.1-0    tibble_3.2.1      fansi_1.0.6       highr_0.10       </span></span>
-<span><span class="co">#&gt; [13] cluster_2.1.6     pkgconfig_2.0.3   Matrix_1.6-5      data.table_1.15.2</span></span>
-<span><span class="co">#&gt; [17] checkmate_2.3.1   desc_1.4.3        lifecycle_1.0.4   farver_2.1.1     </span></span>
-<span><span class="co">#&gt; [21] compiler_4.3.3    stringr_1.5.1     hdmax2_2.0.0.9000 textshaping_0.3.7</span></span>
-<span><span class="co">#&gt; [25] prettydoc_0.4.1   munsell_0.5.0     mediation_4.5.0   htmltools_0.5.7  </span></span>
-<span><span class="co">#&gt; [29] sass_0.4.9        yaml_2.3.8        htmlTable_2.4.2   Formula_1.2-5    </span></span>
-<span><span class="co">#&gt; [33] crayon_1.5.2      pillar_1.9.0      pkgdown_2.0.7     nloptr_2.0.3     </span></span>
-<span><span class="co">#&gt; [37] jquerylib_0.1.4   MASS_7.3-60.0.1   cachem_1.0.8      Hmisc_5.1-2      </span></span>
-<span><span class="co">#&gt; [41] rpart_4.1.23      boot_1.3-29       nlme_3.1-164      tidyselect_1.2.1 </span></span>
-<span><span class="co">#&gt; [45] digest_0.6.35     mvtnorm_1.2-4     stringi_1.8.3     dplyr_1.1.4      </span></span>
-<span><span class="co">#&gt; [49] purrr_1.0.2       labeling_0.4.3    splines_4.3.3     fastmap_1.1.1    </span></span>
-<span><span class="co">#&gt; [53] grid_4.3.3        colorspace_2.1-0  cli_3.6.2         magrittr_2.0.3   </span></span>
-<span><span class="co">#&gt; [57] base64enc_0.1-3   utf8_1.2.4        withr_3.0.0       foreign_0.8-86   </span></span>
-<span><span class="co">#&gt; [61] scales_1.3.0      backports_1.4.1   rmarkdown_2.26    nnet_7.3-19      </span></span>
-<span><span class="co">#&gt; [65] lme4_1.1-35.1     gridExtra_2.3     zoo_1.8-12        ragg_1.3.0       </span></span>
-<span><span class="co">#&gt; [69] memoise_2.0.1     evaluate_0.23     lpSolve_5.6.20    knitr_1.45       </span></span>
-<span><span class="co">#&gt; [73] rlang_1.1.3       Rcpp_1.0.12       glue_1.7.0        rstudioapi_0.16.0</span></span>
-<span><span class="co">#&gt; [77] minqa_1.2.6       jsonlite_1.8.8    R6_2.5.1          systemfonts_1.0.6</span></span>
-<span><span class="co">#&gt; [81] fs_1.6.3</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
