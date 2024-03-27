@@ -100,7 +100,7 @@ res.arm_build$CpG_for_each_AMR
 Like with single mediators analysis *esimate_effect* function could be use to estimate different effects of AMR. Also `plot_hdmax2` can be applied to step2 results.
 
 
-```{r step2, message=FALSE, warning=FALSE}
+```{r step2, message=FALSE, warning=FALSE, fig.height=10, fig.width=10}
 ## run hdmax2 step2
 object = hdmax2_step1
 mediators_top10 = data$methylation[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
@@ -135,12 +135,10 @@ candidate_mediator
 
 ```
 
-## How to transform a categorial variable into an ordered factor ?
+## How to transform a categorial variable into an ordered factor?
 
 When categorical variables are used as exposure variables, `hdmax2` uses the first category as a reference (intercept) to calculate the effects associated with the variable's other categories. The functions `HDMAX2::run_AS` and `HDMAX2::estimate_effect` will transform the character vector you have used (if any) into a factor, with an arbitrary ordering of the categories.  If order is important to you, here's a simple way to turn your character vector into a factor and order the categories as you wish. You can then use this variable as input to the hdmax2 functions.
 
-
-Translated with www.DeepL.com/Translator (free version)
 
 ```{r factor, message=FALSE}
 simu_data = hdmax2::simu_data
@@ -151,6 +149,19 @@ X = factor(X, ordered = TRUE, levels = c("D","C","B","A"))
 
 ```
 
+
+## How to handle adding an additional set of covariates to the second association study?
+
+It is possible to add a second adjustment factors set in association study between potential mediators and outcome if it makes sense from a biological standpoint.
+
+```{r second covar set}
+# hdmax2_step1 = hdmax2::run_AS(X = data$exposure,
+#                               Y = data$phenotype,
+#                               M = data$methylation, 
+#                               K = K,
+#                               covar = covar,
+#                               covar2 = covar2)
+```
 
 ```{r}
 sessionInfo()
