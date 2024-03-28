@@ -106,7 +106,7 @@ Step 1 provides an object containing:
 
 - Results from the two association studies ($P$-values, fscores, zscores),
 
-- Latent factors estimation matrix ($p$ rows and $k$ columns) from first regression, 
+- Latent factors estimation matrix $U$ ($p$ rows and $K$ columns) from first regression, 
 
 - `run_AS` function's inputs, 
 
