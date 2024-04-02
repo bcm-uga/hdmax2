@@ -16,7 +16,8 @@
 ##' Continuous and binary variables must be encoded in numeric format. categorical variables are factor objects. The user can use the as.factor function to encode categorical variables, and  levels() and ordered() functions to define the modal order of categorical variables.
 ##' @param Y Outcome. An explanatory variable matrix with n rows and 1 columns, corresponds to a vector, which supports both continuous and binary formats.
 ##' @param K an integer for the number of latent factors in the regression model.
-##' @param covar set of covariable, must be numeric. No NAs allowed
+##' @param covar set of adjustment factors, must be numeric. No NAs allowed
+##' @param covar_sup_reg2 possible supplementary adjustment factors for the second association study (must be nested within the first set of adjustment factors )
 ##' @param detailed A logical to indicate if p-values must be estimated for each explanatory variables (detailed = TRUE) in addition to the pvalue of the global model (detailed = FALSE, by default)
 ##' Useful to visually check the fit of the estimated proportion of null p-values.
 ##' @param genomic.control correct pvalue with genomic inflation factor
@@ -77,6 +78,7 @@ run_AS = function(X,
                   M, 
                   K,
                   covar = NULL,
+                  covar_sup_reg2 = NULL,
                   detailed = FALSE,
                   genomic.control = TRUE,
                   effect.sizes = FALSE
@@ -93,6 +95,14 @@ run_AS = function(X,
   
   ## Check K provided and is integer
   check_K(K)
+  
+  if(!is.null(covar)){
+    check_covar(covar)
+  }
+  
+  if(!is.null(covar_sup_reg2)){
+    check_covar(covar_sup_reg2)
+  }
   
   # Exposure and Outcome before pretreatment
   X_input = X
@@ -369,20 +379,25 @@ run_AS = function(X,
   # The model run is actually M ~ X + Y, i.e. independent of the type of Y (continuous or binary)
   
   message("Running second regression.")
+  if(!is.null(covar_sup_reg2)){
+    covars = cbind(covar, covar_sup_reg2)
+  } else {
+    covars = covar
+  }
   
   if(expo_var_n == 1){
     if(is.vector(X)||is.factor(X)||is.matrix(X)){
       res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
                                 input = M, 
                                 env = cbind(X, Y),
-                                covar = covar,
+                                covar = covars,
                                 genomic.control = genomic.control,
                                 full = FALSE)
     }else if(is.data.frame(X)){
       res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
                                 input = M, 
                                 env = cbind(Xs, Y),
-                                covar = covar,
+                                covar = covars,
                                 genomic.control = genomic.control,
                                 full = FALSE)
     }
@@ -390,7 +405,7 @@ run_AS = function(X,
     res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
                               input = M, 
                               env = cbind(Xs, Y),
-                              covar = covar,
+                              covar = covars,
                               genomic.control = genomic.control,
                               full = FALSE)
   }
@@ -453,10 +468,11 @@ run_AS = function(X,
     expo_var_types,
     expo_var_ids,
     outcome_var_type,
-    covar
+    covar, 
+    covar_sup_reg2
   )
   
-  names(input) = c("X_input","Y_input","X_output","Y_output", "expo_var_types", "expo_var_ids" , "outcome_var_type", "covar")
+  names(input) = c("X_input","Y_input","X_output","Y_output", "expo_var_types", "expo_var_ids" , "outcome_var_type", "covar", "covar_sup_reg2")
   
   res[[5]] = input
   
@@ -534,3 +550,13 @@ check_K = function(argument){
     stop("K is not provided")
   }
 }
+
+check_covar = function(argument){
+  if (is.data.frame(argument)){
+    message("Adjutment factors is data frame")
+  }else{
+    stop("Adjutment factors must be data frame")
+  }
+}
+  
+  

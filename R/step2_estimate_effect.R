@@ -93,7 +93,12 @@ estimate_effect <- function(object , m, boots = 100, ...) {
       } else  {
         covars = data.frame(obs_covar = object$input$covar, latent_factors = object$modele_1$U)
       } 
-    } else if( ncol_var > 1){
+      if (is.null(object$input$covar_sup_reg2)) {
+        covars_2 = data.frame(latent_factors = object$modele_1$U)
+      } else  {
+        covars_2 = data.frame(obs_covar = object$input$covar, obs_covar_2 = object$input$covar_sup_reg2, latent_factors = object$modele_1$U)
+      } 
+    } else if( ncol_var > 1) {
       message("Estimating indirect effect for multivariate exposome.") 
       extra_expo_vars = expo_var_ids[-which(expo_var_ids %in% expo_var_id)]
       df_extra = X_mat[,which(expo_var_ids %in% extra_expo_vars)]
@@ -116,6 +121,11 @@ estimate_effect <- function(object , m, boots = 100, ...) {
       } else  {
         covars = data.frame(obs_covar = object$input$covar, latent_factors = object$modele_1$U, df_extra = df_extra)
       } 
+      if (is.null(object$input$covar_sup_reg2)) {
+        covars_2 = data.frame(latent_factors = object$modele_1$U, df_extra = df_extra)
+      } else  {
+        covars_2 = data.frame(obs_covar = object$input$covar, obs_covar_2 = object$input$covar_sup_reg2, latent_factors = object$modele_1$U, df_extra = df_extra)
+      }
     }
     
     expo_var_type =  typeof(X)
@@ -150,7 +160,7 @@ estimate_effect <- function(object , m, boots = 100, ...) {
         for (i in 1:ncol(M)) {#numeric
           
           dat.x <- data.frame(Xk = X[,k], Xmk = X[,-k], Mi = M[, i], covars = covars)
-          dat.y <- data.frame(Xk = X[,k], Xmk = X[,-k], Mi = M[, i], covars = covars, Y = Y)
+          dat.y <- data.frame(Xk = X[,k], Xmk = X[,-k], Mi = M[, i], covars = covars_2, Y = Y)
           
           mod1 = stats::lm(Mi ~ Xk + ., data = dat.x)
           message(paste0("Generate regression 1 for categorial exposure and mediator ", i))
@@ -217,7 +227,7 @@ estimate_effect <- function(object , m, boots = 100, ...) {
           
           # effect B m -> Y
           if(Y_type=="binary"){
-            dat.1 <- data.frame(Y = Y[samp], Xk = X[samp,k], X = X[samp,-k], M=M[samp,], covars = covars[samp,])
+            dat.1 <- data.frame(Y = Y[samp], Xk = X[samp,k], X = X[samp,-k], M=M[samp,], covars = covars_2[samp,])
             #check that glm converges to include this iteration
             mod2 <- tryCatch(
               stats::glm(Y ~ Xk + .,family = "binomial" , data = dat.1),
@@ -232,7 +242,7 @@ estimate_effect <- function(object , m, boots = 100, ...) {
           } 
           
           if(Y_type=="continuous"){
-            dat.1 <- data.frame(Y = Y[samp], Xk = X[samp,k], X = X[samp,-k], M=M[samp,], covars = covars[samp,])
+            dat.1 <- data.frame(Y = Y[samp], Xk = X[samp,k], X = X[samp,-k], M=M[samp,], covars = covars_2[samp,])
             mod2 <- stats::lm(Y ~ Xk+ ., data = dat.1)
             B <- as.data.frame(summary(mod2)$coeff[3:(ncol(M) + 2), ])
           }
@@ -252,17 +262,17 @@ estimate_effect <- function(object , m, boots = 100, ...) {
         
         if(Y_type == "continuous") {
           message("Computing ODE and OTE for continuous outcome.")
-          data_total = data.frame(X = X, Y= Y, covars = covars)
+          data_total = data.frame(X = X, Y= Y, covars = covars_2)
           mod_total_effect = stats::lm(Y ~ . , data =  data_total)
-          data_direct = data.frame(X = X, Y= Y, M = M, covars = covars)
+          data_direct = data.frame(X = X, Y= Y, M = M, covars = covars_2)
           mod_direct_effect = stats::lm(Y ~ ., data =  data_direct)
         }
         
         if(Y_type == "binary") {
           message("Computing ODE and OTE for binary outcome.")
-           data_total = data.frame(X = X, Y= Y, covars = covars)
+           data_total = data.frame(X = X, Y= Y, covars = covars_2)
           mod_total_effect = stats::glm(Y ~ . , family = "binomial",  data =  data_total)
-           data_direct = data.frame(X = X, Y= Y, M = M ,covars = covars)
+           data_direct = data.frame(X = X, Y= Y, M = M ,covars = covars_2)
           mod_direct_effect = stats::glm(Y ~ . , family = "binomial",  data =  data_direct)
         }
         
@@ -300,7 +310,7 @@ estimate_effect <- function(object , m, boots = 100, ...) {
       
       for (i in 1:ncol(M)) {#numeric
         dat.x <- data.frame(X = X, Mi = M[, i], covars = covars)
-        dat.y <- data.frame(X = X, Mi = M[, i], covars = covars, Y = Y)
+        dat.y <- data.frame(X = X, Mi = M[, i], covars = covars_2, Y = Y)
         mod1 = stats::lm(Mi ~ X + ., data = dat.x)
         message(paste0("Generate regression 1 for continuous or binary exposure and mediator ", i))
         
@@ -376,7 +386,7 @@ estimate_effect <- function(object , m, boots = 100, ...) {
         
         # effect B m -> Y
         if(Y_type=="binary"){
-          data_b <- data.frame(X = X, M = M, covars = covars)
+          data_b <- data.frame(X = X, M = M, covars = covars_2)
           #check that glm converges to include this iteration
           mod2 <- tryCatch(
             stats::glm(Y[samp] ~ .,family = "binomial" , data = data_b[samp, ]),
@@ -392,7 +402,7 @@ estimate_effect <- function(object , m, boots = 100, ...) {
         } 
         
         if(Y_type=="continuous"){
-          data_b <- data.frame(X = X, M = M, covars = covars)
+          data_b <- data.frame(X = X, M = M, covars = covars_2)
           mod2 <- stats::lm(Y[samp] ~ ., data = data_b[samp, ])
           B <- as.data.frame(summary(mod2)$coeff[3:(ncol(M) + 2), ])
         }
@@ -421,17 +431,17 @@ estimate_effect <- function(object , m, boots = 100, ...) {
       
       if(Y_type == "continuous") {
         message("Computing ODE and OTE for continuous outcome.")
-         data_total = data.frame(X =X, Y= Y, covars = covars)
+         data_total = data.frame(X =X, Y= Y, covars = covars_2)
         mod_total_effect = stats::lm(Y ~ . , data =  data_total)
-         data_direct = data.frame(X =X, Y= Y, M =M ,covars = covars)
+         data_direct = data.frame(X =X, Y= Y, M =M ,covars = covars_2)
         mod_direct_effect = stats::lm(Y ~ ., data =  data_direct)
       }
       
       if(Y_type == "binary") {
         message("Computing ODE and OTE for binary outcome.")
-         data_total = data.frame(X =X, Y= Y, covars = covars)
+         data_total = data.frame(X =X, Y= Y, covars = covars_2)
         mod_total_effect = stats::glm(Y ~ . , family = "binomial",  data =  data_total)
-         data_direct = data.frame(X =X, Y= Y, M = M ,covars = covars)
+         data_direct = data.frame(X =X, Y= Y, M = M ,covars = covars_2)
         mod_direct_effect = stats::glm(Y ~ . , family = "binomial", data =  data_direct)
       }
       

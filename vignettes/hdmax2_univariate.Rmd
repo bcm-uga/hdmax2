@@ -64,6 +64,7 @@ Y  = simu_data$Y_continuous
 age = simu_data$age
 gender = simu_data$gender
 covar = cbind(age, gender)
+covar = as.data.frame(covar)
 ```
 
 ```{r pca for latent factor}
