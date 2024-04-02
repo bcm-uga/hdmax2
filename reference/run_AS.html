@@ -80,6 +80,7 @@ This rejects the null-hypothesis that either the effect of X on M, or the effect
 <span>  <span class="va">M</span>,</span>
 <span>  <span class="va">K</span>,</span>
 <span>  covar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  covar_sup_reg2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  detailed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  genomic.control <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  effect.sizes <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -108,7 +109,11 @@ Response variables must be encoded as numeric. No NAs allowed.</p></dd>
 
 
 <dt>covar</dt>
-<dd><p>set of covariable, must be numeric. No NAs allowed</p></dd>
+<dd><p>set of adjustment factors, must be numeric. No NAs allowed</p></dd>
+
+
+<dt>covar_sup_reg2</dt>
+<dd><p>possible supplementary adjustment factors for the second association study (must be nested within the first set of adjustment factors )</p></dd>
 
 
 <dt>detailed</dt>

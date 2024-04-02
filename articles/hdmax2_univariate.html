@@ -116,7 +116,8 @@ selects all components just before the line flattens out, <span class="math inli
 <span><span class="co">## Covariates</span></span>
 <span><span class="va">age</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">age</span></span>
 <span><span class="va">gender</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">gender</span></span>
-<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">gender</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">gender</span><span class="op">)</span></span>
+<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">covar</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Number of Latent factore estimation</span></span>
 <span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">M</span><span class="op">)</span></span>
