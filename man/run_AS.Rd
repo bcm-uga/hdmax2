@@ -10,6 +10,7 @@ run_AS(
   M,
   K,
   covar = NULL,
+  covar_sup_reg2 = NULL,
   detailed = FALSE,
   genomic.control = TRUE,
   effect.sizes = FALSE
@@ -27,7 +28,9 @@ Response variables must be encoded as numeric. No NAs allowed.}
 
 \item{K}{an integer for the number of latent factors in the regression model.}
 
-\item{covar}{set of covariable, must be numeric. No NAs allowed}
+\item{covar}{set of adjustment factors, must be numeric. No NAs allowed}
+
+\item{covar_sup_reg2}{possible supplementary adjustment factors for the second association study (must be nested within the first set of adjustment factors )}
 
 \item{detailed}{A logical to indicate if p-values must be estimated for each explanatory variables (detailed = TRUE) in addition to the pvalue of the global model (detailed = FALSE, by default)
 Useful to visually check the fit of the estimated proportion of null p-values.}

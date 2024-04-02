@@ -61,6 +61,7 @@ M = simu_data$M
 age = simu_data$age
 gender = simu_data$gender
 
+
 ```
 
 ```{r pca for latent factor}
@@ -96,6 +97,7 @@ The `run_AS` function takes as inputs: $X$ for exposure, $Y$ for outcome, $M$ fo
 ## multivariate Exposures (continuous + binary)
 X = data.frame(X1 = simu_data$X_continuous, X2 = simu_data$X_binary)
 covar = cbind(age, gender)
+covar = as.data.frame(covar)
 
 hdmax2_step1 = hdmax2::run_AS(X = X ,
                               Y = Y,
