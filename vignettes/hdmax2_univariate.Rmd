@@ -123,9 +123,9 @@ hdmax2_step1 = hdmax2::run_AS(X = X,
                               covar = covar)
 ```
 
-### Selection of a subset of mediators
 
-Step 1 provides an object containing:
+
+The `run_AS` function provides an object containing:
 
 - Results from the two association studies ($P$-values, fscores, zscores),
 
@@ -135,6 +135,7 @@ Step 1 provides an object containing:
 
 - And *max-squared* test $P$-values results. 
 
+### Selection of a subset of mediators
 
 *max-squared*  $P$-values are used in the selection of mediators for the user's chosen method. 
 
@@ -156,7 +157,7 @@ The function `estimate_effect` estimate the individual indirect effect of mediat
 
 The function `estimate_effect` takes as inputs, step 1 object and selected mediators matrix $M^S$ from chosen selection method apply on *max-squared* test $P$-values.
 
-This step use `mediation::mediate` function to obtain several effects estimation with uncertainty:
+The function `estimate_effect` use `mediation::mediate` function to obtain several effects estimation with uncertainty:
 
 - ACME Average Causal Mediation Effect: corresponding to the indirect effect
 
