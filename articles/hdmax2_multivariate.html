@@ -189,11 +189,7 @@ rows.</li>
 <span>                              M <span class="op">=</span> <span class="va">M</span>,</span>
 <span>                              K <span class="op">=</span> <span class="va">K</span>,</span>
 <span>                              covar <span class="op">=</span> <span class="va">covar</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="selection-of-a-subset-of-mediators">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators"></a>
-</h3>
-<p>Step 1 provides an object containing:</p>
+<p>The <code>run_AS</code> function provides an object containing:</p>
 <ul>
 <li><p>Results from the two association studies (<span class="math inline">\(P\)</span>-values, fscores, zscores),</p></li>
 <li><p>Latent factors estimation matrix <span class="math inline">\(U\)</span> (<span class="math inline">\(p\)</span>
@@ -202,6 +198,10 @@ regression,</p></li>
 <li><p><code>run_AS</code> function’s inputs,</p></li>
 <li><p>And <em>max-squared</em> test <span class="math inline">\(P\)</span>-values results.</p></li>
 </ul>
+</div>
+<div class="section level3">
+<h3 id="selection-of-a-subset-of-mediators">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators"></a>
+</h3>
 <p><em>max-squared</em> <span class="math inline">\(P\)</span>-values
 are used in the selection of mediators for the user’s chosen method.</p>
 <p>Numerous selection methods are available, such as FDR control. Also
@@ -238,8 +238,9 @@ mediators.</p>
 <p>The function <code>estimate_effect</code> takes as inputs, step 1
 object and selected mediators matrix <span class="math inline">\(M^S\)</span> from chosen selection method apply on
 <em>max-squared</em> test <span class="math inline">\(P\)</span>-values.</p>
-<p>This step use <code><a href="https://rdrr.io/pkg/mediation/man/mediate.html" class="external-link">mediation::mediate</a></code> function to obtain
-several effects estimation with uncertainty:</p>
+<p>The function <code>estimate_effect</code> use
+<code><a href="https://rdrr.io/pkg/mediation/man/mediate.html" class="external-link">mediation::mediate</a></code> function to obtain several effects
+estimation with uncertainty:</p>
 <ul>
 <li><p>ACME Average Causal Mediation Effect: corresponding to the
 indirect effect</p></li>
