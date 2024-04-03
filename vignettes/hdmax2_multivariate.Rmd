@@ -27,9 +27,19 @@ knitr::opts_chunk$set(
 
 ## Introduction 
 
-The `hdmax2` package is designed to accept exposure $X$ consisting of univariate data, which can be continuous, binary or categorial as well as multivariate exposure.
+The package  `hdmax2` is dedicated to high-dimensional mediation analyses. For mediation analyses, the necessary data includes one (or more) exposure variable(s), a matrix of potential mediators, and an outcome variable.
 
-In this vignette, we treat example with a two variables exposure.
+The term "high dimensional" refers to the large quantity of potential mediators among which we seek to identify the actual mediators.
+
+The package  `hdmax2` is designed to accept 
+
+- Exposure $X$ consisting of univariate data, which can be continuous, binary or categorial as well as multivariate exposure.
+
+- Outcome $Y$ can be continuous or binary
+
+- Potential mediators $M$ must be continuous.
+
+In this vignette, we treat example with a **two variables** exposure.
 
 To install the latest version of `hdmax2`, use the github repository 
 
@@ -42,7 +52,7 @@ To install the latest version of `hdmax2`, use the github repository
 
 We simulated data for 100 samples and 500 potential mediators.
 
-For this example we use a two variables exposure (continuous and binary), a continuous outcome and two adjustment factors (age and gender). The matrix of potential mediators is an extract of real methylation data (TCGA PDAC samples).
+For this example we use a **two variables exposure** (continuous and binary), a **continuous outcome** and **two adjustment factors** (age and gender). The matrix of potential mediators is an extract of real methylation data (TCGA PDAC samples).
 
 
 We define the $K$ number of estimated latent factors by performing a PCA on potential mediators matrix. The scree plot criterion looks for the “elbow” in the curve and selects all components just before the line flattens out, $K$ is chosen with this procedure.
@@ -55,7 +65,7 @@ simu_data = hdmax2::simu_data
 Y = simu_data$Y_continuous
 
 ## High dimension mediators
-M = simu_data$M
+M = simu_data$M2
 
 ## Covariates
 age = simu_data$age
@@ -83,14 +93,25 @@ K=5 #pca conclusion : it is better to select too many factors that too few
 
 ### STEP 1: Run association studies
 
-The `run_AS` function is applied to identify significant effects of exposure $X$ on potential mediators in $M$ matrix, and significant effect of potential mediators on outcome $Y$. 
-The `run_AS` function takes as inputs: $X$ for exposure, $Y$ for outcome, $M$ for the potential mediators matrix, and $K$ for the number of latent factors defined earlier.  Adjustment factors (covariates) can be included. 
+The `run_AS` function is applied:
 
-- $X$ must be a data frame with  $n$ rows 2 colums (for each exposure variable).
-- $Y$ can be a vector or a matrix with $n$ rows and 1 column.
-- $M$ must be a matrix with $n$ rows and $p$ columns (potential mediators).
-- $K$ must be integer.
-- *covar* must be numeric (data frame or matrix) with $n$ rows.
+-  First to estimate latent factors with $lfmm$ algorithms.
+
+-  Then to identify significant effects of exposure $X$ on potential mediators in $M$ matrix, and significant effect of potential mediators on outcome $Y$. 
+
+-  And eventually to compute mediation test: *max-squared* test.
+
+
+
+The `run_AS` function takes as inputs: 
+
+-  $X$ for exposure: can be a vector, a factor with $n$ (samples) elements or a data frame with  $n$ rows and 1 column.
+-  $Y$ for outcome: can be a vector or a matrix with $n$ rows and 1 column.
+-  $M$ for the potential mediators: must be a matrix with $n$ rows and $p$ columns (potential mediators).
+-  $K$ for the number of latent factors defined earlier: must be integer.
+-  Adjustment factors *covar* can be included: must be numeric (data frame or matrix) with $n$ rows.
+
+Here $n$=100 and $p$=500
 
 
 ```{r step 1, message=FALSE}
@@ -119,10 +140,10 @@ Step 1 provides an object containing:
 
 - `run_AS` function's inputs, 
 
-- and *max-squared* test $P$-values results. 
+- And *max-squared* test $P$-values results. 
 
 
-These $P$-values are used in the selection of mediators for the user's chosen method. 
+*max-squared*  $P$-values are used in the selection of mediators for the user's chosen method. 
 
 Numerous selection methods are available, such as FDR control. Also in the context of methylation data, it's feasible to aggregate methylation probes. Refer to the *helper_functions* vignette for assistance FDR control and AMR researching procedure.
 
@@ -139,7 +160,28 @@ head(mediators_top10)
 ### STEP 2 : estimation of the indirect effect
 
 The function `estimate_effect` estimate the individual indirect effect of mediators, but also overall effects of selected mediators.
-The function `estimate_effect` takes as inputs, step 1 object and selected mediators matrix $M^s$  from chosen selection method apply on *max-squared* test $P$-values.
+
+The function `estimate_effect` takes as inputs, step 1 object and selected mediators matrix $M^S$ from chosen selection method apply on *max-squared* test $P$-values.
+
+This step use `mediation::mediate` function to obtain several effects estimation with uncertainty:
+
+- ACME Average Causal Mediation Effect: corresponding to the indirect effect
+
+- PM Proportion Mediate: corresponding to the proportion of the total effect that is mediated by the mediator
+
+- TE total effect: which is equal to the sum of direct and indirect effect
+
+- ADE Average Direct Effect: which represents the unmediated effect.
+
+This step also compute Overall effects : 
+
+- OIE (Indirect effect): corresponding to the sum of the indirect effect associated with all mediators.
+
+- ODE (Direct Effect): corresponding to the effect of exposure variables on the outcome variable.
+
+- OTE (Total Effect): corresponding to the effect of exposure variables on the outcome variable when the mediators $M^S$ are included in the model.
+
+In addition, function `estimate_effect` estimates the intermediary effect sizes  $a_j$ and $b_j$ and their standard deviations.
 
 
 ```{r  step2, message=FALSE}
