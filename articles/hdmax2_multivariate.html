@@ -79,10 +79,24 @@ Pittion, Magali Richard, Olivier Francois</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <code>hdmax2</code> package is designed to accept exposure <span class="math inline">\(X\)</span> consisting of univariate data, which
-can be continuous, binary or categorial as well as multivariate
-exposure.</p>
-<p>In this vignette, we treat example with a two variables exposure.</p>
+<p>The package <code>hdmax2</code> is dedicated to high-dimensional
+mediation analyses. For mediation analyses, the necessary data includes
+one (or more) exposure variable(s), a matrix of potential mediators, and
+an outcome variable.</p>
+<p>The term “high dimensional” refers to the large quantity of potential
+mediators among which we seek to identify the actual mediators.</p>
+<p>The package <code>hdmax2</code> is designed to accept</p>
+<ul>
+<li><p>Exposure <span class="math inline">\(X\)</span> consisting of
+univariate data, which can be continuous, binary or categorial as well
+as multivariate exposure.</p></li>
+<li><p>Outcome <span class="math inline">\(Y\)</span> can be continuous
+or binary</p></li>
+<li><p>Potential mediators <span class="math inline">\(M\)</span> must
+be continuous.</p></li>
+</ul>
+<p>In this vignette, we treat example with a <strong>two
+variables</strong> exposure.</p>
 <p>To install the latest version of <code>hdmax2</code>, use the github
 repository</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -92,10 +106,11 @@ repository</p>
 <h2 id="simulated-dataset">Simulated dataset<a class="anchor" aria-label="anchor" href="#simulated-dataset"></a>
 </h2>
 <p>We simulated data for 100 samples and 500 potential mediators.</p>
-<p>For this example we use a two variables exposure (continuous and
-binary), a continuous outcome and two adjustment factors (age and
-gender). The matrix of potential mediators is an extract of real
-methylation data (TCGA PDAC samples).</p>
+<p>For this example we use a <strong>two variables exposure</strong>
+(continuous and binary), a <strong>continuous outcome</strong> and
+<strong>two adjustment factors</strong> (age and gender). The matrix of
+potential mediators is an extract of real methylation data (TCGA PDAC
+samples).</p>
 <p>We define the <span class="math inline">\(K\)</span> number of
 estimated latent factors by performing a PCA on potential mediators
 matrix. The scree plot criterion looks for the “elbow” in the curve and
@@ -107,7 +122,7 @@ selects all components just before the line flattens out, <span class="math inli
 <span><span class="va">Y</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span></span>
 <span></span>
 <span><span class="co">## High dimension mediators</span></span>
-<span><span class="va">M</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M</span></span>
+<span><span class="va">M</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M2</span></span>
 <span></span>
 <span><span class="co">## Covariates</span></span>
 <span><span class="va">age</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">age</span></span>
@@ -131,28 +146,38 @@ outcome</em><a class="anchor" aria-label="anchor" href="#use-case-multivariate-e
 <div class="section level3">
 <h3 id="step-1-run-association-studies">STEP 1: Run association studies<a class="anchor" aria-label="anchor" href="#step-1-run-association-studies"></a>
 </h3>
-<p>The <code>run_AS</code> function is applied to identify significant
-effects of exposure <span class="math inline">\(X\)</span> on potential
-mediators in <span class="math inline">\(M\)</span> matrix, and
-significant effect of potential mediators on outcome <span class="math inline">\(Y\)</span>. The <code>run_AS</code> function takes
-as inputs: <span class="math inline">\(X\)</span> for exposure, <span class="math inline">\(Y\)</span> for outcome, <span class="math inline">\(M\)</span> for the potential mediators matrix, and
-<span class="math inline">\(K\)</span> for the number of latent factors
-defined earlier. Adjustment factors (covariates) can be included.</p>
+<p>The <code>run_AS</code> function is applied:</p>
+<ul>
+<li><p>First to estimate latent factors with <span class="math inline">\(lfmm\)</span> algorithms.</p></li>
+<li><p>Then to identify significant effects of exposure <span class="math inline">\(X\)</span> on potential mediators in <span class="math inline">\(M\)</span> matrix, and significant effect of
+potential mediators on outcome <span class="math inline">\(Y\)</span>.</p></li>
+<li><p>And eventually to compute mediation test: <em>max-squared</em>
+test.</p></li>
+</ul>
+<p>The <code>run_AS</code> function takes as inputs:</p>
 <ul>
 <li>
-<span class="math inline">\(X\)</span> must be a data frame with
-<span class="math inline">\(n\)</span> rows 2 colums (for each exposure
-variable).</li>
+<span class="math inline">\(X\)</span> for exposure: can be a
+vector, a factor with <span class="math inline">\(n\)</span> (samples)
+elements or a data frame with <span class="math inline">\(n\)</span>
+rows and 1 column.</li>
 <li>
-<span class="math inline">\(Y\)</span> can be a vector or a matrix
-with <span class="math inline">\(n\)</span> rows and 1 column.</li>
+<span class="math inline">\(Y\)</span> for outcome: can be a vector
+or a matrix with <span class="math inline">\(n\)</span> rows and 1
+column.</li>
 <li>
-<span class="math inline">\(M\)</span> must be a matrix with <span class="math inline">\(n\)</span> rows and <span class="math inline">\(p\)</span> columns (potential mediators).</li>
+<span class="math inline">\(M\)</span> for the potential mediators:
+must be a matrix with <span class="math inline">\(n\)</span> rows and
+<span class="math inline">\(p\)</span> columns (potential
+mediators).</li>
 <li>
-<span class="math inline">\(K\)</span> must be integer.</li>
-<li>
-<em>covar</em> must be numeric (data frame or matrix) with <span class="math inline">\(n\)</span> rows.</li>
+<span class="math inline">\(K\)</span> for the number of latent
+factors defined earlier: must be integer.</li>
+<li>Adjustment factors <em>covar</em> can be included: must be numeric
+(data frame or matrix) with <span class="math inline">\(n\)</span>
+rows.</li>
 </ul>
+<p>Here <span class="math inline">\(n\)</span>=100 and <span class="math inline">\(p\)</span>=500</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## multivariate Exposures (continuous + binary)</span></span>
 <span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X1 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span>, X2 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_binary</span><span class="op">)</span></span>
@@ -175,10 +200,10 @@ with <span class="math inline">\(n\)</span> rows and 1 column.</li>
 rows and <span class="math inline">\(K\)</span> columns) from first
 regression,</p></li>
 <li><p><code>run_AS</code> function’s inputs,</p></li>
-<li><p>and <em>max-squared</em> test <span class="math inline">\(P\)</span>-values results.</p></li>
+<li><p>And <em>max-squared</em> test <span class="math inline">\(P\)</span>-values results.</p></li>
 </ul>
-<p>These <span class="math inline">\(P\)</span>-values are used in the
-selection of mediators for the user’s chosen method.</p>
+<p><em>max-squared</em> <span class="math inline">\(P\)</span>-values
+are used in the selection of mediators for the user’s chosen method.</p>
 <p>Numerous selection methods are available, such as FDR control. Also
 in the context of methylation data, it’s feasible to aggregate
 methylation probes. Refer to the <em>helper_functions</em> vignette for
@@ -189,29 +214,55 @@ test as an example.</p>
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
 <span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            cg00053507 cg00893424 cg00525681 cg00268831 cg00571178 cg00760872</span></span>
-<span><span class="co">#&gt; GSM1051525 0.11462689  0.8074170  0.5209005  0.7346605  0.8717074  0.3227306</span></span>
-<span><span class="co">#&gt; GSM1051526 0.10378216  0.8748504  0.4523429  0.7512120  0.8665613  0.3210372</span></span>
-<span><span class="co">#&gt; GSM1051527 0.11544693  0.8414972  0.5276243  0.7924549  0.8635078  0.2049477</span></span>
-<span><span class="co">#&gt; GSM1051528 0.10025345  0.8452302  0.5465737  0.7556221  0.8913680  0.2997467</span></span>
-<span><span class="co">#&gt; GSM1051529 0.09323191  0.7807442  0.5868464  0.7436953  0.8370478  0.3456068</span></span>
-<span><span class="co">#&gt; GSM1051530 0.10028912  0.8400227  0.6374064  0.8478274  0.8124240  0.2390846</span></span>
-<span><span class="co">#&gt;            cg00006787  cg00671161 cg00861695 cg00822277</span></span>
-<span><span class="co">#&gt; GSM1051525  0.7611450 0.009053900  0.8430159  0.9110697</span></span>
-<span><span class="co">#&gt; GSM1051526  0.7439679 0.010239081  0.7835410  0.8732949</span></span>
-<span><span class="co">#&gt; GSM1051527  0.7724723 0.009787643  0.7480722  0.8942126</span></span>
-<span><span class="co">#&gt; GSM1051528  0.7359192 0.008753840  0.7837780  0.9019002</span></span>
-<span><span class="co">#&gt; GSM1051529  0.7725952 0.010138064  0.7832606  0.9057895</span></span>
-<span><span class="co">#&gt; GSM1051530  0.8459956 0.011262872  0.8759320  0.9437861</span></span></code></pre></div>
+<span><span class="co">#&gt;            cg00007032 cg00022633 cg00025981 cg00014667 cg00028749 cg00019093</span></span>
+<span><span class="co">#&gt; GSM1051525   1.764355   3.042535   1.987983   2.104173   2.020358   2.021450</span></span>
+<span><span class="co">#&gt; GSM1051526   6.324724   7.291695   5.055701   5.692560   5.374205   4.562818</span></span>
+<span><span class="co">#&gt; GSM1051527   7.849346   8.603409   6.022010   6.884147   6.420444   5.316097</span></span>
+<span><span class="co">#&gt; GSM1051528   6.590844   7.295384   5.110906   5.896802   5.434230   4.522164</span></span>
+<span><span class="co">#&gt; GSM1051529   2.352573   3.809111   2.515193   2.569591   2.567937   2.521325</span></span>
+<span><span class="co">#&gt; GSM1051530   7.989509   9.701877   6.659326   7.019162   7.011228   6.110346</span></span>
+<span><span class="co">#&gt;            cg00031759 cg00018896 cg00012692 cg00009871</span></span>
+<span><span class="co">#&gt; GSM1051525   2.229753   2.200426   1.284970   1.661390</span></span>
+<span><span class="co">#&gt; GSM1051526   5.322832   5.962785   4.653031   3.913059</span></span>
+<span><span class="co">#&gt; GSM1051527   6.260643   7.210383   5.781892   4.667452</span></span>
+<span><span class="co">#&gt; GSM1051528   5.310325   6.173285   4.873684   4.049565</span></span>
+<span><span class="co">#&gt; GSM1051529   2.784983   2.615735   1.724780   1.973782</span></span>
+<span><span class="co">#&gt; GSM1051530   7.033794   7.400408   5.875805   4.791390</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-2-estimation-of-the-indirect-effect">STEP 2 : estimation of the indirect effect<a class="anchor" aria-label="anchor" href="#step-2-estimation-of-the-indirect-effect"></a>
 </h3>
 <p>The function <code>estimate_effect</code> estimate the individual
 indirect effect of mediators, but also overall effects of selected
-mediators. The function <code>estimate_effect</code> takes as inputs,
-step 1 object and selected mediators matrix <span class="math inline">\(M^s\)</span> from chosen selection method apply on
+mediators.</p>
+<p>The function <code>estimate_effect</code> takes as inputs, step 1
+object and selected mediators matrix <span class="math inline">\(M^S\)</span> from chosen selection method apply on
 <em>max-squared</em> test <span class="math inline">\(P\)</span>-values.</p>
+<p>This step use <code><a href="https://rdrr.io/pkg/mediation/man/mediate.html" class="external-link">mediation::mediate</a></code> function to obtain
+several effects estimation with uncertainty:</p>
+<ul>
+<li><p>ACME Average Causal Mediation Effect: corresponding to the
+indirect effect</p></li>
+<li><p>PM Proportion Mediate: corresponding to the proportion of the
+total effect that is mediated by the mediator</p></li>
+<li><p>TE total effect: which is equal to the sum of direct and indirect
+effect</p></li>
+<li><p>ADE Average Direct Effect: which represents the unmediated
+effect.</p></li>
+</ul>
+<p>This step also compute Overall effects :</p>
+<ul>
+<li><p>OIE (Indirect effect): corresponding to the sum of the indirect
+effect associated with all mediators.</p></li>
+<li><p>ODE (Direct Effect): corresponding to the effect of exposure
+variables on the outcome variable.</p></li>
+<li><p>OTE (Total Effect): corresponding to the effect of exposure
+variables on the outcome variable when the mediators <span class="math inline">\(M^S\)</span> are included in the model.</p></li>
+</ul>
+<p>In addition, function <code>estimate_effect</code> estimates the
+intermediary effect sizes <span class="math inline">\(a_j\)</span> and
+<span class="math inline">\(b_j\)</span> and their standard
+deviations.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
