@@ -86,7 +86,7 @@ plot((pc$sdev^2/sum(pc$sdev^2))[1:10],
      xlab = 'Principal Component',
      ylab = "Explained variance")
 
-K=5 #pca conclusion : it is better to select too many factors that too few
+K=4 #pca conclusion : it is better to select too many factors that too few
 ```
 
 
@@ -195,27 +195,6 @@ hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
                                        m = mediators_top10)
 ```
 
-
-
-This step use `mediation::mediate` function to obtain several effects estimation:
-
-- ACME Average Causal Mediation Effect
-
-- PM Proportion Mediate
-
-- TE total effect
-
-- ADE Average Direct Effect
-
-This step also compute Overall effects : 
-
-- OIE (Indirect effect)
-
-- ODE (Direct Effect)
-
-- OTE (Total Effect)
-
-And regression effects size.
 
 ### Vizualisation of results
 

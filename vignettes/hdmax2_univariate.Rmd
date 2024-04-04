@@ -90,7 +90,7 @@ plot((pc$sdev^2/sum(pc$sdev^2))[1:10],
      xlab = 'Principal Component',
      ylab = "Explained variance")
 
-K=8 #pca conclusion : it is better to select too many factors that too few
+K=4 #pca conclusion : it is better to select too many factors that too few
 ```
 
 
