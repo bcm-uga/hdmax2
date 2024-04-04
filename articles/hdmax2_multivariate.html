@@ -147,7 +147,7 @@ selects all components just before the line flattens out, <span class="math inli
 <p><img src="hdmax2_multivariate_files/figure-html/pca%20for%20latent%20factor-1.png" width="700"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">K</span><span class="op">=</span><span class="fl">5</span> <span class="co">#pca conclusion : it is better to select too many factors that too few</span></span></code></pre></div>
+<span><span class="va">K</span><span class="op">=</span><span class="fl">4</span> <span class="co">#pca conclusion : it is better to select too many factors that too few</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="use-case-multivariate-exposure-and-continuous-outcome">Use case <em>multivariate exposure</em> and <em>continuous
@@ -224,20 +224,20 @@ test as an example.</p>
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
 <span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            cg00007032 cg00022633 cg00025981 cg00014667 cg00028749 cg00019093</span></span>
-<span><span class="co">#&gt; GSM1051525   1.764355   3.042535   1.987983   2.104173   2.020358   2.021450</span></span>
-<span><span class="co">#&gt; GSM1051526   6.324724   7.291695   5.055701   5.692560   5.374205   4.562818</span></span>
-<span><span class="co">#&gt; GSM1051527   7.849346   8.603409   6.022010   6.884147   6.420444   5.316097</span></span>
-<span><span class="co">#&gt; GSM1051528   6.590844   7.295384   5.110906   5.896802   5.434230   4.522164</span></span>
-<span><span class="co">#&gt; GSM1051529   2.352573   3.809111   2.515193   2.569591   2.567937   2.521325</span></span>
-<span><span class="co">#&gt; GSM1051530   7.989509   9.701877   6.659326   7.019162   7.011228   6.110346</span></span>
-<span><span class="co">#&gt;            cg00031759 cg00018896 cg00012692 cg00009871</span></span>
-<span><span class="co">#&gt; GSM1051525   2.229753   2.200426   1.284970   1.661390</span></span>
-<span><span class="co">#&gt; GSM1051526   5.322832   5.962785   4.653031   3.913059</span></span>
-<span><span class="co">#&gt; GSM1051527   6.260643   7.210383   5.781892   4.667452</span></span>
-<span><span class="co">#&gt; GSM1051528   5.310325   6.173285   4.873684   4.049565</span></span>
-<span><span class="co">#&gt; GSM1051529   2.784983   2.615735   1.724780   1.973782</span></span>
-<span><span class="co">#&gt; GSM1051530   7.033794   7.400408   5.875805   4.791390</span></span></code></pre></div>
+<span><span class="co">#&gt;            cg00007032 cg00022633 cg00025981 cg00031759 cg00028749 cg00019093</span></span>
+<span><span class="co">#&gt; GSM1051525   1.764355   3.042535   1.987983   2.229753   2.020358   2.021450</span></span>
+<span><span class="co">#&gt; GSM1051526   6.324724   7.291695   5.055701   5.322832   5.374205   4.562818</span></span>
+<span><span class="co">#&gt; GSM1051527   7.849346   8.603409   6.022010   6.260643   6.420444   5.316097</span></span>
+<span><span class="co">#&gt; GSM1051528   6.590844   7.295384   5.110906   5.310325   5.434230   4.522164</span></span>
+<span><span class="co">#&gt; GSM1051529   2.352573   3.809111   2.515193   2.784983   2.567937   2.521325</span></span>
+<span><span class="co">#&gt; GSM1051530   7.989509   9.701877   6.659326   7.033794   7.011228   6.110346</span></span>
+<span><span class="co">#&gt;            cg00014667 cg00012692 cg00018896 cg00005740</span></span>
+<span><span class="co">#&gt; GSM1051525   2.104173   1.284970   2.200426   2.052600</span></span>
+<span><span class="co">#&gt; GSM1051526   5.692560   4.653031   5.962785   5.143245</span></span>
+<span><span class="co">#&gt; GSM1051527   6.884147   5.781892   7.210383   6.173062</span></span>
+<span><span class="co">#&gt; GSM1051528   5.896802   4.873684   6.173285   5.317930</span></span>
+<span><span class="co">#&gt; GSM1051529   2.569591   1.724780   2.615735   2.445169</span></span>
+<span><span class="co">#&gt; GSM1051530   7.019162   5.875805   7.400408   6.219636</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-2-estimation-of-the-indirect-effect">STEP 2 : estimation of the indirect effect<a class="anchor" aria-label="anchor" href="#step-2-estimation-of-the-indirect-effect"></a>
@@ -278,21 +278,6 @@ deviations.</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
 <span>                                       m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></code></pre></div>
-<p>This step use <code><a href="https://rdrr.io/pkg/mediation/man/mediate.html" class="external-link">mediation::mediate</a></code> function to obtain
-several effects estimation:</p>
-<ul>
-<li><p>ACME Average Causal Mediation Effect</p></li>
-<li><p>PM Proportion Mediate</p></li>
-<li><p>TE total effect</p></li>
-<li><p>ADE Average Direct Effect</p></li>
-</ul>
-<p>This step also compute Overall effects :</p>
-<ul>
-<li><p>OIE (Indirect effect)</p></li>
-<li><p>ODE (Direct Effect)</p></li>
-<li><p>OTE (Total Effect)</p></li>
-</ul>
-<p>And regression effects size.</p>
 </div>
 <div class="section level3">
 <h3 id="vizualisation-of-results">Vizualisation of results<a class="anchor" aria-label="anchor" href="#vizualisation-of-results"></a>

@@ -152,7 +152,7 @@ selects all components just before the line flattens out, <span class="math inli
 <p><img src="hdmax2_univariate_files/figure-html/pca%20for%20latent%20factor-1.png" width="700"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">K</span><span class="op">=</span><span class="fl">8</span> <span class="co">#pca conclusion : it is better to select too many factors that too few</span></span></code></pre></div>
+<span><span class="va">K</span><span class="op">=</span><span class="fl">4</span> <span class="co">#pca conclusion : it is better to select too many factors that too few</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="binary-exposure-and-continuous-outcome">
@@ -226,20 +226,20 @@ test as an example.</p>
 <span></span>
 <span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">M</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            cg00022633 cg00035636 cg00049102 cg00019093 cg00025981 cg00049616</span></span>
-<span><span class="co">#&gt; GSM1051525   1.480526   1.498758   2.029784   1.091212  0.8611761   1.767392</span></span>
-<span><span class="co">#&gt; GSM1051526   5.463677   1.481787   2.000932   3.474162  3.7370006   1.743678</span></span>
-<span><span class="co">#&gt; GSM1051527   5.334700   1.439573   1.891203   3.369454  3.6640206   1.667866</span></span>
-<span><span class="co">#&gt; GSM1051528   5.225207   1.443054   1.816579   3.289293  3.6175162   1.599476</span></span>
-<span><span class="co">#&gt; GSM1051529   1.691596   1.603649   2.217188   1.260262  0.9876545   1.886485</span></span>
-<span><span class="co">#&gt; GSM1051530   6.307245   2.310486   2.725880   4.088710  4.2104976   2.324293</span></span>
-<span><span class="co">#&gt;            cg00049382 cg00007032 cg00901878 cg00277714</span></span>
-<span><span class="co">#&gt; GSM1051525   1.315628 0.09865871  0.8563415  0.5093575</span></span>
-<span><span class="co">#&gt; GSM1051526   1.276564 4.37536259  0.8440825  0.5001938</span></span>
-<span><span class="co">#&gt; GSM1051527   1.142801 4.36365955  0.8870115  0.4030367</span></span>
-<span><span class="co">#&gt; GSM1051528   1.073051 4.38324865  0.7891191  0.4481790</span></span>
-<span><span class="co">#&gt; GSM1051529   1.545162 0.09449677  0.8816612  0.5376336</span></span>
-<span><span class="co">#&gt; GSM1051530   2.068434 4.36954013  0.8426222  0.5056766</span></span></code></pre></div>
+<span><span class="co">#&gt;            cg00022633 cg00019093 cg00025981 cg00031759 cg00035636 cg00049102</span></span>
+<span><span class="co">#&gt; GSM1051525   1.480526   1.091212  0.8611761   1.096765   1.498758   2.029784</span></span>
+<span><span class="co">#&gt; GSM1051526   5.463677   3.474162  3.7370006   3.996897   1.481787   2.000932</span></span>
+<span><span class="co">#&gt; GSM1051527   5.334700   3.369454  3.6640206   3.889718   1.439573   1.891203</span></span>
+<span><span class="co">#&gt; GSM1051528   5.225207   3.289293  3.6175162   3.808743   1.443054   1.816579</span></span>
+<span><span class="co">#&gt; GSM1051529   1.691596   1.260262  0.9876545   1.249065   1.603649   2.217188</span></span>
+<span><span class="co">#&gt; GSM1051530   6.307245   4.088710  4.2104976   4.571531   2.310486   2.725880</span></span>
+<span><span class="co">#&gt;            cg00028749 cg00049616 cg00026603 cg00703120</span></span>
+<span><span class="co">#&gt; GSM1051525  0.7984107   1.767392   1.840380  0.8521711</span></span>
+<span><span class="co">#&gt; GSM1051526  3.9441627   1.743678   3.914640  0.8315540</span></span>
+<span><span class="co">#&gt; GSM1051527  3.8633605   1.667866   3.856255  0.8473967</span></span>
+<span><span class="co">#&gt; GSM1051528  3.8147481   1.599476   3.748134  0.8744509</span></span>
+<span><span class="co">#&gt; GSM1051529  0.9114222   1.886485   1.997508  0.8602605</span></span>
+<span><span class="co">#&gt; GSM1051530  4.3556358   2.324293   4.553996  0.8814345</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="step-2">STEP 2<a class="anchor" aria-label="anchor" href="#step-2"></a>
