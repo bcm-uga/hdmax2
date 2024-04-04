@@ -79,12 +79,22 @@ Pittion, Magali Richard, Olivier Francois</h4>
 <div class="section level3">
 <h3 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h3>
-<p>The package <code>hdmax2</code> is dedicated to high-dimensional
+<p>When a statistical association is observed between an external
+exposure (<span class="math inline">\(X\)</span>) and an individual
+outcome (<span class="math inline">\(Y\)</span>), one or more
+intermediate variables ({}) (such as gene expression or epigenetic
+changes) may mediate this effect. Identifying and assessing the
+mediating role of these variables in the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> is crucial for deciphering underlying
+causal mechanisms in epidemiological and clinical research.</p>
+<p>The R package <code>hdmax2</code> is dedicated to high-dimensional
 mediation analyses. For mediation analyses, the necessary data includes
 one (or more) exposure variable(s), a matrix of potential mediators, and
 an outcome variable.</p>
 <p>The term “high dimensional” refers to the large quantity of potential
 mediators among which we seek to identify the actual mediators.</p>
+<p>The fundamental concept behind HDMAX2 methods is to use a latent
+factor mixed regression model for estimating unobserved latent factors
+while conducting high-dimensional association analysis.</p>
 <p>The package <code>hdmax2</code> is designed to accept</p>
 <ul>
 <li><p>Exposure <span class="math inline">\(X\)</span> consisting of
