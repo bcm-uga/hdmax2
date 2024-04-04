@@ -554,8 +554,15 @@ check_K = function(argument){
 check_covar = function(argument){
   if (is.data.frame(argument)){
     message("Adjutment factors is data frame")
-  }else{
-    stop("Adjutment factors must be data frame")
+  }else if(is.matrix(argument)){
+    message("Adjutment factors is matrix")
+  } else{
+    stop("Adjutment factors must be a data frame or a matrix")
+  }
+  for (i in 1:dim(argument)[2]){
+    if(!is.numeric(argument[,1])){
+      stop("adjusment factors must be numeric")
+    }
   }
 }
   

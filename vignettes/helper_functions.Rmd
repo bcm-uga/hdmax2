@@ -121,16 +121,16 @@ Several methods can be use to select potential mediators from step1 results of o
 
 ```{r FDR, message=FALSE}
 
-data = hdmax2::simu_data
+data_sim = hdmax2::simu_data
 ## run hdmax2 step1
-hdmax2_step1 = hdmax2::run_AS(X = data$X_continuous,
-                 Y = data$Y_continuous,
-                 M = data$M, 
+hdmax2_step1 = hdmax2::run_AS(X = data_sim$X_binary,
+                 Y = data_sim$Y_continuous,
+                 M = data_sim$M1, 
                  K = K)
 
 ## Select candidate mediator  
 qval <- fdrtool::fdrtool(hdmax2_step1$max2_pvalues, statistic = "pvalue", plot = F, verbose = F)$qval
-candidate_mediator <- qval[qval<= 0.8] # In this example, we will consider FDR levels <80%.
+candidate_mediator <- qval[qval<= 0.2] # In this example, we will consider FDR levels <20%.
 candidate_mediator
 
 ```
@@ -141,10 +141,9 @@ When categorical variables are used as exposure variables, `hdmax2` uses the fir
 
 
 ```{r factor, message=FALSE}
-simu_data = hdmax2::simu_data
 
 # inverse alphabetical order for example
-X = simu_data$X_categorial
+X = data_sim$X_categorial
 X = factor(X, ordered = TRUE, levels = c("D","C","B","A"))
 
 ```
@@ -152,15 +151,22 @@ X = factor(X, ordered = TRUE, levels = c("D","C","B","A"))
 
 ## How to handle adding an additional set of covariates to the second association study?
 
-It is possible to add a second adjustment factors set in association study between potential mediators and outcome if it makes sense from a biological standpoint.
+It is possible to add a second adjustment factors set in association study between potential mediators and outcome if it makes sense from a biological standpoint. Nevertheless, this additional set of adjustment factors for the second association study must include the adjustment factors from the first association study.
 
-```{r second covar set}
-# hdmax2_step1 = hdmax2::run_AS(X = data$exposure,
-#                               Y = data$phenotype,
-#                               M = data$methylation, 
-#                               K = K,
-#                               covar = covar,
-#                               covar2 = covar2)
+```{r second covar set, message=FALSE}
+
+covar = as.data.frame(data$covariables[,1:2])
+covar_sup_reg2 = as.data.frame(data$covariables[,3:4])
+
+hdmax2_step1 = hdmax2::run_AS(X = data$exposure,
+                              Y = data$phenotype,
+                              M = data$methylation,
+                              K = K,
+                              covar = covar,
+                              covar_sup_reg2 = covar_sup_reg2)
+
+
+
 ```
 
 ```{r}
