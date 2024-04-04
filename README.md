@@ -44,13 +44,13 @@ library(ggplot2)
 attach(simu_data)
 
 # Exposure variables
-  X = X_continuous
+  X = X_binary
 
 # Outcome variable
   Y = Y_continuous
 
 # Intermediate variables including mediators
-  M = simu_data$M
+  M = simu_data$M1
   
 # Choose K (latent factors number) from pca analysis (for example) on potential mediators  
   K = 5
