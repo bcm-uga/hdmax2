@@ -208,33 +208,23 @@ p-values from step 1 with <code>fdrtools::fdrtools</code> function then
 bounded by chosen threshold.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
+<span><span class="va">data_sim</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
 <span><span class="co">## run hdmax2 step1</span></span>
-<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">X_continuous</span>,</span>
-<span>                 Y <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">Y_continuous</span>,</span>
-<span>                 M <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">M</span>, </span>
+<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">data_sim</span><span class="op">$</span><span class="va">X_binary</span>,</span>
+<span>                 Y <span class="op">=</span> <span class="va">data_sim</span><span class="op">$</span><span class="va">Y_continuous</span>,</span>
+<span>                 M <span class="op">=</span> <span class="va">data_sim</span><span class="op">$</span><span class="va">M1</span>, </span>
 <span>                 K <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Select candidate mediator  </span></span>
 <span><span class="va">qval</span> <span class="op">&lt;-</span> <span class="fu">fdrtool</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fdrtool/man/fdrtool.html" class="external-link">fdrtool</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span>, statistic <span class="op">=</span> <span class="st">"pvalue"</span>, plot <span class="op">=</span> <span class="cn">F</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">$</span><span class="va">qval</span></span>
-<span><span class="va">candidate_mediator</span> <span class="op">&lt;-</span> <span class="va">qval</span><span class="op">[</span><span class="va">qval</span><span class="op">&lt;=</span> <span class="fl">0.8</span><span class="op">]</span> <span class="co"># In this example, we will consider FDR levels &lt;80%.</span></span>
+<span><span class="va">candidate_mediator</span> <span class="op">&lt;-</span> <span class="va">qval</span><span class="op">[</span><span class="va">qval</span><span class="op">&lt;=</span> <span class="fl">0.2</span><span class="op">]</span> <span class="co"># In this example, we will consider FDR levels &lt;20%.</span></span>
 <span><span class="va">candidate_mediator</span></span>
-<span><span class="co">#&gt; cg00019196 cg00024247 cg00035636 cg00044871 cg00054572 cg00055462 cg00071026 </span></span>
-<span><span class="co">#&gt;  0.7637137  0.7637137  0.7974308  0.7637137  0.7637137  0.7772144  0.7637137 </span></span>
-<span><span class="co">#&gt; cg00071658 cg00094319 cg00098070 cg00108349 cg00133204 cg00165067 cg00181327 </span></span>
-<span><span class="co">#&gt;  0.7637137  0.7848042  0.7637137  0.7921075  0.7993508  0.7939973  0.7637137 </span></span>
-<span><span class="co">#&gt; cg00187692 cg00208734 cg00221494 cg00242786 cg00245856 cg00252121 cg00274440 </span></span>
-<span><span class="co">#&gt;  0.7637137  0.7637137  0.7637137  0.7637137  0.7984185  0.7637137  0.7637137 </span></span>
-<span><span class="co">#&gt; cg00278131 cg00348891 cg00390259 cg00448720 cg00458564 cg00476054 cg00557354 </span></span>
-<span><span class="co">#&gt;  0.7637137  0.7637137  0.7637137  0.7743671  0.7637137  0.7637137  0.7637137 </span></span>
-<span><span class="co">#&gt; cg00587941 cg00615217 cg00627998 cg00636982 cg00644416 cg00644922 cg00663972 </span></span>
-<span><span class="co">#&gt;  0.7637137  0.7637137  0.7637137  0.7637137  0.7637137  0.7637137  0.7950435 </span></span>
-<span><span class="co">#&gt; cg00674995 cg00682015 cg00697358 cg00717219 cg00722493 cg00732810 cg00781839 </span></span>
-<span><span class="co">#&gt;  0.7637137  0.7637137  0.7637137  0.7637137  0.7820714  0.7637137  0.7637137 </span></span>
-<span><span class="co">#&gt; cg00792968 cg00823993 cg00825130 cg00841725 cg00880018 cg00894344 cg00898013 </span></span>
-<span><span class="co">#&gt;  0.7637137  0.7637137  0.7637137  0.7942501  0.7637137  0.7637137  0.7637137 </span></span>
-<span><span class="co">#&gt; cg00944193 cg00968267 cg00986957 cg00994984 cg01010012 </span></span>
-<span><span class="co">#&gt;  0.7637137  0.7637137  0.7679389  0.7758579  0.7965575</span></span></code></pre></div>
+<span><span class="co">#&gt;   cg00018896   cg00019093   cg00022633   cg00024247   cg00025981   cg00028749 </span></span>
+<span><span class="co">#&gt; 1.107337e-02 3.873482e-10 3.409990e-15 3.174703e-02 4.013016e-06 3.457313e-02 </span></span>
+<span><span class="co">#&gt;   cg00031759   cg00035636   cg00037930   cg00047079   cg00049102   cg00049382 </span></span>
+<span><span class="co">#&gt; 1.076710e-04 2.157911e-08 1.176850e-01 2.609498e-02 8.673316e-09 2.705899e-04 </span></span>
+<span><span class="co">#&gt;   cg00049616   cg00241432   cg00345862   cg01005425 </span></span>
+<span><span class="co">#&gt; 2.419102e-05 1.952512e-01 9.383553e-02 1.688914e-01</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="how-to-transform-a-categorial-variable-into-an-ordered-factor">How to transform a categorial variable into an ordered factor?<a class="anchor" aria-label="anchor" href="#how-to-transform-a-categorial-variable-into-an-ordered-factor"></a>
@@ -250,10 +240,9 @@ your character vector into a factor and order the categories as you
 wish. You can then use this variable as input to the hdmax2
 functions.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span>
-<span></span>
+<code class="sourceCode R"><span></span>
 <span><span class="co"># inverse alphabetical order for example</span></span>
-<span><span class="va">X</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_categorial</span></span>
+<span><span class="va">X</span> <span class="op">=</span> <span class="va">data_sim</span><span class="op">$</span><span class="va">X_categorial</span></span>
 <span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">X</span>, ordered <span class="op">=</span> <span class="cn">TRUE</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"D"</span>,<span class="st">"C"</span>,<span class="st">"B"</span>,<span class="st">"A"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -262,14 +251,20 @@ association study?<a class="anchor" aria-label="anchor" href="#how-to-handle-add
 </h2>
 <p>It is possible to add a second adjustment factors set in association
 study between potential mediators and outcome if it makes sense from a
-biological standpoint.</p>
+biological standpoint. Nevertheless, this additional set of adjustment
+factors for the second association study must include the adjustment
+factors from the first association study.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># hdmax2_step1 = hdmax2::run_AS(X = data$exposure,</span></span>
-<span><span class="co">#                               Y = data$phenotype,</span></span>
-<span><span class="co">#                               M = data$methylation, </span></span>
-<span><span class="co">#                               K = K,</span></span>
-<span><span class="co">#                               covar = covar,</span></span>
-<span><span class="co">#                               covar2 = covar2)</span></span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">covariables</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">covar_sup_reg2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">covariables</span><span class="op">[</span>,<span class="fl">3</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">exposure</span>,</span>
+<span>                              Y <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">phenotype</span>,</span>
+<span>                              M <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">methylation</span>,</span>
+<span>                              K <span class="op">=</span> <span class="va">K</span>,</span>
+<span>                              covar <span class="op">=</span> <span class="va">covar</span>,</span>
+<span>                              covar_sup_reg2 <span class="op">=</span> <span class="va">covar_sup_reg2</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.3.3 (2024-02-29)</span></span>
