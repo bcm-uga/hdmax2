@@ -1,0 +1,388 @@
+---
+title: "hdmax2 application"
+author: "Florence Pittion, Magali Richard, Olivier Francois"
+date: "January, 2024"
+output: html_document
+highlight: github
+toc: true
+vignette: >
+  %\VignetteIndexEntry{hdmax2_tutorial.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+
+**THIS VIGNETTE IS CURRENTLY UNDER DEVELOPMENT, SO ITS CONTENT IS PROVISIONAL.**
+
+## Introduction 
+
+When a statistical association is observed between an external exposure ($X$) and an individual outcome ($Y$), one or more intermediate variables ({\bf M}) (such as gene expression or epigenetic changes) may mediate this effect. Identifying and assessing the mediating role of these variables in the effect of $X$ on $Y$ is crucial for deciphering underlying causal mechanisms in epidemiological and clinical research.
+
+The R package  `hdmax2` is dedicated to high-dimensional mediation analyses. For mediation analyses, the necessary data includes one (or more) exposure variable(s), a matrix of potential mediators, and an outcome variable.
+
+The term "high dimensional" refers to the large quantity of potential mediators among which we seek to identify the actual mediators.
+
+The fundamental concept behind HDMAX2 methods is to use a latent factor mixed regression model for estimating unobserved latent factors while conducting high-dimensional association analysis.
+
+The package  `hdmax2` is designed to accept 
+
+- Exposure $X$ consisting of univariate data, which can be continuous, binary or categorial as well as multivariate exposure.
+
+- Outcome $Y$ can be continuous or binary
+
+- Potential mediators $M$ must be continuous.
+
+
+To install the latest version of `hdmax2`, use the github repository 
+
+```{r package installation}
+#devtools::install_github("bcm-uga/hdmax2")
+```
+
+
+## Simulated dataset
+
+We simulated data for 100 samples and 500 potential mediators.
+
+The matrix of potential mediators is an extract of real methylation data (TCGA PDAC samples).
+
+
+We define the $K$ number of estimated latent factors by performing a PCA on potential mediators matrix. The scree plot criterion looks for the “elbow” in the curve and selects all components just before the line flattens out, $K$ is chosen with this procedure.
+
+
+```{r variable definition}
+
+simu_data = hdmax2::simu_data
+
+```
+
+```{r pca for latent factor}
+## Number of Latent factore estimation
+pc <- prcomp(simu_data$M1)
+plot((pc$sdev^2/sum(pc$sdev^2))[1:10],
+     type = "b",
+     xlab = 'Principal Component',
+     ylab = "Explained variance")
+
+K=4 #pca conclusion : it is better to select too many factors that too few
+```
+
+
+# Example 1:  *Binary exposure* and *continuous outcome*
+
+For this example we use a **binary exposure**, a **continuous outcome** and **two adjustment factors** (age and gender).
+
+
+### STEP 1: Run association studies
+
+The `run_AS` function is applied:
+
+-  First to estimate latent factors with $lfmm$ algorithms.
+
+-  Then to identify significant effects of exposure $X$ on potential mediators in $M$ matrix, and significant effect of potential mediators on outcome $Y$. 
+
+-  And eventually to compute mediation test: *max-squared* test.
+
+
+
+The `run_AS` function takes as inputs: 
+
+-  $X$ for exposure: can be a vector, a factor with $n$ (samples) elements or a data frame with  $n$ rows and 1 column.
+-  $Y$ for outcome: can be a vector or a matrix with $n$ rows and 1 column.
+-  $M$ for the potential mediators: must be a matrix with $n$ rows and $p$ columns (potential mediators).
+-  $K$ for the number of latent factors defined earlier: must be integer.
+-  Adjustment factors *covar* can be included: must be numeric (data frame or matrix) with $n$ rows.
+
+Here $n$=100 and $p$=500
+
+```{r step 1 univar, message=FALSE}
+
+covar = cbind(simu_data$age, simu_data$gender)
+covar = as.data.frame(covar)
+
+hdmax2_step1 = hdmax2::run_AS(exposure = simu_data$X_binary,
+                              outcome  = simu_data$Y_continuous,
+                              M = simu_data$M1, 
+                              K = K,
+                              covar = covar)
+```
+
+
+
+The `run_AS` function provides an object containing:
+
+- Results from the two association studies ($P$-values, fscores, zscores),
+
+- Latent factors estimation matrix $U$ ($p$ rows and $K$ columns) from first regression, 
+
+- `run_AS` function's inputs, 
+
+- And *max-squared* test $P$-values results. 
+
+### Selection of a subset of mediators
+
+*max-squared*  $P$-values are used in the selection of mediators for the user's chosen method. 
+
+Numerous selection methods are available, such as FDR control. Also in the context of methylation data, it's feasible to aggregate methylation probes. Refer to the *helper_functions* vignette for assistance FDR control and AMR researching procedure.
+
+In this instance, we opted for the top ten most significant $P$-values from the *max-squared* test as an example.
+
+```{r mediators selection univar}
+## Selecting top 10 mediators
+## top 10 selecting mediators
+
+mediators_top10 = simu_data$M1[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+head(mediators_top10)
+```
+
+### STEP 2
+
+The function `estimate_effect` estimate the individual indirect effect of mediators, but also overall effects of selected mediators.
+
+The function `estimate_effect` takes as inputs, step 1 object and selected mediators matrix $M^S$ from chosen selection method apply on *max-squared* test $P$-values.
+
+The function `estimate_effect` use `mediation::mediate` function to obtain several effects estimation with uncertainty:
+
+- ACME Average Causal Mediation Effect: corresponding to the indirect effect
+
+- PM Proportion Mediate: corresponding to the proportion of the total effect that is mediated by the mediator
+
+- TE total effect: which is equal to the sum of direct and indirect effect
+
+- ADE Average Direct Effect: which represents the unmediated effect.
+
+This step also compute Overall effects : 
+
+- OIE (Indirect effect): corresponding to the sum of the indirect effect associated with all mediators.
+
+- ODE (Direct Effect): corresponding to the effect of exposure variables on the outcome variable.
+
+- OTE (Total Effect): corresponding to the effect of exposure variables on the outcome variable when the mediators $M^S$ are included in the model.
+
+In addition, function `estimate_effect` estimates the intermediary effect sizes  $a_j$ and $b_j$ and their standard deviations.
+
+```{r step2 univar, message=FALSE}
+
+hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
+                                       m = mediators_top10)
+```
+
+### Vizualisation of results
+
+We propose a set of plots including:
+
+- Mediators ACME Forest plot
+
+- Mediators PM Forest plot
+
+- Comparison of ODE, OIE and OTE
+
+- Mediators effect size representation
+
+
+```{r plot results univar , fig.height=10, fig.width=10 , message=FALSE, warning=FALSE}
+library(ggplot2)
+hdmax2::plot_hdmax2(hdmax2_step2, plot_type = "all_plot")
+
+```
+
+
+   - **A** Estimates of indirect effect (ACME) and **B** proportions of mediated effect (PM) for the top 10 mediators. The effect estimate is represented by a dot and its 95\% CI by the bar. Symbols correspond to the significance cut off of 5\%  (square for p-value $\geq 0.05$, circle p-value $< 0.05$). Colors correspond to the sign of the effect (green for estimated effect $\leq 0$ , red for estimated effect $> 0$). 
+   
+   - **C** Effect sizes of Overall Direct Effect (ODE), Overall Indirect Effect (OIE) and Overall Total Effect (OTE). Error bars correspond to standard deviation (ODE and OTE) or confidence interval (OIE). 
+    
+   - **D** Indirect effect sizes for the selected mediators. Black corresponds to the ACME, violet to the effect of exposure $X$ on mediator $M$, and blue corresponds to the effect of mediator $M$ on outcome $Y$.
+
+In the `plot_hdmax2` function it is possible to produce the 4-plots set or each individual plot with *plot_type* argument.
+
+
+# Example 2:  *multivariate exposure* and *continuous outcome*
+
+For this example we use a **two variables exposure** (continuous and binary), a **continuous outcome** and **two adjustment factors** (age and gender).
+
+```{r step 1 multivar, message=FALSE}
+## multivariate Exposures (continuous + binary)
+X = data.frame(X1 = simu_data$X_continuous, X2 = simu_data$X_binary)
+covar = cbind(simu_data$age, simu_data$gender)
+covar = as.data.frame(covar)
+
+hdmax2_step1 = hdmax2::run_AS(exposure = X ,
+                              outcome = simu_data$Y_continuous,
+                              M = simu_data$M2,
+                              K = K,
+                              covar = covar)
+
+head(hdmax2_step1$max2_pvalues)
+
+
+```
+
+```{r mediators selection multivar}
+## Selecting top 10 mediators
+mediators_top10 = simu_data$M2[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+head(mediators_top10)
+
+```
+
+```{r  step2 multivar, message=FALSE}
+
+hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
+                                       m = mediators_top10)
+```
+
+```{r plot results multivar , fig.height=10, fig.width=10}
+library(ggplot2)
+hdmax2::plot_hdmax2(hdmax2_step2, plot_type= "all_plot")
+```
+
+# Helper Functions
+
+In this vignette, we also provide a series of helper function to process the data.
+
+## How to analyse agregated methylated regions ?
+
+We simulated 500 samples and 1000 potential DNA methylation mediators, with various a binary exposure (smoking status of mothers) and continuous outcomes (birth weight).
+
+### Identifying aggregated mediator regions (AMR)
+
+Identify Aggregated Methylated regions (AMR) with AMR_search function which uses from the P-values from *max-squared* test compute in `run_AS` function and using a adapted comb-p method (comb-p is a tool that manipulates BED files of possibly irregularly spaced P-values and calculates auto-correlation, combines adjacent P-values, performs false discovery adjustment, finds regions of enrichment and assigns significance to those regions). AMR identification could be useful in Epigenomic Wide Association Studies when single CpG mediation is unsuccessful, or could be complementary analysis.
+
+
+```{r AMR , message=FALSE}
+helper_ex = hdmax2::helper_ex
+
+#Artificial reduction of dataset size to pass the github action check when building hdmax2 website
+helper_ex$methylation = helper_ex$methylation[ , 800:1000]
+helper_ex$annotation = helper_ex$annotation[800:1000, ]
+
+
+pc <- prcomp(helper_ex$methylation)
+plot((pc$sdev^2/sum(pc$sdev^2))[1:15],
+     xlab = 'Principal Component',
+     ylab = "Explained variance",
+     col = c(rep(1, 3), 2, rep(1, 16)))
+# chosen number of dimension
+K=5
+
+## run hdmax2 step1
+hdmax2_step1 = hdmax2::run_AS(exposure = helper_ex$exposure,
+                              outcome = helper_ex$phenotype,
+                              M = helper_ex$methylation, 
+                              K = K)
+
+##Detecting AMR
+seed = 0.6 #Careful to change this parameter when working with real data
+res.amr_search = hdmax2::AMR_search(chr = helper_ex$annotation$chr,
+                                    start = helper_ex$annotation$start,
+                                    end = helper_ex$annotation$end,
+                                    pval = hdmax2_step1$max2_pvalues,
+                                    cpg = helper_ex$annotation$cpg,
+                                    seed = seed, 
+                                    nCores = 2)
+
+res.amr_search$res
+
+res.arm_build = hdmax2::AMR_build(res.amr_search, 
+                                  methylation = helper_ex$methylation, 
+                                  nb_cpg = 2)
+
+#List of DMR selected
+head(res.arm_build$res)
+
+##CpG in the DMR
+res.arm_build$CpG_for_each_AMR
+
+```
+
+### Quantifying indirect effects 
+
+Like with single mediators analysis *esimate_effect* function could be use to estimate different effects of AMR. Also `plot_hdmax2` can be applied to step2 results.
+
+
+```{r step2, message=FALSE, warning=FALSE, fig.height=10, fig.width=10}
+## run hdmax2 step2
+object = hdmax2_step1
+mediators_top10 = helper_ex$methylation[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+m = as.matrix(res.arm_build$AMR_mean)
+
+## selected mediators effects estimation
+
+hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
+                                       m = m)
+library(ggplot2)
+hdmax2::plot_hdmax2(hdmax2_step2, plot_type= "all_plot")
+```
+
+## How to select potential mediators using q-values and FDR control ?
+
+Several methods can be use to select potential mediators from step1 results of our method, in our main use cases we simply select top 10 mediators to simplify the narrative. Among available methods to select mediators from mediation test p-values, we can use FDR (False Discovery Rate) control. Q-value is obtained  from *max-squared* test p-values from step 1 with `fdrtools::fdrtools` function then bounded by chosen threshold. 
+
+```{r FDR, message=FALSE}
+
+## run hdmax2 step1
+hdmax2_step1 = hdmax2::run_AS(exposure = simu_data$X_binary,
+                 outcome = simu_data$Y_continuous,
+                 M = simu_data$M1, 
+                 K = K)
+
+## Select candidate mediator  
+qv = hdmax2::hdmax2_qvalue(hdmax2_step1$max2_pvalues)
+candidate_mediator <- qv$qv[qv$qv<= 0.2] # In this example, we will consider FDR levels <20%.
+candidate_mediator
+
+# qv.fdrtool <- fdrtool::fdrtool(hdmax2_step1$max2_pvalues, statistic = "pvalue", plot = F, verbose = F)$qval
+# candidate_mediator <- qv.fdrtool[qv.fdrtool<= 0.2] # In this example, we will consider FDR levels <20%.
+# candidate_mediator
+# 
+# plot(qv.fdrtool, qv$qv, cex = .5) ; abline(0,1, col = 2)
+
+```
+
+## How to transform a categorial variable into an ordered factor?
+
+When categorical variables are used as exposure variables, `hdmax2` uses the first category as a reference (intercept) to calculate the effects associated with the variable's other categories. The functions `HDMAX2::run_AS` and `HDMAX2::estimate_effect` will transform the character vector you have used (if any) into a factor, with an arbitrary ordering of the categories.  If order is important to you, here's a simple way to turn your character vector into a factor and order the categories as you wish. You can then use this variable as input to the hdmax2 functions.
+
+
+```{r factor, message=FALSE}
+
+# inverse alphabetical order for example
+X = simu_data$X_categorial
+X = factor(X, ordered = TRUE, levels = c("D","C","B","A"))
+
+```
+
+
+## How to handle adding an additional set of covariates to the second association study?
+
+It is possible to add a second adjustment factors set in association study between potential mediators and outcome if it makes sense from a biological standpoint. Nevertheless, this additional set of adjustment factors for the second association study must include the adjustment factors from the first association study.
+
+```{r second covar set, message=FALSE}
+
+covar = as.data.frame(helper_ex$covariables[,1:2])
+suppl_covar = as.data.frame(helper_ex$covariables[,3:4])
+
+hdmax2_step1 = hdmax2::run_AS(exposure = helper_ex$exposure,
+                              outcome = helper_ex$phenotype,
+                              M = helper_ex$methylation,
+                              K = K,
+                              covar = covar,
+                              suppl_covar = suppl_covar)
+
+
+
+```
+
+
+
+
+```{r, eval =FALSE}
+sessionInfo()
+```
