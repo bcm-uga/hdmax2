@@ -23,14 +23,6 @@ Compute the P-value and the FDR for each AMR detected."><!-- mathjax --><script 
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/hdmax2_multivariate.html">hdmax2 application for multivariate exposome</a>
-    <a class="dropdown-item" href="../articles/hdmax2_univariate.html">hdmax2 application for univariate exposome</a>
-    <a class="dropdown-item" href="../articles/helper_functions.html">hdmax2 helper functions</a>
-  </div>
-</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -107,22 +99,13 @@ aggregated methylated regions (AMRs).</p>
 <span class="r-in"><span><span class="va">data</span><span class="op">$</span><span class="va">annotation</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">[</span><span class="fl">800</span><span class="op">:</span><span class="fl">1000</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">K</span><span class="op">=</span><span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="co">## run hdmax2 step1</span></span></span>
-<span class="r-in"><span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="run_AS.html">run_AS</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">exposure</span>,</span></span>
-<span class="r-in"><span>                             Y <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">phenotype</span>,</span></span>
+<span class="r-in"><span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="run_AS.html">run_AS</a></span><span class="op">(</span>exposure <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">exposure</span>,</span></span>
+<span class="r-in"><span>                             outcome <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">phenotype</span>,</span></span>
 <span class="r-in"><span>                             M <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">methylation</span>,</span></span>
 <span class="r-in"><span>                             K <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The exposure argument is a vector.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The outcome argument is a vector.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The outcome argument is numeric</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Potential mediators matrix is actually a matrix</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> provided K = 5</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> K value has been transformed as integer</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The input exposome is continuous or binary</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Running first regression with univariate explanatory variable.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Running first regression with univariate exposure variable.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Running second regression.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Running max-squared test.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Not generating max2 pvalues for each explanatory variable.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##Detecting AMR</span></span></span>
 <span class="r-in"><span><span class="va">chr</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">chr</span></span></span>
@@ -144,7 +127,7 @@ aggregated methylated regions (AMRs).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2   1 1326166 1326221 0.005626678 0.01688003</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   1 1310734 1310988 0.019799860 0.02138751</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3   1 1406862 1407016 0.021387509 0.02138751</span>
-<span class="r-in"><span><span class="co">##'</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

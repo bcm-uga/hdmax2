@@ -21,14 +21,6 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/hdmax2_multivariate.html">hdmax2 application for multivariate exposome</a>
-    <a class="dropdown-item" href="../articles/hdmax2_univariate.html">hdmax2 application for univariate exposome</a>
-    <a class="dropdown-item" href="../articles/helper_functions.html">hdmax2 helper functions</a>
-  </div>
-</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -118,7 +110,16 @@ This function draw a summary plot of hdmax2</dd>
           
           <code><a href="run_AS.html">run_AS()</a></code> 
         </dt>
-        <dd>Association Study with both exposure and outcome</dd>
+        <dd>The function run_AS() evaluates the association between exposure variables X ,
+intermediary variables M and the outcome variable Y, using a latent factor mixed model
+(LFMM Caye et al. 2019) to estimate K unobserved latent factors  U.
+First this function tests the significance of association between
+the exposure variables and the potential mediator variables.
+Then it tests association between the potential mediator variables and the outcome variable.
+Finally it evaluates the significance of the indirect effects by computing
+the squared maximum of two series of P-values with max2 test. This rejects
+the null-hypothesis that either the effect of X on M, or the effect of M on Y is null.
+Optional covariates Z, can be included as observed adjustment factors in the model.</dd>
       </dl><dl><dt>
           
           <code><a href="simu_data.html">simu_data</a></code> 
