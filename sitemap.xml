@@ -7,6 +7,12 @@
     <loc>https://bcm-uga.github.io/hdmax2/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>https://bcm-uga.github.io/hdmax2/articles/hdmax2_tutorial.html</loc>
+  </url>
+  <url>
+    <loc>https://bcm-uga.github.io/hdmax2/articles/index.html</loc>
+  </url>
+  <url>
     <loc>https://bcm-uga.github.io/hdmax2/authors.html</loc>
   </url>
   <url>
@@ -23,6 +29,9 @@
   </url>
   <url>
     <loc>https://bcm-uga.github.io/hdmax2/reference/estimate_effect.html</loc>
+  </url>
+  <url>
+    <loc>https://bcm-uga.github.io/hdmax2/reference/hdmax2_qvalue.html</loc>
   </url>
   <url>
     <loc>https://bcm-uga.github.io/hdmax2/reference/helper_ex.html</loc>
