@@ -25,14 +25,14 @@ simu_data = hdmax2::simu_data
 K = 5
 # Run {hdmax2} step 1
 hdmax2_step1 = hdmax2::run_AS(
-  X = simu_data$X_continuous,
-  Y = simu_data$Y_continuous,
-  M = simu_data$M,
+  exposure = simu_data$X_binary,
+  outcome = simu_data$Y_continuous,
+  M = simu_data$M1,
   K = K
 )
 # Select mediators
 mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
-mediators_top10 = simu_data$M[, mediators_subset]
+mediators_top10 = simu_data$M1[, mediators_subset]
 # Run {hdmax2} step 2
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
                                        m = mediators_top10)

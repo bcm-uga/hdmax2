@@ -7,7 +7,7 @@
 lfmm2_med(input, env, K, lambda = 1e-05, effect.sizes = FALSE)
 }
 \arguments{
-\item{input}{a response variable matrix with n rows and p columns}
+\item{input}{Continuous intermediary variables matrix  encompassing potential mediators with n rows and p columns.}
 
 \item{env}{An explanatory variable matrix with n rows and d columns.}
 
@@ -19,6 +19,8 @@ lfmm2_med(input, env, K, lambda = 1e-05, effect.sizes = FALSE)
 }
 \value{
 an object with the following attributes
+U
+V
 }
 \description{
 lfmm2 adapted function for hdmax2 from LEA::lfmm2
@@ -26,7 +28,7 @@ lfmm2 adapted function for hdmax2 from LEA::lfmm2
 \examples{
 data(simu_data)
 K = 5
-mod.lfmm1 = lfmm2_med(input = simu_data$M, 
+mod.lfmm1 = lfmm2_med(input = simu_data$M1, 
 env = simu_data$X_binary, 
 K = K,
 effect.sizes = FALSE)

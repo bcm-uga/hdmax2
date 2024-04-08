@@ -25,8 +25,8 @@ simu_data = hdmax2::simu_data
 K = 5
 # Run {hdmax2} step 1
 hdmax2_step1 = hdmax2::run_AS(
-  X = simu_data$X_continuous ,
-  Y =  simu_data$Y_continuous,
+  exposure = simu_data$X_continuous ,
+  outcome =  simu_data$Y_continuous,
   M =  simu_data$M,
   K = K
 )

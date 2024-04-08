@@ -22,20 +22,19 @@ This function draw a summary plot of hdmax2
 \examples{
 # Load example dataset
 simu_data = hdmax2::simu_data
-X_matrix = data.frame(X1 = simu_data$X_continuous, X2 = simu_data$X_continuous_2)
-Y_matrix = simu_data$Y_continuous
-M_matrix = simu_data$M
+exposure = data.frame(X1 = simu_data$X_continuous, X2 = simu_data$X_binary)
+covar = cbind(simu_data$age, simu_data$gender)
+covar = as.data.frame(covar)
 K = 5
-# Run {hdmax2} step 1
-hdmax2_step1 = hdmax2::run_AS(
-  X = X_matrix,
-  Y = Y_matrix,
-  M = M_matrix,
-  K = K
-)
+
+hdmax2_step1 = hdmax2::run_AS(exposure = exposure ,
+                              outcome = simu_data$Y_continuous,
+                              M = simu_data$M2,
+                              K = K,
+                              covar = covar)
 # Select mediators
 mediators_subset = names(sort(hdmax2_step1$max2_pvalues)[1:10])
-mediators_top10 = simu_data$M[, mediators_subset]
+mediators_top10 = simu_data$M2[, mediators_subset]
 # Run {hdmax2} step 2
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1, 
                                        m = mediators_top10)

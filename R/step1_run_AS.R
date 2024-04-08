@@ -1,32 +1,30 @@
-##' Association Study with both exposure and outcome
-##'
-##' This function uses lfmm (latent factor mixed models) to estimate
-##' the effects of exposures and outcomes on a response matrix.
-##' applied to estimate the effects of exposure $X$ on a matrix $M$
-##' of potential mediators, and the effect of each marker on outcome $Y$.
-##' It uses the covariables matrix $conf$ and $K$ latent factors.
-##' Test all possible markers to determine potential mediators in the exposure-outcome association.
-##' Then compute the squared maximum of two series of P-values with $max2$ test
-##' It computes the squared maximum of two series of P-values from the association studie.
-##' This rejects the null-hypothesis that either the effect of X on M, or the effect of M on Y is null.
-##' @param M a response variable matrix with n rows and p columns.
-##' Response variables must be encoded as numeric. No NAs allowed.
-##' @param X Exposure. An explanatory variable data frame with n rows and d columns.
-##' Each column corresponds to a distinct explanatory variable (Exposure). 
+##' The function run_AS() evaluates the association between exposure variables X , 
+##' intermediary variables M and the outcome variable Y, using a latent factor mixed model 
+##' (LFMM Caye et al. 2019) to estimate K unobserved latent factors  U. 
+##' First this function tests the significance of association between 
+##' the exposure variables and the potential mediator variables. 
+##' Then it tests association between the potential mediator variables and the outcome variable. 
+##' Finally it evaluates the significance of the indirect effects by computing
+##' the squared maximum of two series of P-values with max2 test. This rejects 
+##' the null-hypothesis that either the effect of X on M, or the effect of M on Y is null. 
+##' Optional covariates Z, can be included as observed adjustment factors in the model.
+##' 
+##' @param M Continuous intermediary variables matrix  encompassing potential mediators with n rows and p columns.
+##' Must be encoded as numeric. No NAs allowed.
+##' @param exposure An explanatory variable data frame with n rows and d columns.
+##' Each column corresponds to a distinct explanatory variable (exposure). 
 ##' Continuous and binary variables must be encoded in numeric format. categorical variables are factor objects. The user can use the as.factor function to encode categorical variables, and  levels() and ordered() functions to define the modal order of categorical variables.
-##' @param Y Outcome. An explanatory variable matrix with n rows and 1 columns, corresponds to a vector, which supports both continuous and binary formats.
+##' @param outcome An explanatory variable matrix with n rows and 1 columns, corresponds to a vector, which supports both continuous and binary formats.
 ##' @param K an integer for the number of latent factors in the regression model.
 ##' @param covar set of adjustment factors, must be numeric. No NAs allowed
-##' @param covar_sup_reg2 possible supplementary adjustment factors for the second association study (must be nested within the first set of adjustment factors )
-##' @param detailed A logical to indicate if p-values must be estimated for each explanatory variables (detailed = TRUE) in addition to the pvalue of the global model (detailed = FALSE, by default)
+##' @param suppl_covar possible supplementary adjustment factors for the second association study (must be nested within the first set of adjustment factors )
+##' @param each_var_pval A logical to indicate if p-values must be estimated for each exposure variables (each_var_pval = TRUE) in addition to the pvalue of the global model (each_var_pval = FALSE, by default)
 ##' Useful to visually check the fit of the estimated proportion of null p-values.
-##' @param genomic.control correct pvalue with genomic inflation factor
-##' @param effect.sizes if effect sizes from lfmm are needed
 ##' @return an object with the following attributes 
 ##' 
 ##' for first association study (mod1):
 ##'   
-##'  - pValue, estimation of the effects of X and Y on the matrix M.
+##'  - pValue, estimation of the effects of exposure X and outcome on the matrix M.
 ##'
 ##'  - U, scores matrix for the K latent factors computed from the for first regression
 ##'  
@@ -48,47 +46,42 @@
 ##'  - pval, results of max2 test
 ##'  
 ##' input element:  
-##'  exposition , outcome, matrix  (element and type) and covar
+##'  exposition , outcome and covariates
 ##'  
 ##'  
 ##' @details
-##' The response variable matrix Y and the explanatory variable are centered.
 ##' For each argument, missing values must be imputed: no NA allowed. K (number of latent factors) can be estimated
 ##' with the eigenvalues of a PCA.
-##' Possibility of calibrating the scores and pValues by the GIF (Genomic Inflation Factor).
-##' See LEA package for more information.
 ##' Max2 test The P-value is computed for each markers following this formula
 ##' \deqn{pV = max(pVal1, pVal2)^2}
 ##' @export
 ##' @author Florence Pittion, Magali Richard, Olivier Francois, Basile Jumentier
 ##' @examples
 ##' # Load example dataset
-##' simu_data = hdmax2::simu_data
+##' attach(simu_data)
 ##'  K = 5
 ##' # Run {hdmax2} step 1
-##' hdmax2_step1 = run_AS(X = simu_data$X_continuous ,
-##'                       Y = simu_data$Y_continuous,
-##'                       M = simu_data$M,
+##' hdmax2_step1 = run_AS(exposure = simu_data$X_continuous ,
+##'                       outcome = simu_data$Y_continuous,
+##'                       M = simu_data$M1,
 ##'                       K = K)
 ##' 
 ##' head(hdmax2_step1$max2_pvalues)
 
-run_AS = function(X,
-                  Y,
+run_AS = function(exposure,
+                  outcome,
                   M, 
                   K,
                   covar = NULL,
-                  covar_sup_reg2 = NULL,
-                  detailed = FALSE,
-                  genomic.control = TRUE,
-                  effect.sizes = FALSE
+                  suppl_covar = NULL,
+                  each_var_pval = FALSE
 ) {
   
-  ## Check Exposure is a data.frame
-  check_argument_exposure(X) 
+  ## Check exposure is a data.frame
+  check_argument_exposure(exposure) 
   
-  ## Check Outcome is vector or single column data.frame
-  check_argument_outcome(Y)
+  ## Check outcome is vector or single column data.frame
+  check_argument_outcome(outcome)
   
   ## Check Mediator matrix is a numeric matrix
   check_argument_mediators_matrix(M)
@@ -100,124 +93,124 @@ run_AS = function(X,
     check_covar(covar)
   }
   
-  if(!is.null(covar_sup_reg2)){
-    check_covar(covar_sup_reg2)
+  if(!is.null(suppl_covar)){
+    check_covar(suppl_covar)
   }
   
-  # Exposure and Outcome before pretreatment
-  X_input = X
-  Y_input = Y
+  # Exposure and outcome before pretreatment
+  exposure_input = exposure
+  outcome_input = outcome
   
   ## Exposure data frame pretreatment
   # numeric are needed
-  if (is.vector(X)){
+  if (is.vector(exposure)){
     expo_var_n = 1
-    expo_var_types =  typeof(X)
+    expo_var_types =  typeof(exposure)
     expo_var_ids = "univariate"
-    if (length(unique(X))<=1){
+    if (length(unique(exposure))<=1){
       stop("Categorial exposome must have at least two levels")
     }
     if (expo_var_types == "character"){
-      message("The input exposome is categorial")
+      #message("The input exposome is categorial")
       # model matrix transformation (-1 column to avoid colinearity)
-      X = as.factor(X)
-      X = model.matrix(~X)
-      X = X[,-1]
-      new_expo_var_type = typeof(X)
+      exposure = as.factor(exposure)
+      exposure = model.matrix(~exposure)
+      exposure = exposure[,-1]
+      new_expo_var_type = typeof(exposure)
       
     } 
     else if (expo_var_types== "integer"||expo_var_types== "logical"||expo_var_types== "double"){
-      message("The input exposome is continuous or binary" )
-      X = as.numeric(X)
-      new_expo_var_type = typeof(X)
+      #message("The input exposome is continuous or binary" )
+      exposure = as.numeric(exposure)
+      new_expo_var_type = typeof(exposure)
     } 
     
-  } else if (is.factor(X)){
+  } else if (is.factor(exposure)){
     expo_var_n = 1
-    expo_var_types =  typeof(X)
+    expo_var_types =  typeof(exposure)
     expo_var_ids = "univariate"
-    message("The input exposome is categorial")
+    #message("The input exposome is categorial")
     # model matrix transformation (-1 column to avoid colinearity)
-    X = model.matrix(~X)
-    X = X[,-1]
-    new_expo_var_type = typeof(X)
+    exposure = model.matrix(~exposure)
+    exposure = exposure[,-1]
+    new_expo_var_type = typeof(exposure)
     
-  } else if(is.data.frame(X)){
-    expo_var_n = dim(X)[2]
-    expo_var_ids = colnames(X)
-    expo_var_types = sapply(X, typeof)
+  } else if(is.data.frame(exposure)){
+    expo_var_n = dim(exposure)[2]
+    expo_var_ids = colnames(exposure)
+    expo_var_types = sapply(exposure, typeof)
     new_expo_var_types = list()
-    Xs = c()
+    exposures = c()
     for(expo_var in 1:expo_var_n) {
       if (expo_var_types[expo_var] == "character"){
-        message(paste("The input exposome no ", expo_var," is categorial"))
+        #message(paste("The input exposome no ", expo_var," is categorial"))
         # model matrix transformation
-        new_X = as.factor(X[,expo_var])
-        new_X = model.matrix(~new_X)
-        new_X = new_X[,-1]
-        new_expo_var_type =  typeof(new_X)
+        new_exposure = as.factor(exposure[,expo_var])
+        new_exposure = model.matrix(~new_exposure)
+        new_exposure = new_exposure[,-1]
+        new_expo_var_type =  typeof(new_exposure)
         
-      } else if (is.factor(X)){ 
-        message(paste("The input exposome no ", expo_var," is categorial"))
+      } else if (is.factor(exposure)){ 
+        #message(paste("The input exposome no ", expo_var," is categorial"))
         # model matrix transformation
-        new_X = model.matrix(~new_X)
-        new_X = new_X[,-1]
-        new_expo_var_type =  typeof(new_X)
+        new_exposure = model.matrix(~new_exposure)
+        new_exposure = new_exposure[,-1]
+        new_expo_var_type =  typeof(new_exposure)
       } else if (expo_var_types[expo_var]== "integer"||expo_var_types[expo_var]== "logical"|| expo_var_types[expo_var]== "double"){
-        message(paste("The input exposome no ",expo_var, "is continuous or binary" ))
-        new_X = X[,expo_var]
-        new_expo_var_type = typeof(new_X)
+        #message(paste("The input exposome no ",expo_var, "is continuous or binary" ))
+        new_exposure = exposure[,expo_var]
+        new_expo_var_type = typeof(new_exposure)
       } 
       
       col_name = paste("Var", expo_var, sep="_")
-      Xs= cbind(Xs, stats::setNames(new_X,col_name))
+      exposures= cbind(exposures, stats::setNames(new_exposure,col_name))
       new_expo_var_types[expo_var] = new_expo_var_type
     }
-    expo_var_ids = colnames(X)
+    expo_var_ids = colnames(exposure)
   } else {
     stop("Unsupported exposure variable type")
   }
   
 
-  ## Outcome pretreatment
+  ## outcome pretreatment
   outcome_var_type = NULL
   
-  if(is.logical(Y)){
-    message("The outcome vector is logical and tranformed in numeric, TRUE become 1 and FALSE become 0.")
-    Y = as.matrix(as.numeric(Y))
+  if(is.logical(outcome)){
+    #message("The outcome vector is logical and tranformed in numeric, TRUE become 1 and FALSE become 0.")
+    outcome = as.matrix(as.numeric(outcome))
     outcome_var_type = "binary"
   }
   
-  if (all(Y %in% c(0, 1))) {
-    if (is.integer(Y)) {
-      message("The outcome vector is integer and contains only 0s and 1s, it is assimilated as binary variable.")
-      Y = as.matrix(as.double(Y))
+  if (all(outcome %in% c(0, 1))) {
+    if (is.integer(outcome)) {
+      #message("The outcome vector is integer and contains only 0s and 1s, it is assimilated as binary variable.")
+      outcome = as.matrix(as.double(outcome))
       outcome_var_type = "binary"
-    } else if (is.double(Y)) {
-      message("The outcome vector is numeric and contains only 0s and 1s, it is assimilated as binary variable.")
-      Y = as.matrix(Y)
+    } else if (is.double(outcome)) {
+      #message("The outcome vector is numeric and contains only 0s and 1s, it is assimilated as binary variable.")
+      outcome = as.matrix(outcome)
       outcome_var_type = "binary"
     }
-  } else if (is.integer(Y)||is.double(Y)) {
-    message("The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable.")
-    Y = as.matrix(as.double(Y))
+  } else if (is.integer(outcome)||is.double(outcome)) {
+    #message("The outcome vector is numeric and DON'T contains only 0s and 1s, it is assimilated as continous variable.")
+    outcome = as.matrix(as.double(outcome))
     outcome_var_type = "continuous"
   } else {
     stop("The outcome vector is neither numeric nor logical, therefore it is not supported")
   }
   
-  # Exposure and Outcome after pretreatment
-  if(expo_var_n == 1){
-    if(is.data.frame(X)){
-      X_output = Xs
-    } else {
-      X_output = X
-    }
-  }
-  if(expo_var_n > 1){
-    X_output = Xs
-  }
-  Y_output = Y
+  # exposure and outcome after pretreatment
+  # if(expo_var_n == 1){
+  #   if(is.data.frame(X)){
+  #     exposure_output = exposures
+  #   } else {
+  #     exposure_output = exposure
+  #   }
+  # }
+  # if(expo_var_n > 1){
+  #   exposure_output = exposures
+  # }
+  # outcome_output = outcome
   
   
   res = list()
@@ -229,63 +222,63 @@ run_AS = function(X,
   
   if(expo_var_n == 1){
     
-    message("Running first regression with univariate explanatory variable.")
-    if (expo_var_types == "character"|| is.factor(X_input)){
+    message("Running first regression with univariate exposure variable.")
+    if (expo_var_types == "character"|| is.factor(exposure_input)){
       
       mod.lfmm1 = lfmm2_med(input = M, 
-                            env = X, 
+                            env = exposure, 
                             K = K,
-                            effect.sizes = effect.sizes)
+                            effect.sizes = FALSE)
       res_reg1 = lfmm2_med_test(mod.lfmm1, 
                                 input = M, 
-                                env = X,
+                                env = exposure,
                                 covar = covar,
                                 full = TRUE, #parameter to compute a single p-value for the global categorial design matrix using partial regressions
-                                genomic.control = genomic.control)
-      if(detailed == TRUE){
+                                genomic.control = TRUE)
+      if(each_var_pval == TRUE){
         
-        message("Generating detailed pvalues for each explanatory variable.")
+        #message("Generating detailed pvalues for each explanatory variable.")
         
         mod.lfmm1 = lfmm2_med(input = M, 
-                              env = X, 
+                              env = exposure, 
                               K = K,
-                              effect.sizes = effect.sizes)
+                              effect.sizes = FALSE)
         res_reg1 = lfmm2_med_test(mod.lfmm1, 
                                   input = M, 
-                                  env = X,
+                                  env = exposure,
                                   full = FALSE,
                                   covar = covar,
-                                  genomic.control = genomic.control)
+                                  genomic.control = TRUE)
         pvals_1 = as.matrix(res_reg1$pvalues)
         names(pvals_1) = colnames(M)
       } else {
         pvals_1 = NA
       }
-    } else if (is.vector(X) && (expo_var_types== "integer"||expo_var_types== "logical"|| expo_var_types== "double")){
+    } else if (is.vector(exposure) && (expo_var_types== "integer"||expo_var_types== "logical"|| expo_var_types== "double")){
       
       mod.lfmm1 = lfmm2_med(input = M, 
-                            env = X, 
+                            env = exposure, 
                             K = K,
-                            effect.sizes = effect.sizes)
+                            effect.sizes = FALSE)
       res_reg1 = lfmm2_med_test(mod.lfmm1, 
                                 input = M, 
-                                env = X,
+                                env = exposure,
                                 covar = covar,
-                                genomic.control = genomic.control)
+                                genomic.control = TRUE)
       
       
       
-    }else if (is.data.frame(X) && (expo_var_types== "integer"||expo_var_types== "logical"|| expo_var_types== "double")){
+    }else if (is.data.frame(exposure) && (expo_var_types== "integer"||expo_var_types== "logical"|| expo_var_types== "double")){
       
       mod.lfmm1 = lfmm2_med(input = M, 
-                            env = Xs, 
+                            env = exposures, 
                             K = K,
-                            effect.sizes = effect.sizes)
+                            effect.sizes = FALSE)
       res_reg1 = lfmm2_med_test(mod.lfmm1, 
                                 input = M, 
-                                env = Xs,
+                                env = exposures,
                                 covar = covar,
-                                genomic.control = genomic.control)
+                                genomic.control = TRUE)
     }
     pval1 = as.double(res_reg1$pvalues)
     names(pval1) = colnames(M)
@@ -306,21 +299,21 @@ run_AS = function(X,
   # In multivariate situation
   
   if(expo_var_n > 1){
-    X = Xs
-    message("Running first regression with multivariate explanatory variables.")
+    exposure = exposures
+    message("Running first regression with multivariate exposure variables.")
     
     # Computes a global pvalue for regression 1
     
     mod.lfmm1 = lfmm2_med(input = M, 
-                          env = X, 
+                          env = exposure, 
                           K = K,
-                          effect.sizes = effect.sizes)
+                          effect.sizes = FALSE)
     res_reg1 = lfmm2_med_test(mod.lfmm1, 
                               input = M, 
-                              env = X, 
+                              env = exposure, 
                               full = TRUE, #parameter to compute a single p-value for the global multivariate model using partial regressions 
                               covar = covar,
-                              genomic.control = genomic.control)
+                              genomic.control = TRUE)
     pval1 = res_reg1$pvalues
     names(pval1) = colnames(M)
     U1 = mod.lfmm1$U
@@ -332,24 +325,24 @@ run_AS = function(X,
     
     # Computed a single p-value for each explanatory variable
     
-    if (detailed == TRUE & expo_var_n == 1) {
+    if (each_var_pval == TRUE & expo_var_n == 1) {
       stop("Cannot perform detailed analysis for univariate exposome. Detailed analysis is only applicable for multivariate exposomes.")
     }
     
-    if(detailed == TRUE){
+    if(each_var_pval == TRUE){
       
       message("Generating detailed pvalues for each explanatory variable.")
       
       mod.lfmm1 = lfmm2_med(input = M, 
-                            env = X, 
+                            env = exposure, 
                             K = K,
-                            effect.sizes = effect.sizes)
+                            effect.sizes = FALSE)
       res_reg1 = lfmm2_med_test(mod.lfmm1, 
                                 input = M, 
-                                env = X,
+                                env = exposure,
                                 full = FALSE,
                                 covar = covar,
-                                genomic.control = genomic.control)
+                                genomic.control = TRUE)
       pvals_1 = as.matrix(res_reg1$pvalues)
       names(pvals_1) = colnames(M)
     } else {
@@ -364,7 +357,7 @@ run_AS = function(X,
                 adj_rsquared1, 
                 gif1,
                 pvals_1 )
-    names(reg1) = c("pval","U","V","zscores","fscores", "adj_rsquared","gif","detailed_pval")
+    names(reg1) = c("pval","U","V","zscores","fscores", "adj_rsquared","gif","each_var_pval")
 
   }
   
@@ -379,34 +372,34 @@ run_AS = function(X,
   # The model run is actually M ~ X + Y, i.e. independent of the type of Y (continuous or binary)
   
   message("Running second regression.")
-  if(!is.null(covar_sup_reg2)){
-    covars = cbind(covar, covar_sup_reg2)
+  if(!is.null(suppl_covar)){
+    covars = cbind(covar, suppl_covar)
   } else {
     covars = covar
   }
   
   if(expo_var_n == 1){
-    if(is.vector(X)||is.factor(X)||is.matrix(X)){
+    if(is.vector(exposure)||is.factor(exposure)||is.matrix(exposure)){
       res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
                                 input = M, 
-                                env = cbind(X, Y),
+                                env = cbind(exposure, outcome),
                                 covar = covars,
-                                genomic.control = genomic.control,
+                                genomic.control = TRUE,
                                 full = FALSE)
-    }else if(is.data.frame(X)){
+    }else if(is.data.frame(exposure)){
       res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
                                 input = M, 
-                                env = cbind(Xs, Y),
+                                env = cbind(exposures, outcome),
                                 covar = covars,
-                                genomic.control = genomic.control,
+                                genomic.control = TRUE,
                                 full = FALSE)
     }
   }else if(expo_var_n > 1){
     res_reg2 = lfmm2_med_test(mod.lfmm1, #the function will use the latent factors U1 estimated in linear regression 1
                               input = M, 
-                              env = cbind(Xs, Y),
+                              env = cbind(exposures, outcome),
                               covar = covars,
-                              genomic.control = genomic.control,
+                              genomic.control = TRUE,
                               full = FALSE)
   }
   pval2 = as.double(res_reg2$pvalues[2,])
@@ -437,46 +430,44 @@ run_AS = function(X,
   
   res[[3]] = max2
   
-  if (detailed == TRUE){
-    message("Generating max2 pvalues for each explanatory variable.")
-    max2_detailed = list()
+  if (each_var_pval == TRUE){
+    #message("Generating max2 pvalues for each explanatory variable.")
+    max2_each_var_pval = list()
     if(expo_var_n == 1){
-      for (x in 1:dim(X)[2]){
+      for (x in 1:dim(exposure)[2]){
         max2_pval <- apply(cbind(pvals_1[x,], pval2), 1, max)^2
         names(max2_pval) = colnames(M)
-        max2_detailed[[colnames(Xs)[x]]] = max2_pval 
+        max2_each_var_pval[[colnames(exposures)[x]]] = max2_pval 
       }
-      res[[4]] = max2_detailed
+      res[[4]] = max2_each_var_pval
     } else {
-    for (x in 1:dim(Xs)[2]){
+    for (x in 1:dim(exposures)[2]){
       max2_pval <- apply(cbind(pvals_1[x,], pval2), 1, max)^2
       names(max2_pval) = colnames(M)
-      max2_detailed[[colnames(Xs)[x]]] = max2_pval 
+      max2_each_var_pval[[colnames(exposures)[x]]] = max2_pval 
     }
-    res[[4]] = max2_detailed
+    res[[4]] = max2_each_var_pval
   } 
     } else {
-    message("Not generating max2 pvalues for each explanatory variable.")
+    #message("Not generating max2 pvalues for each explanatory variable.")
     res[[4]] = NA
   }
   
   input = list(
-    X_input,
-    Y_input,
-    X_output,
-    Y_output,
+    exposure_input,
+    outcome_input,
     expo_var_types,
     expo_var_ids,
     outcome_var_type,
     covar, 
-    covar_sup_reg2
+    suppl_covar
   )
   
-  names(input) = c("X_input","Y_input","X_output","Y_output", "expo_var_types", "expo_var_ids" , "outcome_var_type", "covar", "covar_sup_reg2")
+  names(input) = c("exposure_input","outcome_input", "expo_var_types", "expo_var_ids" , "outcome_var_type", "covar", "suppl_covar")
   
   res[[5]] = input
   
-  names(res) <- c("modele_1", "modele_2", "max2_pvalues",  "max2_pvalues_detailed", "input")
+  names(res) <- c("AS_1", "AS_2", "max2_pvalues",  "max2_each_var_pvalues", "input")
   
   class(res) = "hdmax2_step1"
   return(res)
@@ -485,16 +476,16 @@ run_AS = function(X,
 
 check_argument_exposure = function(argument){
   if(is.data.frame(argument)) {
-    message("The exposure argument is a data frame")
+    #message("The exposure argument is a data frame")
     if (ncol(argument) == 1) {
-      message("The exposure argument is a data frame with a single column.")
+      #message("The exposure argument is a data frame with a single column.")
     } else if (ncol(argument) > 1) {
-      message("The exposure argument is a data frame with more than one column.")
+      #message("The exposure argument is a data frame with more than one column.")
     }
   } else if (is.vector(argument)) {
-    message("The exposure argument is a vector.")
+    #message("The exposure argument is a vector.")
   } else if (is.factor(argument)) {
-    message("The exposure argument is a factor.")
+    #message("The exposure argument is a factor.")
   } else {
     stop("The exposure  is not a data frame,  nor a vector ")
   }
@@ -502,16 +493,16 @@ check_argument_exposure = function(argument){
 
 check_argument_outcome = function(argument) {
   if (is.vector(argument)) {
-    message("The outcome argument is a vector.")
+    #message("The outcome argument is a vector.")
   } else if (is.data.frame(argument)) {
     if (ncol(argument) == 1) {
-      message("The outcome argument is a data frame with a single column.")
+      #message("The outcome argument is a data frame with a single column.")
     } else {
       stop("The outcome data frame must have a single column.")
     }
   } else if (is.matrix(argument)) {
     if (ncol(argument) == 1) {
-      message("The outcome matrix has a single column.")
+      #message("The outcome matrix has a single column.")
     } else {
       stop("The outcome matrix must have a single column.")
     }
@@ -519,11 +510,11 @@ check_argument_outcome = function(argument) {
     stop("The outcome argument is neither a vector, nor a data frame, nor a matrix with a single column.")
   }
   if (is.numeric(argument)) {
-    message("The outcome argument is numeric")
+    #message("The outcome argument is numeric")
   } else if (is.integer(argument)) {
-    message("The outcome argument is integer")
+    #message("The outcome argument is integer")
   } else if (is.logical(argument)) {
-      message("The outcome argument is logical")
+      #message("The outcome argument is logical")
   } else {
     stop("The outcome argument is neither numeric, nor integer, nor logical")
   }
@@ -531,7 +522,7 @@ check_argument_outcome = function(argument) {
 
 check_argument_mediators_matrix = function(argument){
   if(is.matrix(argument)){
-    message("Potential mediators matrix is actually a matrix")
+    #message("Potential mediators matrix is actually a matrix")
   } else {
     stop("Potential mediators matrix must be a matrix")
   }
@@ -539,23 +530,24 @@ check_argument_mediators_matrix = function(argument){
 
 check_K = function(argument){
   if (!is.null(argument)) {
-    message(paste("provided K =",argument))
+    #message(paste("provided K =",argument))
     if(is.integer(argument)) {
-      message("K value is integer")
+      #message("K value is integer")
     } else {
       K= as.integer(argument)
-      message("K value has been transformed as integer")
+      #message("K value has been transformed as integer")
     }
-  } else {
+  }
+  else {
     stop("K is not provided")
   }
 }
 
 check_covar = function(argument){
   if (is.data.frame(argument)){
-    message("Adjutment factors is data frame")
+    #message("Adjutment factors is data frame")
   }else if(is.matrix(argument)){
-    message("Adjutment factors is matrix")
+    #message("Adjutment factors is matrix")
   } else{
     stop("Adjutment factors must be a data frame or a matrix")
   }

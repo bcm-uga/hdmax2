@@ -17,15 +17,15 @@
 ##' differentially methylated regions.
 ##' @author Basile Jumentier
 ##' @example 
-##'data = hdmax2::helper_ex
-##'chr = data$annotation$chr
-##'start = data$annotation$start
-##'end = data$annotation$end
-##'pval = hdmax2_step1$max2_pvalues
-##'cpg = data$annotation$cpg
-##'data_combp <- data.frame(chr, start, end, pval, cpg)
-##'colnames(data_combp) <- paste0("V", 1:5)
-##'res <- combp2(data_combp, seed = 0.6,  nCores = 2, ...)
+##' data = hdmax2::helper_ex
+##' chr = data$annotation$chr
+##' start = data$annotation$start
+##' end = data$annotation$end
+##' pval = hdmax2_step1$max2_pvalues
+##' cpg = data$annotation$cpg
+##' data_combp <- data.frame(chr, start, end, pval, cpg)
+##' colnames(data_combp) <- paste0("V", 1:5)
+##' res <- combp2(data_combp, seed = 0.6,  nCores = 2, ...)
 ##'
 combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCores = 10) {
   
@@ -154,25 +154,25 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
 ##' @export
 ##' @author Basile Jumentier
 ##' @examples
-##'data = hdmax2::helper_ex
-##'#Artificial reduction of dataset size to pass the github action check when building hdmax2 website
-##'data$methylation = data$methylation[ , 800:1000]
-##'data$annotation = data$annotation[800:1000, ]
-##'K=5
-##'## run hdmax2 step1
-##'hdmax2_step1 = hdmax2::run_AS(X = data$exposure,
-##'                              Y = data$phenotype,
+##' data = hdmax2::helper_ex
+##' #Artificial reduction of dataset size to pass the github action check when building hdmax2 website
+##' data$methylation = data$methylation[ , 800:1000]
+##' data$annotation = data$annotation[800:1000, ]
+##' K=5
+##' ## run hdmax2 step1
+##' hdmax2_step1 = hdmax2::run_AS(exposure = data$exposure,
+##'                              outcome = data$phenotype,
 ##'                              M = data$methylation,
 ##'                              K = K)
 ##'
-##'##Detecting AMR
-##'chr = data$annotation$chr
-##'start = data$annotation$start
-##'end = data$annotation$end
-##'pval = hdmax2_step1$max2_pvalues
-##'cpg = data$annotation$cpg
+##' ##Detecting AMR
+##' chr = data$annotation$chr
+##' start = data$annotation$start
+##' end = data$annotation$end
+##' pval = hdmax2_step1$max2_pvalues
+##' cpg = data$annotation$cpg
 ##'
-##'res.amr_search = hdmax2::AMR_search(
+##' res.amr_search = hdmax2::AMR_search(
 ##' chr = data$annotation$chr,
 ##' start = data$annotation$start,
 ##' end = data$annotation$end,
@@ -180,8 +180,9 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
 ##' cpg = data$annotation$cpg,
 ##' seed = 0.6, #Careful to change this parameter when working with real data
 ##' nCores = 2)
-##'res.amr_search$res
-##'##'
+##' res.amr_search$res
+##'
+
 AMR_search <- function(chr, start, end, pval, cpg, ...) {
   
   tmp <- data.frame(chr, start, end, pval, cpg)
@@ -217,25 +218,25 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
 ##' @export
 ##' @author Basile Jumentier
 ##' @examples
-##'data = hdmax2::helper_ex
-##'#Artificial reduction of dataset size to pass the github action check when building hdmax2 website
-##'data$methylation = data$methylation[ , 800:1000]
-##'data$annotation = data$annotation[800:1000, ]
-##'K=5
-##'## run hdmax2 step1
-##'hdmax2_step1 = hdmax2::run_AS(X = data$exposure,
-##'                              Y = data$phenotype,
+##' data = hdmax2::helper_ex
+##' #Artificial reduction of dataset size to pass the github action check when building hdmax2 website
+##' data$methylation = data$methylation[ , 800:1000]
+##' data$annotation = data$annotation[800:1000, ]
+##' K=5
+##' ## run hdmax2 step1
+##' hdmax2_step1 = hdmax2::run_AS(exposure = data$exposure,
+##'                              outcome = data$phenotype,
 ##'                              M = data$methylation,
 ##'                              K = K)
 ##'
 ##'##Detecting AMR
-##'chr = data$annotation$chr
-##'start = data$annotation$start
-##'end = data$annotation$end
-##'pval = hdmax2_step1$max2_pvalues
-##'cpg = data$annotation$cpg
+##' chr = data$annotation$chr
+##' start = data$annotation$start
+##' end = data$annotation$end
+##' pval = hdmax2_step1$max2_pvalues
+##' cpg = data$annotation$cpg
 ##'
-##'res.amr_search = hdmax2::AMR_search(
+##' res.amr_search = hdmax2::AMR_search(
 ##' chr = data$annotation$chr,
 ##' start = data$annotation$start,
 ##' end = data$annotation$end,
@@ -244,14 +245,14 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
 ##' seed = 0.6, #Careful to change this parameter when working with real data
 ##' nCores = 2)
 ##'
-##'res.amr_search$res
+##' res.amr_search$res
 ##'
-##'res.arm_build = hdmax2::AMR_build(res.amr_search, 
-##'methylation = data$methylation, nb_cpg = 2)
-##'#List of DMR selected
-##'head(res.arm_build$res)
-##'## CpG in the DMR
-##'res.arm_build$CpG_for_each_AMR
+##' res.arm_build = hdmax2::AMR_build(res.amr_search, 
+##' methylation = data$methylation, nb_cpg = 2)
+##' #List of DMR selected
+##' head(res.arm_build$res)
+##' ## CpG in the DMR
+##' res.arm_build$CpG_for_each_AMR
 ##'
 AMR_build <- function(res, methylation, nb_cpg = 2) {
   
@@ -310,5 +311,42 @@ AMR_build <- function(res, methylation, nb_cpg = 2) {
               AMR_mean = DMR.mean,
               res = res,
               CpG_for_each_AMR = DMR.select))
+}
+
+
+
+##' compute qvalues from pvalues
+##'
+##' @param pvalues result of max squared test
+##' @param theta constant defines interquartile range
+##' @return qvalues, pi0 =  H0_proportion
+##' @export
+##' @author Olivier Francois
+##' @examples
+##' data = hdmax2::simu_data
+##' K = 5
+##' hdmax2_step1 = hdmax2::run_AS(exposure = simu_data$X_binary,
+##'                               outcome = simu_data$Y_continuous,
+##'                               M = simu_data$M1, 
+##'                               K = K)
+##' 
+##'  #Select candidate mediator  
+##' qv = hdmax2::hdmax2_qvalue(hdmax2_step1$max2_pvalues)
+##' 
+##' 
+##' 
+hdmax2_qvalue <- function(pvalues, theta = 0.25){
+  
+  ##Estimate the proportion of H0
+  ##relies on the interquartile range (25%-75%) of the default histogram
+  H0_proportion = 2*mean( pvalues > theta & pvalues < (theta + 0.5) )
+  
+  ## compute tests number
+  test_number = length(pvalues)
+  
+  ## qvalues definition
+  qvalues =  H0_proportion * test_number * pvalues / rank(pvalues)
+  
+  return(list(qvalues =  qvalues , pi0 =  H0_proportion))
 }
 

@@ -34,20 +34,21 @@ lfmm2_med_test(
 }
 \value{
 an object with the following attributes
+P-values, fscores, zscores, adj.squared, gif
 }
 \description{
 lfmm2_test adapted function for hdmax2 from LEA::lfmm2.test
 }
 \examples{
-data(simu_data)
+attach(simu_data)
 K = 5
-mod.lfmm1 = lfmm2_med(input = simu_data$M, 
+mod.lfmm1 = lfmm2_med(input = simu_data$M1, 
 env = simu_data$X_binary, 
 K = K,
 effect.sizes = FALSE)
 
 res_reg1 = lfmm2_med_test(mod.lfmm1, 
-input = simu_data$M, 
+input = simu_data$M1, 
 env = simu_data$X_binary,
 covar = cbind(simu_data$age, simu_data$gender),
 genomic.control = TRUE)

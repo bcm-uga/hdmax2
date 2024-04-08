@@ -40,8 +40,8 @@ data$methylation = data$methylation[ , 800:1000]
 data$annotation = data$annotation[800:1000, ]
 K=5
 ## run hdmax2 step1
-hdmax2_step1 = hdmax2::run_AS(X = data$exposure,
-                             Y = data$phenotype,
+hdmax2_step1 = hdmax2::run_AS(exposure = data$exposure,
+                             outcome = data$phenotype,
                              M = data$methylation,
                              K = K)
 

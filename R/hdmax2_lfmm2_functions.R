@@ -1,16 +1,18 @@
 ##' lfmm2 adapted function for hdmax2 from LEA::lfmm2
-##' @param input a response variable matrix with n rows and p columns
+##' @param input Continuous intermediary variables matrix  encompassing potential mediators with n rows and p columns.
 ##' @param env An explanatory variable matrix with n rows and d columns.
 ##' @param K latent factor number
 ##' @param lambda ridge penalization parameter
 ##' @param effect.sizes true or false to obtain effect sizes
-##' @return an object with the following attributes 
+##' @return an object with the following attributes
+##'  U
+##'  V
 ##' @export 
 ##' @author Florence Pittion, Magali Richard, Olivier Francois
 ##' @examples
 ##' data(simu_data)
 ##' K = 5
-##' mod.lfmm1 = lfmm2_med(input = simu_data$M, 
+##' mod.lfmm1 = lfmm2_med(input = simu_data$M1, 
 ##' env = simu_data$X_binary, 
 ##' K = K,
 ##' effect.sizes = FALSE)
@@ -143,20 +145,21 @@ lfmm2_med = function(input,
 ##' @param family of logistic reg
 ##' @param full compute partial regression FALSE/TRUE
 ##' @return an object with the following attributes 
+##' P-values, fscores, zscores, adj.squared, gif
 ##' @importFrom stats binomial glm lm median pchisq pf prcomp qchisq qf
 ##' @importFrom utils read.table
 ##' @export
 ##' @author Florence Pittion, Magali Richard, Olivier Francois
 ##' @examples 
-##' data(simu_data)
+##' attach(simu_data)
 ##' K = 5
-##' mod.lfmm1 = lfmm2_med(input = simu_data$M, 
+##' mod.lfmm1 = lfmm2_med(input = simu_data$M1, 
 ##' env = simu_data$X_binary, 
 ##' K = K,
 ##' effect.sizes = FALSE)
 ##' 
 ##' res_reg1 = lfmm2_med_test(mod.lfmm1, 
-##' input = simu_data$M, 
+##' input = simu_data$M1, 
 ##' env = simu_data$X_binary,
 ##' covar = cbind(simu_data$age, simu_data$gender),
 ##' genomic.control = TRUE)

@@ -2,49 +2,52 @@
 % Please edit documentation in R/step1_run_AS.R
 \name{run_AS}
 \alias{run_AS}
-\title{Association Study with both exposure and outcome}
+\title{The function run_AS() evaluates the association between exposure variables X ,
+intermediary variables M and the outcome variable Y, using a latent factor mixed model
+(LFMM Caye et al. 2019) to estimate K unobserved latent factors  U.
+First this function tests the significance of association between
+the exposure variables and the potential mediator variables.
+Then it tests association between the potential mediator variables and the outcome variable.
+Finally it evaluates the significance of the indirect effects by computing
+the squared maximum of two series of P-values with max2 test. This rejects
+the null-hypothesis that either the effect of X on M, or the effect of M on Y is null.
+Optional covariates Z, can be included as observed adjustment factors in the model.}
 \usage{
 run_AS(
-  X,
-  Y,
+  exposure,
+  outcome,
   M,
   K,
   covar = NULL,
-  covar_sup_reg2 = NULL,
-  detailed = FALSE,
-  genomic.control = TRUE,
-  effect.sizes = FALSE
+  suppl_covar = NULL,
+  each_var_pval = FALSE
 )
 }
 \arguments{
-\item{X}{Exposure. An explanatory variable data frame with n rows and d columns.
-Each column corresponds to a distinct explanatory variable (Exposure).
+\item{exposure}{An explanatory variable data frame with n rows and d columns.
+Each column corresponds to a distinct explanatory variable (exposure).
 Continuous and binary variables must be encoded in numeric format. categorical variables are factor objects. The user can use the as.factor function to encode categorical variables, and  levels() and ordered() functions to define the modal order of categorical variables.}
 
-\item{Y}{Outcome. An explanatory variable matrix with n rows and 1 columns, corresponds to a vector, which supports both continuous and binary formats.}
+\item{outcome}{An explanatory variable matrix with n rows and 1 columns, corresponds to a vector, which supports both continuous and binary formats.}
 
-\item{M}{a response variable matrix with n rows and p columns.
-Response variables must be encoded as numeric. No NAs allowed.}
+\item{M}{Continuous intermediary variables matrix  encompassing potential mediators with n rows and p columns.
+Must be encoded as numeric. No NAs allowed.}
 
 \item{K}{an integer for the number of latent factors in the regression model.}
 
 \item{covar}{set of adjustment factors, must be numeric. No NAs allowed}
 
-\item{covar_sup_reg2}{possible supplementary adjustment factors for the second association study (must be nested within the first set of adjustment factors )}
+\item{suppl_covar}{possible supplementary adjustment factors for the second association study (must be nested within the first set of adjustment factors )}
 
-\item{detailed}{A logical to indicate if p-values must be estimated for each explanatory variables (detailed = TRUE) in addition to the pvalue of the global model (detailed = FALSE, by default)
+\item{each_var_pval}{A logical to indicate if p-values must be estimated for each exposure variables (each_var_pval = TRUE) in addition to the pvalue of the global model (each_var_pval = FALSE, by default)
 Useful to visually check the fit of the estimated proportion of null p-values.}
-
-\item{genomic.control}{correct pvalue with genomic inflation factor}
-
-\item{effect.sizes}{if effect sizes from lfmm are needed}
 }
 \value{
 an object with the following attributes
 
 for first association study (mod1):
 \itemize{
-\item pValue, estimation of the effects of X and Y on the matrix M.
+\item pValue, estimation of the effects of exposure X and outcome on the matrix M.
 \item U, scores matrix for the K latent factors computed from the for first regression
 \item zscore, a score matrix for the exposure X and the outcome Y.
 \item fscore, a score matrix for the exposure X and the outcome Y.
@@ -63,36 +66,34 @@ results of max2 test:
 }
 
 input element:
-exposition , outcome, matrix  (element and type) and covar
+exposition , outcome and covariates
 }
 \description{
-This function uses lfmm (latent factor mixed models) to estimate
-the effects of exposures and outcomes on a response matrix.
-applied to estimate the effects of exposure $X$ on a matrix $M$
-of potential mediators, and the effect of each marker on outcome $Y$.
-It uses the covariables matrix $conf$ and $K$ latent factors.
-Test all possible markers to determine potential mediators in the exposure-outcome association.
-Then compute the squared maximum of two series of P-values with $max2$ test
-It computes the squared maximum of two series of P-values from the association studie.
-This rejects the null-hypothesis that either the effect of X on M, or the effect of M on Y is null.
+The function run_AS() evaluates the association between exposure variables X ,
+intermediary variables M and the outcome variable Y, using a latent factor mixed model
+(LFMM Caye et al. 2019) to estimate K unobserved latent factors  U.
+First this function tests the significance of association between
+the exposure variables and the potential mediator variables.
+Then it tests association between the potential mediator variables and the outcome variable.
+Finally it evaluates the significance of the indirect effects by computing
+the squared maximum of two series of P-values with max2 test. This rejects
+the null-hypothesis that either the effect of X on M, or the effect of M on Y is null.
+Optional covariates Z, can be included as observed adjustment factors in the model.
 }
 \details{
-The response variable matrix Y and the explanatory variable are centered.
 For each argument, missing values must be imputed: no NA allowed. K (number of latent factors) can be estimated
 with the eigenvalues of a PCA.
-Possibility of calibrating the scores and pValues by the GIF (Genomic Inflation Factor).
-See LEA package for more information.
 Max2 test The P-value is computed for each markers following this formula
 \deqn{pV = max(pVal1, pVal2)^2}
 }
 \examples{
 # Load example dataset
-simu_data = hdmax2::simu_data
+attach(simu_data)
  K = 5
 # Run {hdmax2} step 1
-hdmax2_step1 = run_AS(X = simu_data$X_continuous ,
-                      Y = simu_data$Y_continuous,
-                      M = simu_data$M,
+hdmax2_step1 = run_AS(exposure = simu_data$X_continuous ,
+                      outcome = simu_data$Y_continuous,
+                      M = simu_data$M1,
                       K = K)
 
 head(hdmax2_step1$max2_pvalues)
