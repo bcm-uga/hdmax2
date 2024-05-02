@@ -75,21 +75,21 @@ Pittion, Magali Richard, Olivier Francois</h4>
     
 <p><strong>THIS VIGNETTE IS CURRENTLY UNDER DEVELOPMENT, SO ITS CONTENT
 IS PROVISIONAL.</strong></p>
-<div class="section level3">
-<h3 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
-</h3>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>When a statistical association is observed between an external
 exposure (<span class="math inline">\(X\)</span>) and an individual
 outcome (<span class="math inline">\(Y\)</span>), one or more
-intermediate variables ({}) (such as gene expression or epigenetic
-changes) may mediate this effect. Identifying and assessing the
-mediating role of these variables in the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> is crucial for deciphering underlying
+intermediate variables (<strong>M</strong>) (such as gene expression or
+epigenetic changes) may mediate this effect. Identifying and assessing
+the mediating role of these variables in the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> is crucial for deciphering underlying
 causal mechanisms in epidemiological and clinical research. This
 process, known as mediation analysis, involves studying mediator
 variables to define the causal structure between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. The mediated effect, termed the
-indirect effect, is equal to the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> mediated through {}, to distinguish
-from the direct effect of <span class="math inline">\(X\)</span> on
-<span class="math inline">\(Y\)</span> unexplained by {}.</p>
+indirect effect, is equal to the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> mediated through (<strong>M</strong>),
+to distinguish from the direct effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> unexplained by
+(<strong>M</strong>).</p>
 <p>The R package <code>hdmax2</code> is dedicated to high-dimensional
 mediation analyses. For mediation analyses, the necessary data includes
 one (or more) exposure variable(s), a matrix of potential mediators, and
@@ -104,72 +104,68 @@ statistical significance of potential mediators. Finally, HDMAX2 enables
 the calculation of an overall indirect effect from a single model that
 includes all mediators simultaneously. This approach therefore takes
 into account correlations between mediators.</p>
-<p>The {} program has been enriched with numerous features, including
-the ability to manage various types of variables in the exposure
-(continuous, binary, categorical, and multivariate), as well as the
-capability to incorporate binary outcomes. This package enables users
-to:</p>
+<p>The <code>hdmax2</code> program has been enriched with numerous
+features, including the ability to manage various types of variables in
+the exposure (continuous, binary, categorical, and multivariate), as
+well as the capability to incorporate binary outcomes. This package
+enables users to:</p>
 <ul>
-<li><p>investigate associations between the variables <span class="math inline">\(X\)</span>, {}, and <span class="math inline">\(Y\)</span>,</p></li>
+<li><p>investigate associations between the variables <span class="math inline">\(X\)</span>, (<strong>M</strong>), and <span class="math inline">\(Y\)</span>,</p></li>
 <li><p>compute the mediated effect for each potential mediator,</p></li>
 <li><p>assess the overall indirect effect for the total model,</p></li>
 <li><p>and visualize these results.</p></li>
 </ul>
-<p>The package <code>hdmax2</code> is designed to accept</p>
+<p>The package <code>hdmax2</code> is designed to accept :</p>
 <ul>
-<li><p>Exposure <span class="math inline">\(X\)</span> consisting of
-univariate data, which can be continuous, binary or categorial as well
-as multivariate exposure.</p></li>
-<li><p>Outcome <span class="math inline">\(Y\)</span> can be continuous
-or binary</p></li>
-<li><p>Potential mediators <span class="math inline">\(M\)</span> must
-be continuous.</p></li>
+<li><p>One or several Exposure variables <span class="math inline">\(X\)</span> consisting of univariate data, which
+can be continuous, binary or categorical as well as multivariate
+exposure. We define <span class="math inline">\(n\)</span> as the number
+of samples within the tested cohort. Therefore, each exposure and
+outcome variable consists of <span class="math inline">\(n\)</span>
+measurements. In the <code>R</code> language, categorical variables are
+encoded as factor objects. The function <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor()</a></code> can be
+used to encode categorical variables. The functions
+<code><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels()</a></code> and <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">ordered()</a></code> can be used to define
+the order of the modalities of categorical variables. By convention,
+<code>hdmax2</code> uses the first modality as a reference to calculate
+the effects associated with the other modalities of the variable, as
+encoded by default in statistical regression models in
+<code>R</code>.</p></li>
+<li><p>Continuous intermediary variables, denoted as <strong>M</strong>,
+are represented as a matrix encompassing potential mediators, such as
+methylome or transcriptome molecular features. The matrix
+<strong>M</strong> should be entered as a separated input, without
+missing values. The intermediary variable matrix <strong>M</strong> is
+of dimension <span class="math inline">\(n \times p\)</span>, with <span class="math inline">\(p\)</span> the total number of intermediate
+variables.</p></li>
+<li><p>The outcome variable, denoted as <span class="math inline">\(Y\)</span>, corresponds to a vector of dimension
+<span class="math inline">\(n\)</span>, which supports both continuous
+and binary formats. Continuous and binary variables must be encoded in
+numeric format.</p></li>
+<li><p>Optional covariates, <span class="math inline">\(Z\)</span>, can
+be included as observed adjustment factors in the model. Please refer to
+the helper function section for insight into how to interpret the
+additional set of covariates.</p></li>
+<li><p><span class="math inline">\(K\)</span>, the number of latent
+factors to be estimated.</p></li>
 </ul>
 <p>To install the latest version of <code>hdmax2</code>, use the github
 repository</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#devtools::install_github("bcm-uga/hdmax2")</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="simulated-dataset">Simulated dataset<a class="anchor" aria-label="anchor" href="#simulated-dataset"></a>
-</h3>
-<p>We simulated data for 100 samples and 500 potential mediators.</p>
-<p>The matrix of potential mediators is an extract of real methylation
-data (TCGA PDAC samples).</p>
-<p>We define the <span class="math inline">\(K\)</span> number of
-estimated latent factors by performing a PCA on potential mediators
-matrix. The scree plot criterion looks for the “elbow” in the curve and
-selects all components just before the line flattens out, <span class="math inline">\(K\)</span> is chosen with this procedure.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## Number of Latent factore estimation</span></span>
-<span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">M1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>,</span>
-<span>     type <span class="op">=</span> <span class="st">"b"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="st">'Principal Component'</span>,</span>
-<span>     ylab <span class="op">=</span> <span class="st">"Explained variance"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="hdmax2_tutorial_files/figure-html/pca%20for%20latent%20factor-1.png" width="700"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">K</span><span class="op">=</span><span class="fl">4</span> <span class="co">#pca conclusion : it is better to select too many factors that too few</span></span></code></pre></div>
-</div>
 <div class="section level2">
-<h2 id="example-1-binary-exposure-and-continuous-outcome">Example 1: <em>Binary exposure</em> and <em>continuous
-outcome</em><a class="anchor" aria-label="anchor" href="#example-1-binary-exposure-and-continuous-outcome"></a>
+<h2 id="method">METHOD<a class="anchor" aria-label="anchor" href="#method"></a>
 </h2>
-<p>For this example we use a <strong>binary exposure</strong>, a
-<strong>continuous outcome</strong> and <strong>two adjustment
-factors</strong> (age and gender).</p>
-<div class="section level4">
-<h4 id="step-1-run-association-studies">STEP 1: Run association studies<a class="anchor" aria-label="anchor" href="#step-1-run-association-studies"></a>
-</h4>
+<div class="section level3">
+<h3 id="step-1-run-association-studies">STEP 1: Run association studies<a class="anchor" aria-label="anchor" href="#step-1-run-association-studies"></a>
+</h3>
 <p>The <code>run_AS</code> function is applied:</p>
 <ul>
 <li><p>First to estimate latent factors with <span class="math inline">\(lfmm\)</span> algorithms.</p></li>
-<li><p>Then to identify significant effects of exposure <span class="math inline">\(X\)</span> on potential mediators in <span class="math inline">\(M\)</span> matrix, and significant effect of
-potential mediators on outcome <span class="math inline">\(Y\)</span>.</p></li>
+<li><p>Then to identify significant effects of exposure <span class="math inline">\(X\)</span> on potential mediators in
+<strong>M</strong> matrix, and significant effect of potential mediators
+on outcome <span class="math inline">\(Y\)</span>.</p></li>
 <li><p>And eventually to compute mediation test: <em>max-squared</em>
 test.</p></li>
 </ul>
@@ -179,16 +175,15 @@ test.</p></li>
 <span class="math inline">\(X\)</span> for exposure: can be a
 vector, a factor with <span class="math inline">\(n\)</span> (samples)
 elements or a data frame with <span class="math inline">\(n\)</span>
-rows and 1 column.</li>
+rows and 1 column if univariate or <span class="math inline">\(x\)</span> columns or different exposure variables
+if multivariate.</li>
 <li>
 <span class="math inline">\(Y\)</span> for outcome: can be a vector
 or a matrix with <span class="math inline">\(n\)</span> rows and 1
 column.</li>
 <li>
-<span class="math inline">\(M\)</span> for the potential mediators:
-must be a matrix with <span class="math inline">\(n\)</span> rows and
-<span class="math inline">\(p\)</span> columns (potential
-mediators).</li>
+<strong>M</strong> for the potential mediators: must be a matrix
+with <span class="math inline">\(n\)</span> rows and <span class="math inline">\(p\)</span> columns (potential mediators).</li>
 <li>
 <span class="math inline">\(K\)</span> for the number of latent
 factors defined earlier: must be integer.</li>
@@ -196,17 +191,6 @@ factors defined earlier: must be integer.</li>
 (data frame or matrix) with <span class="math inline">\(n\)</span>
 rows.</li>
 </ul>
-<p>Here <span class="math inline">\(n\)</span>=100 and <span class="math inline">\(p\)</span>=500</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">age</span>, <span class="va">simu_data</span><span class="op">$</span><span class="va">gender</span><span class="op">)</span></span>
-<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">covar</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>exposure <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_binary</span>,</span>
-<span>                              outcome  <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span>,</span>
-<span>                              M <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M1</span>, </span>
-<span>                              K <span class="op">=</span> <span class="va">K</span>,</span>
-<span>                              covar <span class="op">=</span> <span class="va">covar</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>run_AS</code> function provides an object containing:</p>
 <ul>
 <li><p>Results from the two association studies (<span class="math inline">\(P\)</span>-values, fscores, zscores),</p></li>
@@ -217,41 +201,23 @@ regression,</p></li>
 <li><p>And <em>max-squared</em> test <span class="math inline">\(P\)</span>-values results.</p></li>
 </ul>
 </div>
-<div class="section level4">
-<h4 id="selection-of-a-subset-of-mediators">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators"></a>
-</h4>
+<div class="section level3">
+<h3 id="selection-of-a-subset-of-mediators">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators"></a>
+</h3>
 <p><em>max-squared</em> <span class="math inline">\(P\)</span>-values
 are used in the selection of mediators for the user’s chosen method.</p>
 <p>Numerous selection methods are available, such as FDR control. Also
-in the context of methylation data, it’s feasible to aggregate
-methylation probes. Refer to the <em>helper_functions</em> vignette for
-assistance FDR control and AMR researching procedure.</p>
-<p>In this instance, we opted for the top ten most significant <span class="math inline">\(P\)</span>-values from the <em>max-squared</em>
-test as an example.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
-<span><span class="co">## top 10 selecting mediators</span></span>
-<span></span>
-<span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M1</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            cg00022633 cg00019093 cg00025981 cg00031759 cg00035636 cg00049102</span></span>
-<span><span class="co">#&gt; GSM1051525   1.480526   1.091212  0.8611761   1.096765   1.498758   2.029784</span></span>
-<span><span class="co">#&gt; GSM1051526   5.463677   3.474162  3.7370006   3.996897   1.481787   2.000932</span></span>
-<span><span class="co">#&gt; GSM1051527   5.334700   3.369454  3.6640206   3.889718   1.439573   1.891203</span></span>
-<span><span class="co">#&gt; GSM1051528   5.225207   3.289293  3.6175162   3.808743   1.443054   1.816579</span></span>
-<span><span class="co">#&gt; GSM1051529   1.691596   1.260262  0.9876545   1.249065   1.603649   2.217188</span></span>
-<span><span class="co">#&gt; GSM1051530   6.307245   4.088710  4.2104976   4.571531   2.310486   2.725880</span></span>
-<span><span class="co">#&gt;            cg00028749 cg00049616 cg00026603 cg00703120</span></span>
-<span><span class="co">#&gt; GSM1051525  0.7984107   1.767392   1.840380  0.8521711</span></span>
-<span><span class="co">#&gt; GSM1051526  3.9441627   1.743678   3.914640  0.8315540</span></span>
-<span><span class="co">#&gt; GSM1051527  3.8633605   1.667866   3.856255  0.8473967</span></span>
-<span><span class="co">#&gt; GSM1051528  3.8147481   1.599476   3.748134  0.8744509</span></span>
-<span><span class="co">#&gt; GSM1051529  0.9114222   1.886485   1.997508  0.8602605</span></span>
-<span><span class="co">#&gt; GSM1051530  4.3556358   2.324293   4.553996  0.8814345</span></span></code></pre></div>
+in the context of methylation data, it’s feasible to to identify
+aggregated mediator regions (AMR) based on the paired <span class="math inline">\(P\)</span>-values frome mediation test. Refer to
+the <em>helper_functions</em> vignette for assistance FDR control and
+AMR researching procedure.</p>
+<p>For the two examples below, we opted for the top ten most significant
+<span class="math inline">\(P\)</span>-values from the
+<em>max-squared</em> test as an example.</p>
 </div>
-<div class="section level4">
-<h4 id="step-2">STEP 2<a class="anchor" aria-label="anchor" href="#step-2"></a>
-</h4>
+<div class="section level3">
+<h3 id="step-2">STEP 2<a class="anchor" aria-label="anchor" href="#step-2"></a>
+</h3>
 <p>The function <code>estimate_effect</code> estimate the individual
 indirect effect of mediators, but also overall effects of selected
 mediators.</p>
@@ -284,14 +250,10 @@ variables on the outcome variable when the mediators <span class="math inline">\
 intermediary effect sizes <span class="math inline">\(a_j\)</span> and
 <span class="math inline">\(b_j\)</span> and their standard
 deviations.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
-<span>                                       m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="vizualisation-of-results">Vizualisation of results<a class="anchor" aria-label="anchor" href="#vizualisation-of-results"></a>
-</h4>
+<div class="section level3">
+<h3 id="vizualisation-of-results">Vizualisation of results<a class="anchor" aria-label="anchor" href="#vizualisation-of-results"></a>
+</h3>
 <p>We propose a set of plots including:</p>
 <ul>
 <li><p>Mediators ACME Forest plot</p></li>
@@ -299,6 +261,84 @@ deviations.</p>
 <li><p>Comparison of ODE, OIE and OTE</p></li>
 <li><p>Mediators effect size representation</p></li>
 </ul>
+</div>
+</div>
+<div class="section level2">
+<h2 id="simulated-dataset">Simulated dataset<a class="anchor" aria-label="anchor" href="#simulated-dataset"></a>
+</h2>
+<p>We simulated data for 100 samples and 500 potential mediators.</p>
+<p>The matrix of potential mediators is an extract of real methylation
+data (TCGA PDAC samples).</p>
+<p>We define the <span class="math inline">\(K\)</span> number of
+estimated latent factors by performing a PCA on potential mediators
+matrix. The scree plot criterion looks for the “elbow” in the curve and
+selects all components just before the line flattens out, <span class="math inline">\(K\)</span> is chosen with this procedure.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">simu_data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/simu_data.html">simu_data</a></span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Number of Latent factore estimation</span></span>
+<span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">M1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>,</span>
+<span>     type <span class="op">=</span> <span class="st">"b"</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">'Principal Component'</span>,</span>
+<span>     ylab <span class="op">=</span> <span class="st">"Explained variance"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="hdmax2_tutorial_files/figure-html/pca%20for%20latent%20factor-1.png" width="700"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">K</span><span class="op">=</span><span class="fl">4</span> <span class="co">#pca conclusion : it is better to select too many factors that too few</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="first-example-binary-exposure-and-continuous-outcome">First Example: <em>Binary exposure</em> and <em>continuous
+outcome</em><a class="anchor" aria-label="anchor" href="#first-example-binary-exposure-and-continuous-outcome"></a>
+</h2>
+<p>For this example we use a <strong>binary exposure</strong>, a
+<strong>continuous outcome</strong> and <strong>two adjustment
+factors</strong> (age and gender).</p>
+<div class="section level3">
+<h3 id="step-1">Step 1<a class="anchor" aria-label="anchor" href="#step-1"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">simu_data</span><span class="op">$</span><span class="va">age</span>, <span class="va">simu_data</span><span class="op">$</span><span class="va">gender</span><span class="op">)</span></span>
+<span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">covar</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>exposure <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_binary</span>,</span>
+<span>                              outcome  <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span>,</span>
+<span>                              M <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M1</span>, </span>
+<span>                              K <span class="op">=</span> <span class="va">K</span>,</span>
+<span>                              covar <span class="op">=</span> <span class="va">covar</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="selection-of-a-subset-of-mediators-1">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators-1"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
+<span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M1</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
+<span><span class="co">#&gt;            cg00022633 cg00019093 cg00025981 cg00031759 cg00035636 cg00049102</span></span>
+<span><span class="co">#&gt; GSM1051525   1.480526   1.091212  0.8611761   1.096765   1.498758   2.029784</span></span>
+<span><span class="co">#&gt; GSM1051526   5.463677   3.474162  3.7370006   3.996897   1.481787   2.000932</span></span>
+<span><span class="co">#&gt; GSM1051527   5.334700   3.369454  3.6640206   3.889718   1.439573   1.891203</span></span>
+<span><span class="co">#&gt; GSM1051528   5.225207   3.289293  3.6175162   3.808743   1.443054   1.816579</span></span>
+<span><span class="co">#&gt; GSM1051529   1.691596   1.260262  0.9876545   1.249065   1.603649   2.217188</span></span>
+<span><span class="co">#&gt; GSM1051530   6.307245   4.088710  4.2104976   4.571531   2.310486   2.725880</span></span>
+<span><span class="co">#&gt;            cg00028749 cg00049616 cg00026603 cg00703120</span></span>
+<span><span class="co">#&gt; GSM1051525  0.7984107   1.767392   1.840380  0.8521711</span></span>
+<span><span class="co">#&gt; GSM1051526  3.9441627   1.743678   3.914640  0.8315540</span></span>
+<span><span class="co">#&gt; GSM1051527  3.8633605   1.667866   3.856255  0.8473967</span></span>
+<span><span class="co">#&gt; GSM1051528  3.8147481   1.599476   3.748134  0.8744509</span></span>
+<span><span class="co">#&gt; GSM1051529  0.9114222   1.886485   1.997508  0.8602605</span></span>
+<span><span class="co">#&gt; GSM1051530  4.3556358   2.324293   4.553996  0.8814345</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-2-1">Step 2<a class="anchor" aria-label="anchor" href="#step-2-1"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
+<span>                                       m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="vizualisation-of-results-1">Vizualisation of results<a class="anchor" aria-label="anchor" href="#vizualisation-of-results-1"></a>
+</h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, plot_type <span class="op">=</span> <span class="st">"all_plot"</span><span class="op">)</span></span>
@@ -324,8 +364,9 @@ correspond to standard deviation (ODE and OTE) or confidence interval
 (OIE).</p></li>
 <li><p><strong>D</strong> Indirect effect sizes for the selected
 mediators. Black corresponds to the ACME, violet to the effect of
-exposure <span class="math inline">\(X\)</span> on mediator <span class="math inline">\(M\)</span>, and blue corresponds to the effect of
-mediator <span class="math inline">\(M\)</span> on outcome <span class="math inline">\(Y\)</span>.</p></li>
+exposure <span class="math inline">\(X\)</span> on mediator
+<strong>M</strong>, and blue corresponds to the effect of mediator
+<strong>M</strong> on outcome <span class="math inline">\(Y\)</span>.</p></li>
 </ul>
 <p>In the <code>plot_hdmax2</code> function it is possible to produce
 the 4-plots set or each individual plot with <em>plot_type</em>
@@ -333,12 +374,15 @@ argument.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="example-2-multivariate-exposure-and-continuous-outcome">Example 2: <em>multivariate exposure</em> and <em>continuous
-outcome</em><a class="anchor" aria-label="anchor" href="#example-2-multivariate-exposure-and-continuous-outcome"></a>
+<h2 id="second-example-multivariate-exposure-and-continuous-outcome">Second Example: <em>multivariate exposure</em> and <em>continuous
+outcome</em><a class="anchor" aria-label="anchor" href="#second-example-multivariate-exposure-and-continuous-outcome"></a>
 </h2>
 <p>For this example we use a <strong>two variables exposure</strong>
 (continuous and binary), a <strong>continuous outcome</strong> and
 <strong>two adjustment factors</strong> (age and gender).</p>
+<div class="section level3">
+<h3 id="step-1-1">Step 1<a class="anchor" aria-label="anchor" href="#step-1-1"></a>
+</h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## multivariate Exposures (continuous + binary)</span></span>
 <span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X1 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_continuous</span>, X2 <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_binary</span><span class="op">)</span></span>
@@ -356,6 +400,10 @@ outcome</em><a class="anchor" aria-label="anchor" href="#example-2-multivariate-
 <span><span class="co">#&gt;  3.847528e-20  1.864280e-14 3.894362e-155  1.964262e-12  4.594620e-10 </span></span>
 <span><span class="co">#&gt;    cg00009922 </span></span>
 <span><span class="co">#&gt;  1.071120e-07</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="selection-of-a-subset-of-mediators-2">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators-2"></a>
+</h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
 <span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M2</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
@@ -374,10 +422,17 @@ outcome</em><a class="anchor" aria-label="anchor" href="#example-2-multivariate-
 <span><span class="co">#&gt; GSM1051528   5.896802   4.873684   6.173285   5.317930</span></span>
 <span><span class="co">#&gt; GSM1051529   2.569591   1.724780   2.615735   2.445169</span></span>
 <span><span class="co">#&gt; GSM1051530   7.019162   5.875805   7.400408   6.219636</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-2-2">Step 2<a class="anchor" aria-label="anchor" href="#step-2-2"></a>
+</h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
+<code class="sourceCode R"><span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
 <span>                                       m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="vizualisation-of-results-2">Vizualisation of results<a class="anchor" aria-label="anchor" href="#vizualisation-of-results-2"></a>
+</h3>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, plot_type<span class="op">=</span> <span class="st">"all_plot"</span><span class="op">)</span></span>
@@ -398,6 +453,8 @@ outcome</em><a class="anchor" aria-label="anchor" href="#example-2-multivariate-
 <span><span class="co">#&gt; 2 2 (1-1,2-2) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 3 3 (2-2,1-1) arrange gtable[layout]</span></span>
 <span><span class="co">#&gt; 4 4 (2-2,2-2) arrange gtable[layout]</span></span></code></pre>
+<p>Please refer to previous example for figures comments.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="helper-functions">Helper Functions<a class="anchor" aria-label="anchor" href="#helper-functions"></a>
@@ -413,15 +470,16 @@ and continuous outcomes (birth weight).</p>
 <div class="section level4">
 <h4 id="identifying-aggregated-mediator-regions-amr">Identifying aggregated mediator regions (AMR)<a class="anchor" aria-label="anchor" href="#identifying-aggregated-mediator-regions-amr"></a>
 </h4>
-<p>Identify Aggregated Methylated regions (AMR) with AMR_search function
-which uses from the P-values from <em>max-squared</em> test compute in
-<code>run_AS</code> function and using a adapted comb-p method (comb-p
-is a tool that manipulates BED files of possibly irregularly spaced
-P-values and calculates auto-correlation, combines adjacent P-values,
+<p>Identify Aggregated Methylated regions (AMR) with
+<code>AMR_search</code> function which uses from the <span class="math inline">\(P\)</span>-values from <em>max-squared</em> test
+compute in <code>run_AS</code> function and using a adapted
+<em>comb-p</em> method (<em>comb-p</em> is a tool that manipulates BED
+files of possibly irregularly spaced <span class="math inline">\(P\)</span>-values and calculates auto-correlation,
+combines adjacent <span class="math inline">\(P\)</span>-values,
 performs false discovery adjustment, finds regions of enrichment and
 assigns significance to those regions). AMR identification could be
-useful in Epigenomic Wide Association Studies when single CpG mediation
-is unsuccessful, or could be complementary analysis.</p>
+useful in Epigenomic Wide Association Studies (EWAS) when single CpG
+mediation is unsuccessful, or could be complementary analysis.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">helper_ex</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/helper_ex.html">helper_ex</a></span></span>
 <span></span>
@@ -515,34 +573,28 @@ could be use to estimate different effects of AMR. Also
 <p>Several methods can be use to select potential mediators from step1
 results of our method, in our main use cases we simply select top 10
 mediators to simplify the narrative. Among available methods to select
-mediators from mediation test p-values, we can use FDR (False Discovery
-Rate) control. Q-value is obtained from <em>max-squared</em> test
-p-values from step 1 with <code>fdrtools::fdrtools</code> function then
-bounded by chosen threshold.</p>
+mediators from mediation test <span class="math inline">\(P\)</span>-values, we can use FDR (False Discovery
+Rate) control. <span class="math inline">\(Q\)</span>-value is obtained
+from <em>max-squared</em> test <span class="math inline">\(P\)</span>-values from step 1 with
+<code>fdrtools::fdrtools</code> function then bounded by chosen
+threshold.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co">## run hdmax2 step1</span></span>
+<code class="sourceCode R"><span><span class="co">## run hdmax2 step1</span></span>
 <span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>exposure <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_binary</span>,</span>
 <span>                 outcome <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">Y_continuous</span>,</span>
 <span>                 M <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M1</span>, </span>
 <span>                 K <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Select candidate mediator  </span></span>
-<span><span class="va">qv</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/hdmax2_qvalue.html">hdmax2_qvalue</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
-<span><span class="va">candidate_mediator</span> <span class="op">&lt;-</span> <span class="va">qv</span><span class="op">$</span><span class="va">qv</span><span class="op">[</span><span class="va">qv</span><span class="op">$</span><span class="va">qv</span><span class="op">&lt;=</span> <span class="fl">0.2</span><span class="op">]</span> <span class="co"># In this example, we will consider FDR levels &lt;20%.</span></span>
+<span><span class="va">q_values</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/hdmax2_qvalue.html">hdmax2_qvalue</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
+<span><span class="va">candidate_mediator</span> <span class="op">&lt;-</span> <span class="va">q_values</span><span class="op">$</span><span class="va">qv</span><span class="op">[</span><span class="va">q_values</span><span class="op">$</span><span class="va">qv</span><span class="op">&lt;=</span> <span class="fl">0.2</span><span class="op">]</span> <span class="co"># In this example, we will consider FDR levels &lt;20%.</span></span>
 <span><span class="va">candidate_mediator</span></span>
 <span><span class="co">#&gt;   cg00018896   cg00019093   cg00022633   cg00024247   cg00025981   cg00028749 </span></span>
 <span><span class="co">#&gt; 1.097593e-02 3.839397e-10 3.379984e-15 2.861555e-02 3.977704e-06 2.864961e-02 </span></span>
 <span><span class="co">#&gt;   cg00031759   cg00035636   cg00037930   cg00047079   cg00049102   cg00049382 </span></span>
 <span><span class="co">#&gt; 1.067235e-04 2.138923e-08 9.146395e-02 2.572296e-02 8.596995e-09 2.682088e-04 </span></span>
 <span><span class="co">#&gt;   cg00049616   cg00241432   cg00345862   cg00465739   cg01005425 </span></span>
-<span><span class="co">#&gt; 2.397814e-05 1.455775e-01 7.647113e-02 1.761855e-01 1.300586e-01</span></span>
-<span></span>
-<span><span class="co"># qv.fdrtool &lt;- fdrtool::fdrtool(hdmax2_step1$max2_pvalues, statistic = "pvalue", plot = F, verbose = F)$qval</span></span>
-<span><span class="co"># candidate_mediator &lt;- qv.fdrtool[qv.fdrtool&lt;= 0.2] # In this example, we will consider FDR levels &lt;20%.</span></span>
-<span><span class="co"># candidate_mediator</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># plot(qv.fdrtool, qv$qv, cex = .5) ; abline(0,1, col = 2)</span></span></code></pre></div>
+<span><span class="co">#&gt; 2.397814e-05 1.455775e-01 7.647113e-02 1.761855e-01 1.300586e-01</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="how-to-transform-a-categorial-variable-into-an-ordered-factor">How to transform a categorial variable into an ordered factor?<a class="anchor" aria-label="anchor" href="#how-to-transform-a-categorial-variable-into-an-ordered-factor"></a>
@@ -555,11 +607,10 @@ categories. The functions <code>HDMAX2::run_AS</code> and
 you have used (if any) into a factor, with an arbitrary ordering of the
 categories. If order is important to you, here’s a simple way to turn
 your character vector into a factor and order the categories as you
-wish. You can then use this variable as input to the hdmax2
+wish. You can then use this variable as input to the <code>hdmax2</code>
 functions.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># inverse alphabetical order for example</span></span>
+<code class="sourceCode R"><span><span class="co"># inverse alphabetical order for example</span></span>
 <span><span class="va">X</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">X_categorial</span></span>
 <span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">X</span>, ordered <span class="op">=</span> <span class="cn">TRUE</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"D"</span>,<span class="st">"C"</span>,<span class="st">"B"</span>,<span class="st">"A"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -571,10 +622,12 @@ association study?<a class="anchor" aria-label="anchor" href="#how-to-handle-add
 study between potential mediators and outcome if it makes sense from a
 biological standpoint. Nevertheless, this additional set of adjustment
 factors for the second association study must include the adjustment
-factors from the first association study.</p>
+factors from the first association study as design in
+<code>run_AS</code> function.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<code class="sourceCode R"><span><span class="co"># First adjustment factors set</span></span>
 <span><span class="va">covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">helper_ex</span><span class="op">$</span><span class="va">covariables</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co"># Second adjustment factors set</span></span>
 <span><span class="va">suppl_covar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">helper_ex</span><span class="op">$</span><span class="va">covariables</span><span class="op">[</span>,<span class="fl">3</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/run_AS.html">run_AS</a></span><span class="op">(</span>exposure <span class="op">=</span> <span class="va">helper_ex</span><span class="op">$</span><span class="va">exposure</span>,</span>
