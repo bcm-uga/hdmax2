@@ -100,9 +100,6 @@ aggregated methylated regions (AMRs).</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="helper_ex.html">helper_ex</a></span></span></span>
-<span class="r-in"><span><span class="co">#Artificial reduction of dataset size to pass the github action check when building hdmax2 website</span></span></span>
-<span class="r-in"><span><span class="va">data</span><span class="op">$</span><span class="va">methylation</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">methylation</span><span class="op">[</span> , <span class="fl">800</span><span class="op">:</span><span class="fl">1000</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">data</span><span class="op">$</span><span class="va">annotation</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">[</span><span class="fl">800</span><span class="op">:</span><span class="fl">1000</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">K</span><span class="op">=</span><span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="co">## run hdmax2 step1</span></span></span>
 <span class="r-in"><span><span class="va">hdmax2_step1</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="run_AS.html">run_AS</a></span><span class="op">(</span>exposure <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">exposure</span>,</span></span>
@@ -126,13 +123,15 @@ aggregated methylated regions (AMRs).</p>
 <span class="r-in"><span>end <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">end</span>,</span></span>
 <span class="r-in"><span>pval <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span>,</span></span>
 <span class="r-in"><span>cpg <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">cpg</span>,</span></span>
-<span class="r-in"><span>seed <span class="op">=</span> <span class="fl">0.6</span>, <span class="co">#Careful to change this parameter when working with real data</span></span></span>
+<span class="r-in"><span>seed <span class="op">=</span> <span class="fl">0.7</span>, <span class="co">#Careful to change this parameter when working with real data</span></span></span>
 <span class="r-in"><span>nCores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res.amr_search</span><span class="op">$</span><span class="va">res</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   chr   start     end           p        fdr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   1 1326166 1326221 0.005626678 0.01688003</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1 1310734 1310988 0.019799860 0.02138751</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   1 1406862 1407016 0.021387509 0.02138751</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   chr  start    end          p        fdr</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   1 864893 865027 0.03604853 0.05184658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   1 858380 858381 0.03901609 0.05184658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   1 886431 886553 0.04077365 0.05184658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   1 896773 896774 0.05000351 0.05184658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1 854778 855056 0.05184658 0.05184658</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

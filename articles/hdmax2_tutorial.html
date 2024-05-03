@@ -266,7 +266,7 @@ deviations.</p>
 <div class="section level2">
 <h2 id="simulated-dataset">Simulated dataset<a class="anchor" aria-label="anchor" href="#simulated-dataset"></a>
 </h2>
-<p>We simulated data for 100 samples and 500 potential mediators.</p>
+<p>We simulated data for 100 samples and 200 potential mediators.</p>
 <p>The matrix of potential mediators is an extract of real methylation
 data (TCGA PDAC samples).</p>
 <p>We define the <span class="math inline">\(K\)</span> number of
@@ -314,20 +314,20 @@ factors</strong> (age and gender).</p>
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
 <span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M1</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            cg00022633 cg00019093 cg00025981 cg00031759 cg00035636 cg00049102</span></span>
-<span><span class="co">#&gt; GSM1051525   1.480526   1.091212  0.8611761   1.096765   1.498758   2.029784</span></span>
-<span><span class="co">#&gt; GSM1051526   5.463677   3.474162  3.7370006   3.996897   1.481787   2.000932</span></span>
-<span><span class="co">#&gt; GSM1051527   5.334700   3.369454  3.6640206   3.889718   1.439573   1.891203</span></span>
-<span><span class="co">#&gt; GSM1051528   5.225207   3.289293  3.6175162   3.808743   1.443054   1.816579</span></span>
-<span><span class="co">#&gt; GSM1051529   1.691596   1.260262  0.9876545   1.249065   1.603649   2.217188</span></span>
-<span><span class="co">#&gt; GSM1051530   6.307245   4.088710  4.2104976   4.571531   2.310486   2.725880</span></span>
-<span><span class="co">#&gt;            cg00028749 cg00049616 cg00026603 cg00703120</span></span>
-<span><span class="co">#&gt; GSM1051525  0.7984107   1.767392   1.840380  0.8521711</span></span>
-<span><span class="co">#&gt; GSM1051526  3.9441627   1.743678   3.914640  0.8315540</span></span>
-<span><span class="co">#&gt; GSM1051527  3.8633605   1.667866   3.856255  0.8473967</span></span>
-<span><span class="co">#&gt; GSM1051528  3.8147481   1.599476   3.748134  0.8744509</span></span>
-<span><span class="co">#&gt; GSM1051529  0.9114222   1.886485   1.997508  0.8602605</span></span>
-<span><span class="co">#&gt; GSM1051530  4.3556358   2.324293   4.553996  0.8814345</span></span></code></pre></div>
+<span><span class="co">#&gt;            cg00019093 cg00025981 cg00028749 cg00047079 cg00121843 cg00302983</span></span>
+<span><span class="co">#&gt; GSM1051525   1.831097   1.177606   1.302671   2.113891 0.12940304  0.2145703</span></span>
+<span><span class="co">#&gt; GSM1051526   5.672381   5.351950   4.352876   2.086126 0.11342942  0.1763164</span></span>
+<span><span class="co">#&gt; GSM1051527   5.490627   5.246019   4.219565   1.994972 0.09364424  0.1255733</span></span>
+<span><span class="co">#&gt; GSM1051528   5.363217   5.179308   4.138750   1.904011 0.11372085  0.1737595</span></span>
+<span><span class="co">#&gt; GSM1051529   2.115429   1.353388   1.494251   2.337009 0.10795701  0.1952682</span></span>
+<span><span class="co">#&gt; GSM1051530   6.736255   6.017612   5.070583   2.968275 0.09816733  0.1265641</span></span>
+<span><span class="co">#&gt;            cg00007032 cg00031759 cg00368687 cg00130039</span></span>
+<span><span class="co">#&gt; GSM1051525 0.09865871   1.081282 0.10074858 0.10464908</span></span>
+<span><span class="co">#&gt; GSM1051526 3.51656763   5.185954 0.08671542 0.09689845</span></span>
+<span><span class="co">#&gt; GSM1051527 3.50486460   5.080387 0.06793239 0.07524249</span></span>
+<span><span class="co">#&gt; GSM1051528 3.52445369   5.000401 0.07325469 0.08412141</span></span>
+<span><span class="co">#&gt; GSM1051529 0.09449677   1.231169 0.09422826 0.08767490</span></span>
+<span><span class="co">#&gt; GSM1051530 3.51074518   5.751185 0.06314049 0.06777354</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-2-1">Step 2<a class="anchor" aria-label="anchor" href="#step-2-1"></a>
@@ -396,10 +396,8 @@ outcome</em><a class="anchor" aria-label="anchor" href="#second-example-multivar
 <span>                              covar <span class="op">=</span> <span class="va">covar</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    cg00005740    cg00006787    cg00007032    cg00008612    cg00009871 </span></span>
-<span><span class="co">#&gt;  3.847528e-20  1.864280e-14 3.894362e-155  1.964262e-12  4.594620e-10 </span></span>
-<span><span class="co">#&gt;    cg00009922 </span></span>
-<span><span class="co">#&gt;  1.071120e-07</span></span></code></pre></div>
+<span><span class="co">#&gt;   cg00005740   cg00006787   cg00007032   cg00008612   cg00009871   cg00009922 </span></span>
+<span><span class="co">#&gt; 3.930603e-07 1.061875e-02 2.933874e-16 2.099247e-04 1.514348e-12 3.184637e-01</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="selection-of-a-subset-of-mediators-2">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators-2"></a>
@@ -408,20 +406,20 @@ outcome</em><a class="anchor" aria-label="anchor" href="#second-example-multivar
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
 <span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">simu_data</span><span class="op">$</span><span class="va">M2</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mediators_top10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            cg00007032 cg00022633 cg00025981 cg00031759 cg00028749 cg00019093</span></span>
-<span><span class="co">#&gt; GSM1051525   1.764355   3.042535   1.987983   2.229753   2.020358   2.021450</span></span>
-<span><span class="co">#&gt; GSM1051526   6.324724   7.291695   5.055701   5.322832   5.374205   4.562818</span></span>
-<span><span class="co">#&gt; GSM1051527   7.849346   8.603409   6.022010   6.260643   6.420444   5.316097</span></span>
-<span><span class="co">#&gt; GSM1051528   6.590844   7.295384   5.110906   5.310325   5.434230   4.522164</span></span>
-<span><span class="co">#&gt; GSM1051529   2.352573   3.809111   2.515193   2.784983   2.567937   2.521325</span></span>
-<span><span class="co">#&gt; GSM1051530   7.989509   9.701877   6.659326   7.033794   7.011228   6.110346</span></span>
-<span><span class="co">#&gt;            cg00014667 cg00012692 cg00018896 cg00005740</span></span>
-<span><span class="co">#&gt; GSM1051525   2.104173   1.284970   2.200426   2.052600</span></span>
-<span><span class="co">#&gt; GSM1051526   5.692560   4.653031   5.962785   5.143245</span></span>
-<span><span class="co">#&gt; GSM1051527   6.884147   5.781892   7.210383   6.173062</span></span>
-<span><span class="co">#&gt; GSM1051528   5.896802   4.873684   6.173285   5.317930</span></span>
-<span><span class="co">#&gt; GSM1051529   2.569591   1.724780   2.615735   2.445169</span></span>
-<span><span class="co">#&gt; GSM1051530   7.019162   5.875805   7.400408   6.219636</span></span></code></pre></div>
+<span><span class="co">#&gt;            cg00025981 cg00019093 cg00031759 cg00022633 cg00007032 cg00009871</span></span>
+<span><span class="co">#&gt; GSM1051525   2.810690   3.333051   2.681391   2.058144   1.431224   2.355835</span></span>
+<span><span class="co">#&gt; GSM1051526   7.263145   7.430116   7.058559   5.781962   5.076067   6.516013</span></span>
+<span><span class="co">#&gt; GSM1051527   8.663460   8.633662   8.428823   6.993801   6.293432   7.910915</span></span>
+<span><span class="co">#&gt; GSM1051528   7.343681   7.353801   7.121072   5.887332   5.290542   6.760180</span></span>
+<span><span class="co">#&gt; GSM1051529   3.567254   4.151531   3.400333   2.631943   1.900969   2.915196</span></span>
+<span><span class="co">#&gt; GSM1051530   9.566706  10.000372   9.228616   7.516322   6.406738   8.090836</span></span>
+<span><span class="co">#&gt;            cg00028749 cg00014667 cg00005740 cg00012692</span></span>
+<span><span class="co">#&gt; GSM1051525   2.491659   2.052389   2.648494   1.032899</span></span>
+<span><span class="co">#&gt; GSM1051526   5.744348   5.498459   7.376805   3.708204</span></span>
+<span><span class="co">#&gt; GSM1051527   6.707678   6.642283   8.956235   4.604570</span></span>
+<span><span class="co">#&gt; GSM1051528   5.714551   5.694672   7.643873   3.889778</span></span>
+<span><span class="co">#&gt; GSM1051529   3.106085   2.499390   3.252984   1.383063</span></span>
+<span><span class="co">#&gt; GSM1051530   7.654547   6.773123   9.050847   4.678163</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-2-2">Step 2<a class="anchor" aria-label="anchor" href="#step-2-2"></a>
@@ -464,9 +462,9 @@ process the data.</p>
 <div class="section level3">
 <h3 id="how-to-analyse-agregated-methylated-regions">How to analyse agregated methylated regions ?<a class="anchor" aria-label="anchor" href="#how-to-analyse-agregated-methylated-regions"></a>
 </h3>
-<p>We simulated 500 samples and 1000 potential DNA methylation
-mediators, with various a binary exposure (smoking status of mothers)
-and continuous outcomes (birth weight).</p>
+<p>We simulated 100 samples and 200 potential DNA methylation mediators,
+with various a binary exposure (smoking status of mothers) and
+continuous outcomes (birth weight).</p>
 <div class="section level4">
 <h4 id="identifying-aggregated-mediator-regions-amr">Identifying aggregated mediator regions (AMR)<a class="anchor" aria-label="anchor" href="#identifying-aggregated-mediator-regions-amr"></a>
 </h4>
@@ -482,11 +480,6 @@ useful in Epigenomic Wide Association Studies (EWAS) when single CpG
 mediation is unsuccessful, or could be complementary analysis.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">helper_ex</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="va"><a href="../reference/helper_ex.html">helper_ex</a></span></span>
-<span></span>
-<span><span class="co">#Artificial reduction of dataset size to pass the github action check when building hdmax2 website</span></span>
-<span><span class="va">helper_ex</span><span class="op">$</span><span class="va">methylation</span> <span class="op">=</span> <span class="va">helper_ex</span><span class="op">$</span><span class="va">methylation</span><span class="op">[</span> , <span class="fl">800</span><span class="op">:</span><span class="fl">1000</span><span class="op">]</span></span>
-<span><span class="va">helper_ex</span><span class="op">$</span><span class="va">annotation</span> <span class="op">=</span> <span class="va">helper_ex</span><span class="op">$</span><span class="va">annotation</span><span class="op">[</span><span class="fl">800</span><span class="op">:</span><span class="fl">1000</span>, <span class="op">]</span></span>
-<span></span>
 <span></span>
 <span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">helper_ex</span><span class="op">$</span><span class="va">methylation</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">]</span>,</span>
@@ -505,7 +498,7 @@ mediation is unsuccessful, or could be complementary analysis.</p>
 <span>                              K <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">##Detecting AMR</span></span>
-<span><span class="va">seed</span> <span class="op">=</span> <span class="fl">0.6</span> <span class="co">#Careful to change this parameter when working with real data</span></span>
+<span><span class="va">seed</span> <span class="op">=</span> <span class="fl">0.7</span> <span class="co">#Careful to change this parameter when working with real data</span></span>
 <span><span class="va">res.amr_search</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/AMR_search.html">AMR_search</a></span><span class="op">(</span>chr <span class="op">=</span> <span class="va">helper_ex</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">chr</span>,</span>
 <span>                                    start <span class="op">=</span> <span class="va">helper_ex</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">start</span>,</span>
 <span>                                    end <span class="op">=</span> <span class="va">helper_ex</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">end</span>,</span>
@@ -515,10 +508,12 @@ mediation is unsuccessful, or could be complementary analysis.</p>
 <span>                                    nCores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res.amr_search</span><span class="op">$</span><span class="va">res</span></span>
-<span><span class="co">#&gt;   chr   start     end           p        fdr</span></span>
-<span><span class="co">#&gt; 2   1 1326166 1326221 0.005626678 0.01688003</span></span>
-<span><span class="co">#&gt; 1   1 1310734 1310988 0.019799860 0.02138751</span></span>
-<span><span class="co">#&gt; 3   1 1406862 1407016 0.021387509 0.02138751</span></span>
+<span><span class="co">#&gt;   chr  start    end          p        fdr</span></span>
+<span><span class="co">#&gt; 3   1 864893 865027 0.03604853 0.05184658</span></span>
+<span><span class="co">#&gt; 2   1 858380 858381 0.03901609 0.05184658</span></span>
+<span><span class="co">#&gt; 4   1 886431 886553 0.04077365 0.05184658</span></span>
+<span><span class="co">#&gt; 5   1 896773 896774 0.05000351 0.05184658</span></span>
+<span><span class="co">#&gt; 1   1 854778 855056 0.05184658 0.05184658</span></span>
 <span></span>
 <span><span class="va">res.arm_build</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/AMR_build.html">AMR_build</a></span><span class="op">(</span><span class="va">res.amr_search</span>, </span>
 <span>                                  methylation <span class="op">=</span> <span class="va">helper_ex</span><span class="op">$</span><span class="va">methylation</span>, </span>
@@ -526,17 +521,18 @@ mediation is unsuccessful, or could be complementary analysis.</p>
 <span></span>
 <span><span class="co">#List of DMR selected</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res.arm_build</span><span class="op">$</span><span class="va">res</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    DMR chr   start     end          p        fdr nb</span></span>
-<span><span class="co">#&gt; 1 DMR1   1 1310734 1310988 0.01979986 0.02138751  2</span></span>
-<span><span class="co">#&gt; 2 DMR2   1 1406862 1407016 0.02138751 0.02138751  2</span></span>
+<span><span class="co">#&gt;    DMR chr  start    end          p        fdr nb</span></span>
+<span><span class="co">#&gt; 1 DMR1   1 886431 886553 0.04077365 0.05184658  3</span></span>
+<span><span class="co">#&gt; 2 DMR2   1 854778 855056 0.05184658 0.05184658  6</span></span>
 <span></span>
 <span><span class="co">##CpG in the DMR</span></span>
 <span><span class="va">res.arm_build</span><span class="op">$</span><span class="va">CpG_for_each_AMR</span></span>
 <span><span class="co">#&gt; $DMR1</span></span>
-<span><span class="co">#&gt; [1] "cg11518257" "cg15617543"</span></span>
+<span><span class="co">#&gt; [1] "cg20322444" "cg07983659" "cg11733071"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $DMR2</span></span>
-<span><span class="co">#&gt; [1] "cg10228629" "cg06377929"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "cg08029603" "cg16347928" "cg22699361" "cg03890988" "cg21786289"</span></span>
+<span><span class="co">#&gt; [6] "cg13897241"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="quantifying-indirect-effects">Quantifying indirect effects<a class="anchor" aria-label="anchor" href="#quantifying-indirect-effects"></a>
@@ -547,7 +543,6 @@ could be use to estimate different effects of AMR. Also
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## run hdmax2 step2</span></span>
 <span><span class="va">object</span> <span class="op">=</span> <span class="va">hdmax2_step1</span></span>
-<span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="va">helper_ex</span><span class="op">$</span><span class="va">methylation</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">res.arm_build</span><span class="op">$</span><span class="va">AMR_mean</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## selected mediators effects estimation</span></span>
@@ -576,7 +571,7 @@ mediators to simplify the narrative. Among available methods to select
 mediators from mediation test <span class="math inline">\(P\)</span>-values, we can use FDR (False Discovery
 Rate) control. <span class="math inline">\(Q\)</span>-value is obtained
 from <em>max-squared</em> test <span class="math inline">\(P\)</span>-values from step 1 with
-<code>fdrtools::fdrtools</code> function then bounded by chosen
+<code><a href="../reference/hdmax2_qvalue.html">hdmax2::hdmax2_qvalue</a></code> function then bounded by chosen
 threshold.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## run hdmax2 step1</span></span>
@@ -589,12 +584,8 @@ threshold.</p>
 <span><span class="va">q_values</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/hdmax2_qvalue.html">hdmax2_qvalue</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
 <span><span class="va">candidate_mediator</span> <span class="op">&lt;-</span> <span class="va">q_values</span><span class="op">$</span><span class="va">qv</span><span class="op">[</span><span class="va">q_values</span><span class="op">$</span><span class="va">qv</span><span class="op">&lt;=</span> <span class="fl">0.2</span><span class="op">]</span> <span class="co"># In this example, we will consider FDR levels &lt;20%.</span></span>
 <span><span class="va">candidate_mediator</span></span>
-<span><span class="co">#&gt;   cg00018896   cg00019093   cg00022633   cg00024247   cg00025981   cg00028749 </span></span>
-<span><span class="co">#&gt; 1.097593e-02 3.839397e-10 3.379984e-15 2.861555e-02 3.977704e-06 2.864961e-02 </span></span>
-<span><span class="co">#&gt;   cg00031759   cg00035636   cg00037930   cg00047079   cg00049102   cg00049382 </span></span>
-<span><span class="co">#&gt; 1.067235e-04 2.138923e-08 9.146395e-02 2.572296e-02 8.596995e-09 2.682088e-04 </span></span>
-<span><span class="co">#&gt;   cg00049616   cg00241432   cg00345862   cg00465739   cg01005425 </span></span>
-<span><span class="co">#&gt; 2.397814e-05 1.455775e-01 7.647113e-02 1.761855e-01 1.300586e-01</span></span></code></pre></div>
+<span><span class="co">#&gt;   cg00019093   cg00025981 </span></span>
+<span><span class="co">#&gt; 2.175678e-06 1.143605e-02</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="how-to-transform-a-categorial-variable-into-an-ordered-factor">How to transform a categorial variable into an ordered factor?<a class="anchor" aria-label="anchor" href="#how-to-transform-a-categorial-variable-into-an-ordered-factor"></a>
