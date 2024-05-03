@@ -1,5 +1,5 @@
-##' Run mediation analysis for a set of markers
-##' Function adapt from the combp function() of the ENmix package
+##' @title Identification of differentially methylated regions (DMR)
+##' @description  Function adapt from the combp function() of the ENmix package
 ##' @param data A data frame from bed format file with colname name
 ##' "V1","V2", "V3","V4","V5",V1 indicate chromosome (1,2,3,...,X,Y),
 ##' V2 is chromosome position, V4 is for P value and V5 for name of CpGs.
@@ -135,9 +135,9 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
 
 #------------------------------------------------------------------
 
-##' Identifying aggregated mediator regions (AMR)
+##' @title Identifying aggregated mediator regions (AMR)
 ##'
-##' Identify aggregated methylated regions (AMR) from the P-values from function max2 using a modified comb-p method. 
+##' @description Identify aggregated methylated regions (AMR) from the P-values from function max2 using a modified comb-p method. 
 ##' Compute the P-value and the FDR for each AMR detected.
 ##' @param chr chromosomes
 ##' @param start chromosomal position of markers (start)
@@ -155,9 +155,6 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
 ##' @author Basile Jumentier
 ##' @examples
 ##' data = hdmax2::helper_ex
-##' #Artificial reduction of dataset size to pass the github action check when building hdmax2 website
-##' data$methylation = data$methylation[ , 800:1000]
-##' data$annotation = data$annotation[800:1000, ]
 ##' K=5
 ##' ## run hdmax2 step1
 ##' hdmax2_step1 = hdmax2::run_AS(exposure = data$exposure,
@@ -178,7 +175,7 @@ combp2 <- function (data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCore
 ##' end = data$annotation$end,
 ##' pval = hdmax2_step1$max2_pvalues,
 ##' cpg = data$annotation$cpg,
-##' seed = 0.6, #Careful to change this parameter when working with real data
+##' seed = 0.7, #Careful to change this parameter when working with real data
 ##' nCores = 2)
 ##' res.amr_search$res
 ##'
@@ -196,9 +193,9 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
 
 #------------------------------------------------------------------
 
-##' Build AMR vector
+##' @title Build AMR vector
 ##'
-##' Build AMR from the result of function AMR_search
+##' @description Build AMR from the result of function AMR_search
 ##' @param res result object of function AMR_search
 ##' @param methylation a matrix of methylation profile.
 ##' @param nb_cpg threshold of minimal number of CpG in the AMR
@@ -219,9 +216,6 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
 ##' @author Basile Jumentier
 ##' @examples
 ##' data = hdmax2::helper_ex
-##' #Artificial reduction of dataset size to pass the github action check when building hdmax2 website
-##' data$methylation = data$methylation[ , 800:1000]
-##' data$annotation = data$annotation[800:1000, ]
 ##' K=5
 ##' ## run hdmax2 step1
 ##' hdmax2_step1 = hdmax2::run_AS(exposure = data$exposure,
@@ -242,7 +236,7 @@ AMR_search <- function(chr, start, end, pval, cpg, ...) {
 ##' end = data$annotation$end,
 ##' pval = hdmax2_step1$max2_pvalues,
 ##' cpg = data$annotation$cpg,
-##' seed = 0.6, #Careful to change this parameter when working with real data
+##' seed = 0.7, #Careful to change this parameter when working with real data
 ##' nCores = 2)
 ##'
 ##' res.amr_search$res
@@ -315,8 +309,9 @@ AMR_build <- function(res, methylation, nb_cpg = 2) {
 
 
 
-##' compute qvalues from pvalues
-##'
+##' @title Compute q-values from p-values
+##' @description Compute q-values from provided p-values Estimate the proportion of H0
+##' relies on the defined interquartile range
 ##' @param pvalues result of max squared test
 ##' @param theta constant defines interquartile range
 ##' @return qvalues, pi0 =  H0_proportion

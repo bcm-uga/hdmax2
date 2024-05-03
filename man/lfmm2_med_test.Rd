@@ -2,7 +2,7 @@
 % Please edit documentation in R/hdmax2_lfmm2_functions.R
 \name{lfmm2_med_test}
 \alias{lfmm2_med_test}
-\title{lfmm2_test adapted function for hdmax2 from LEA::lfmm2.test}
+\title{P-values adjusted for latent factors computed by lfmm2}
 \usage{
 lfmm2_med_test(
   object,
@@ -37,7 +37,13 @@ an object with the following attributes
 P-values, fscores, zscores, adj.squared, gif
 }
 \description{
-lfmm2_test adapted function for hdmax2 from LEA::lfmm2.test
+The function returns a vector of p-values for association
+between potential mediators and exposure/outcome variables adjusted for latent factors
+computed by \code{lfmm2}. As input, it takes an object of class
+\code{lfmm2Class} with the data that were used to adjust the LFMM.
+If \code{full} is set to \code{FALSE}, the function computes significance
+values (p-values) for each exposure variable, otherwise it returns
+p-values for the full set of exposure variables.
 }
 \examples{
 attach(simu_data)

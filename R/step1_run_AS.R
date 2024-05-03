@@ -1,4 +1,8 @@
-##' The function run_AS() evaluates the association between exposure variables X , 
+##' @title The function hdmax2::run_AS() evaluates the association 
+##' between exposure variables, intermediary variables and the outcome variable 
+##' using a latent factor mixed model (LFMM Caye et al. 2019) to 
+##' estimate K unobserved latent factors  U. 
+##' @description  The function run_AS() evaluates the association between exposure variables X , 
 ##' intermediary variables M and the outcome variable Y, using a latent factor mixed model 
 ##' (LFMM Caye et al. 2019) to estimate K unobserved latent factors  U. 
 ##' First this function tests the significance of association between 

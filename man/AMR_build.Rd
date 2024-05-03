@@ -35,9 +35,6 @@ The information for each AMR is summarized by doing the mean (by row) of each Cp
 }
 \examples{
 data = hdmax2::helper_ex
-#Artificial reduction of dataset size to pass the github action check when building hdmax2 website
-data$methylation = data$methylation[ , 800:1000]
-data$annotation = data$annotation[800:1000, ]
 K=5
 ## run hdmax2 step1
 hdmax2_step1 = hdmax2::run_AS(exposure = data$exposure,
@@ -58,7 +55,7 @@ start = data$annotation$start,
 end = data$annotation$end,
 pval = hdmax2_step1$max2_pvalues,
 cpg = data$annotation$cpg,
-seed = 0.6, #Careful to change this parameter when working with real data
+seed = 0.7, #Careful to change this parameter when working with real data
 nCores = 2)
 
 res.amr_search$res

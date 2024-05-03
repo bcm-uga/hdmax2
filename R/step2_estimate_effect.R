@@ -1,10 +1,32 @@
-##' Estimate effects for a set of mediation markers
-##' V2 this version allow to integrate covariates in mediation function 
-##'
-##' Estimate various quantities for causal mediation analysis for a set of
-##' markers, including average causal mediation effects
-##' (indirect effect), average direct effects, proportions mediated,
-##' and total effect.
+##' @title The function hdmax2::estimate_effect() takes as input an object 
+##' hdmax2_step1 and a list of potential mediators MS to be analyzed in subsequent steps.
+##' @description  For each univariate exposure variable and the subset of mediators MS,
+##' the hdmax2::estimate_effect() function computes several estimates
+##' to evaluate the indirect effects in the path between exposure variables
+##' and the outcome variable. Initially, this function assesses each mediator
+##' variable MS_j individually and computes causal measures of interest
+##' such as (i) the Average Causal Mediated Effect (ACME, corresponding to
+##' the indirect effect) and (ii) the Proportion Mediated (PM). The ACME
+##' differs from the Average Direct Effect (ADE), which represents the
+##' unmediated effect, and from the Total Effect (TE) which is equal to the sum
+##' of direct and indirect effect. PM corresponds to the proportion of
+##' the total effect that is mediated by the mediator (ratio of the indirect
+##' effect to the total effect). ACME and PM are computed by the
+##'  mediation::mediate() function of the package mediation, that
+##' automatically detects the type of statistical model used in the mediation
+##' analysis (Tingley et al. 2014). The function mediation::mediate()
+##' calculates uncertainty estimates by a quasi-Bayesian Monte Carlo approach
+##' described (Imai et al. 2010). In addition, it estimates the intermediary
+##' effect sizes  a_j and b_j and their standard deviations. Eventually,
+##' hdmax2 calculates an Overall Indirect Effect (OIE) from a single model
+##' that includes all mediators MS simultaneously. The OIE corresponds
+##' to the sum of the indirect effect associated with all mediators.
+##' The confidence interval (CI) of the OIE is estimated by a bootstrap
+##' approach. Along with the OIE, hdmax2 estimates the Overall Total
+##' Effect (OTE) corresponding to the effect of exposure variables on
+##' the outcome variable, as well as the Overall Direct Effect (ODE)
+##' corresponding to the effect of exposure variables on the outcome variable
+##' when the mediators MS are included in the model.
 ##'
 ##' @param object results from hdmax2 step 2
 ##' @param m a response variable matrix with n rows and p columns corresponding to mediators selected at step1.

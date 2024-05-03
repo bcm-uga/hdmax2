@@ -2,7 +2,7 @@
 % Please edit documentation in R/hdmax2_lfmm2_functions.R
 \name{lfmm2_med}
 \alias{lfmm2_med}
-\title{lfmm2 adapted function for hdmax2 from LEA::lfmm2}
+\title{Fitting Latent Factor Mixed Models (Least squares algorithm)}
 \usage{
 lfmm2_med(input, env, K, lambda = 1e-05, effect.sizes = FALSE)
 }
@@ -23,7 +23,9 @@ U
 V
 }
 \description{
-lfmm2 adapted function for hdmax2 from LEA::lfmm2
+Latent Factor Mixed Models (LFMMs) are factor regression models.
+The lfmm2 function estimates latent factors based on an exact least-squares
+approach.
 }
 \examples{
 data(simu_data)

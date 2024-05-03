@@ -1,5 +1,5 @@
-##' Summary plot for HDMAX2
-##' This function draw a summary plot of hdmax2
+##' @title Summary plot for HDMAX2
+##' @description This function draw a summary plot of hdmax2 method results
 ##'
 ##' @param object results from hdmax2 step 2
 ##' @param plot_type  "all_plot" by default generate all proposed plots , elsewhere choose one individual plot among : "plot_ACME", "plot_Prop_Med", "plot_overall_effects", "plot_effect_size"
@@ -56,8 +56,8 @@ plot_hdmax2 <- function(object,  plot_type = "all_plot") {
 }  
 
 
-##' Summary plot for univariate exposure variables 
-##' This function draw a summary plot of hdmax2
+##' @title Summary plot for univariate exposure variables 
+##' @description This function draw a summary plot of hdmax2 method results
 ##'
 ##' @param object results from hdmax2 step 2
 ##' @param plot_type  "all_plot" by default generate all proposed plots , elsewhere choose one individual plot among : "plot_ACME", "plot_Prop_Med", "plot_overall_effects", "plot_effect_size"
@@ -261,8 +261,8 @@ plot_univariate <- function(object,  plot_type= "all_plot") {
 
 
 
-##' Summary plot for univariate exposure variables 
-##' This function draw a summary plot of hdmax2
+##' @title Summary plot for categorical exposure variables 
+##' @description This function draw a summary plot of hdmax2 method results
 ##'
 ##' @param object results from hdmax2 step 2
 ##' @param plot_type  "all_plot" by default generate all proposed plots , elsewhere choose one individual plot among : "plot_ACME", "plot_Prop_Med", "plot_overall_effects", "plot_effect_size"
@@ -467,8 +467,8 @@ plot_univariate_cat <- function(object,  plot_type= "all_plot") {
 
 
 
-##' Summary plot for multivariate exposure variables 
-##' This function draw a summary plot of hdmax2
+##' @title Summary plot for multivariate exposure variables 
+##' @description This function draw a summary plot of hdmax2 method results
 ##'
 ##' @param object results from hdmax2 step 2
 ##' @param plot_type  "all_plot" by default generate all proposed plots , elsewhere choose one individual plot among : "plot_ACME", "plot_Prop_Med", "plot_overall_effects", "plot_effect_size"

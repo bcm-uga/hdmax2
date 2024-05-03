@@ -2,8 +2,7 @@
 % Please edit documentation in R/hdmax2_plot.R
 \name{plot_hdmax2}
 \alias{plot_hdmax2}
-\title{Summary plot for HDMAX2
-This function draw a summary plot of hdmax2}
+\title{Summary plot for HDMAX2}
 \usage{
 plot_hdmax2(object, plot_type = "all_plot")
 }
@@ -16,8 +15,7 @@ plot_hdmax2(object, plot_type = "all_plot")
 Summary plot for ACME, PM, OIE, effects interpretation
 }
 \description{
-Summary plot for HDMAX2
-This function draw a summary plot of hdmax2
+This function draw a summary plot of hdmax2 method results
 }
 \examples{
 # Load example dataset

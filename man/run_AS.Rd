@@ -2,16 +2,10 @@
 % Please edit documentation in R/step1_run_AS.R
 \name{run_AS}
 \alias{run_AS}
-\title{The function run_AS() evaluates the association between exposure variables X ,
-intermediary variables M and the outcome variable Y, using a latent factor mixed model
-(LFMM Caye et al. 2019) to estimate K unobserved latent factors  U.
-First this function tests the significance of association between
-the exposure variables and the potential mediator variables.
-Then it tests association between the potential mediator variables and the outcome variable.
-Finally it evaluates the significance of the indirect effects by computing
-the squared maximum of two series of P-values with max2 test. This rejects
-the null-hypothesis that either the effect of X on M, or the effect of M on Y is null.
-Optional covariates Z, can be included as observed adjustment factors in the model.}
+\title{The function hdmax2::run_AS() evaluates the association
+between exposure variables, intermediary variables and the outcome variable
+using a latent factor mixed model (LFMM Caye et al. 2019) to
+estimate K unobserved latent factors  U.}
 \usage{
 run_AS(
   exposure,

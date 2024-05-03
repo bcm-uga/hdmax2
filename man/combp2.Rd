@@ -2,8 +2,7 @@
 % Please edit documentation in R/hdmax2_helper_functions.R
 \name{combp2}
 \alias{combp2}
-\title{Run mediation analysis for a set of markers
-Function adapt from the combp function() of the ENmix package}
+\title{Identification of differentially methylated regions (DMR)}
 \usage{
 combp2(data, dist.cutoff = 1000, bin.size = 310, seed = 0.01, nCores = 10)
 }
@@ -27,7 +26,6 @@ Results of the DMRs analysis.
 }
 }
 \description{
-Run mediation analysis for a set of markers
 Function adapt from the combp function() of the ENmix package
 }
 \details{

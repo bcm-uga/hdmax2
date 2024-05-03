@@ -1,4 +1,7 @@
-##' lfmm2 adapted function for hdmax2 from LEA::lfmm2
+##' @title Fitting Latent Factor Mixed Models (Least squares algorithm)
+##' @description Latent Factor Mixed Models (LFMMs) are factor regression models. 
+##' The lfmm2 function estimates latent factors based on an exact least-squares
+##'  approach.
 ##' @param input Continuous intermediary variables matrix  encompassing potential mediators with n rows and p columns.
 ##' @param env An explanatory variable matrix with n rows and d columns.
 ##' @param K latent factor number
@@ -135,7 +138,14 @@ lfmm2_med = function(input,
 #
 #---------------------------------------------
 
-##' lfmm2_test adapted function for hdmax2 from LEA::lfmm2.test
+##' @title P-values adjusted for latent factors computed by lfmm2
+##' @description The function returns a vector of p-values for association 
+##' between potential mediators and exposure/outcome variables adjusted for latent factors 
+##' computed by \code{lfmm2}. As input, it takes an object of class
+##' \code{lfmm2Class} with the data that were used to adjust the LFMM. 
+##' If \code{full} is set to \code{FALSE}, the function computes significance 
+##' values (p-values) for each exposure variable, otherwise it returns 
+##' p-values for the full set of exposure variables.
 ##' @param object lfmm2Class object
 ##' @param input a response variable matrix with n rows and p columns
 ##' @param env An explanatory variable matrix with n rows and d columns.

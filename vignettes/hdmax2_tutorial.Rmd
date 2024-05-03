@@ -142,7 +142,7 @@ We propose a set of plots including:
 
 # Simulated dataset
 
-We simulated data for 100 samples and 500 potential mediators.
+We simulated data for 100 samples and 200 potential mediators.
 
 The matrix of potential mediators is an extract of real methylation data (TCGA PDAC samples).
 
@@ -267,7 +267,7 @@ In this vignette, we also provide a series of helper function to process the dat
 
 ## How to analyse agregated methylated regions ?
 
-We simulated 500 samples and 1000 potential DNA methylation mediators, with various a binary exposure (smoking status of mothers) and continuous outcomes (birth weight).
+We simulated 100 samples and 200 potential DNA methylation mediators, with various a binary exposure (smoking status of mothers) and continuous outcomes (birth weight).
 
 ### Identifying aggregated mediator regions (AMR)
 
@@ -276,11 +276,6 @@ Identify Aggregated Methylated regions (AMR) with `AMR_search` function which us
 
 ```{r AMR , message=FALSE}
 helper_ex = hdmax2::helper_ex
-
-#Artificial reduction of dataset size to pass the github action check when building hdmax2 website
-helper_ex$methylation = helper_ex$methylation[ , 800:1000]
-helper_ex$annotation = helper_ex$annotation[800:1000, ]
-
 
 pc <- prcomp(helper_ex$methylation)
 plot((pc$sdev^2/sum(pc$sdev^2))[1:15],
@@ -297,7 +292,7 @@ hdmax2_step1 = hdmax2::run_AS(exposure = helper_ex$exposure,
                               K = K)
 
 ##Detecting AMR
-seed = 0.6 #Careful to change this parameter when working with real data
+seed = 0.7 #Careful to change this parameter when working with real data
 res.amr_search = hdmax2::AMR_search(chr = helper_ex$annotation$chr,
                                     start = helper_ex$annotation$start,
                                     end = helper_ex$annotation$end,
@@ -327,7 +322,6 @@ Like with single mediators analysis *esimate_effect* function could be use to es
 ```{r step2, message=FALSE, warning=FALSE, fig.height=10, fig.width=10}
 ## run hdmax2 step2
 object = hdmax2_step1
-mediators_top10 = helper_ex$methylation[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
 m = as.matrix(res.arm_build$AMR_mean)
 
 ## selected mediators effects estimation
@@ -340,7 +334,7 @@ hdmax2::plot_hdmax2(hdmax2_step2, plot_type= "all_plot")
 
 ## How to select potential mediators using q-values and FDR control ?
 
-Several methods can be use to select potential mediators from step1 results of our method, in our main use cases we simply select top 10 mediators to simplify the narrative. Among available methods to select mediators from mediation test $P$-values, we can use FDR (False Discovery Rate) control. $Q$-value is obtained  from *max-squared* test $P$-values from step 1 with `fdrtools::fdrtools` function then bounded by chosen threshold. 
+Several methods can be use to select potential mediators from step1 results of our method, in our main use cases we simply select top 10 mediators to simplify the narrative. Among available methods to select mediators from mediation test $P$-values, we can use FDR (False Discovery Rate) control. $Q$-value is obtained  from *max-squared* test $P$-values from step 1 with `hdmax2::hdmax2_qvalue` function then bounded by chosen threshold. 
 
 ```{r FDR, message=FALSE}
 ## run hdmax2 step1

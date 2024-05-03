@@ -2,8 +2,7 @@
 % Please edit documentation in R/hdmax2_plot.R
 \name{plot_univariate_cat}
 \alias{plot_univariate_cat}
-\title{Summary plot for univariate exposure variables
-This function draw a summary plot of hdmax2}
+\title{Summary plot for categorical exposure variables}
 \usage{
 plot_univariate_cat(object, plot_type = "all_plot")
 }
@@ -16,8 +15,7 @@ plot_univariate_cat(object, plot_type = "all_plot")
 Summary plot for ACME, PM, OIE, effects interpretation
 }
 \description{
-Summary plot for univariate exposure variables
-This function draw a summary plot of hdmax2
+This function draw a summary plot of hdmax2 method results
 }
 \examples{
 # Load example dataset

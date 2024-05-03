@@ -2,9 +2,9 @@
 #'
 #' @format A list with  objects
 #' \itemize{
-#'   \item  M methylation matrix, 100 samples and 500 potential mediators
-#'   \item  M1 methylation matrix, 100 samples and 500 potential mediators
-#'   \item  M2 methylation matrix, 100 samples and 500 potential mediators
+#'   \item  M methylation matrix, 100 samples and 200 potential mediators
+#'   \item  M1 methylation matrix, 100 samples and 200 potential mediators
+#'   \item  M2 methylation matrix, 100 samples and 200 potential mediators
 #'   \item  X_continuous Continuous Exposure for 100 samples
 #'   \item  X_continuous2 Continuous Exposure for 100 samples
 #'   \item  X_binary Binary Exposure for 100 samples
@@ -23,11 +23,11 @@
 #'
 #' @format a list of 5 objects
 #' \itemize{
-#'   \item{methylation}{methylation matrix, 500 individuals and 10000 probes}
-#'   \item{exposure}{Exposure for 500 individuals}
-#'   \item{phenotype}{Ouctome for 500 individuals}
-#'   \item{annotation}{Annotation for the 1000 probes}
-#'   \item{covariables}{Covariables for 500 individuals : sex, bmi, age, treatment}
+#'   \item{methylation}{methylation matrix, 100 individuals and 200 probes}
+#'   \item{exposure}{Exposure for 100 individuals}
+#'   \item{phenotype}{Ouctome for 100 individuals}
+#'   \item{annotation}{Annotation for the 200 probes}
+#'   \item{covariables}{Covariables for 100 individuals : sex, bmi, age, treatment}
 #' }
 #'
 "helper_ex"

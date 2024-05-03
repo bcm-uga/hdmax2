@@ -2,7 +2,7 @@
 % Please edit documentation in R/hdmax2_helper_functions.R
 \name{hdmax2_qvalue}
 \alias{hdmax2_qvalue}
-\title{compute qvalues from pvalues}
+\title{Compute q-values from p-values}
 \usage{
 hdmax2_qvalue(pvalues, theta = 0.25)
 }
@@ -15,7 +15,8 @@ hdmax2_qvalue(pvalues, theta = 0.25)
 qvalues, pi0 =  H0_proportion
 }
 \description{
-compute qvalues from pvalues
+Compute q-values from provided p-values Estimate the proportion of H0
+relies on the defined interquartile range
 }
 \examples{
 data = hdmax2::simu_data
