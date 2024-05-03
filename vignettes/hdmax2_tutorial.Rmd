@@ -201,7 +201,7 @@ hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
 
 ## Vizualisation of results
 
-```{r plot results univar , fig.height=10, fig.width=10 , message=FALSE, warning=FALSE}
+```{r plot results univar , fig.height=10, fig.width=10 , message=FALSE, warning=FALSE, fig.show='asis'}
 library(ggplot2)
 hdmax2::plot_hdmax2(hdmax2_step2, plot_type = "all_plot")
 ```
@@ -254,7 +254,7 @@ hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
 
 ## Vizualisation of results
 
-```{r plot results multivar , fig.height=10, fig.width=10}
+```{r plot results multivar , fig.height=10, fig.width=10, fig.show='asis'}
 library(ggplot2)
 hdmax2::plot_hdmax2(hdmax2_step2, plot_type= "all_plot")
 ```
@@ -319,7 +319,7 @@ res.arm_build$CpG_for_each_AMR
 Like with single mediators analysis *esimate_effect* function could be use to estimate different effects of AMR. Also `plot_hdmax2` can be applied to step2 results.
 
 
-```{r step2, message=FALSE, warning=FALSE, fig.height=10, fig.width=10}
+```{r step2, message=FALSE, warning=FALSE, fig.height=10, fig.width=10, fig.show='asis'}
 ## run hdmax2 step2
 object = hdmax2_step1
 m = as.matrix(res.arm_build$AMR_mean)

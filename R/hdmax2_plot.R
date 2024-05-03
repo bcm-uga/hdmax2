@@ -244,7 +244,7 @@ plot_univariate <- function(object,  plot_type= "all_plot") {
     theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "top" )
   
   if(plot_type == "all_plot"){
-  plot_final = gridExtra::grid.arrange(p_ACME, p_PM, p_effects, p_es, ncol = 2)
+  plot_final = invisible(gridExtra::grid.arrange(p_ACME, p_PM, p_effects, p_es, ncol = 2))
   } else if(plot_type == "plot_ACME"){
     plot_final = p_ACME
   } else if(plot_type == "plot_Prop_Med"){
@@ -448,7 +448,7 @@ plot_univariate_cat <- function(object,  plot_type= "all_plot") {
     
     
     if(plot_type == "all_plot"){
-      plot_final[[k]] = gridExtra::grid.arrange(p_ACME, p_PM, p_effects, p_es, ncol = 2)
+      plot_final[[k]] = invisible(gridExtra::grid.arrange(p_ACME, p_PM, p_effects, p_es, ncol = 2))
     } else if(plot_type == "plot_ACME"){
       plot_final[[k]] = p_ACME
     } else if(plot_type == "plot_Prop_Med"){
@@ -613,7 +613,7 @@ plot_multivariate <- function(object,  plot_type= "all_plot") {
       theme(axis.text.x = element_text(angle = 45, hjust = 1))# +
 
     if(plot_type == "all_plot"){
-      plot_final[[var_name]] = gridExtra::grid.arrange(p_ACME, p_PM, p_effects, p_es, ncol = 2)
+      plot_final[[var_name]] = invisible(gridExtra::grid.arrange(p_ACME, p_PM, p_effects, p_es, ncol = 2))
     } else if(plot_type == "plot_ACME"){
       plot_final[[var_name]]= p_ACME
     } else if(plot_type == "plot_Prop_Med"){
