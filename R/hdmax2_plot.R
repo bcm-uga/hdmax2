@@ -122,7 +122,7 @@ plot_univariate <- function(object,  plot_type= "all_plot") {
       panel.spacing = unit(0.01, "lines"),
       axis.ticks = element_blank()
     ) +
-    scale_color_manual(values = c("darkred", "darkgreen"), guide = FALSE) +
+    scale_color_manual(values = c("darkred", "darkgreen"), guide = "none") +
     scale_shape_manual(values = c("pval <= 0.05" = 16, "n.s." = 17), guide = guide_legend(title = "Significance"))
   
   
@@ -147,7 +147,7 @@ plot_univariate <- function(object,  plot_type= "all_plot") {
       panel.spacing = unit(0.01, "lines"),
       axis.ticks = element_blank()
     ) +
-    scale_color_manual(values = c("darkred", "darkgreen"), guide = FALSE) +
+    scale_color_manual(values = c("darkred", "darkgreen"), guide = "none") +
     scale_shape_manual(values = c("pval <= 0.05" = 16, "n.s." = 17), guide = guide_legend(title = "Significance"))
   
   ## Plot the overall effects
@@ -326,7 +326,7 @@ plot_univariate_cat <- function(object,  plot_type= "all_plot") {
         panel.spacing = unit(0.01, "lines"),
         axis.ticks = element_blank()
       ) +
-      scale_color_manual(values = c("darkred", "darkgreen"), guide = FALSE) +
+      scale_color_manual(values = c("darkred", "darkgreen"), guide = "none") +
       scale_shape_manual(values = c("pval <= 0.05" = 16, "n.s." = 17), guide = guide_legend(title = "Significance"))
     
    
@@ -351,7 +351,7 @@ plot_univariate_cat <- function(object,  plot_type= "all_plot") {
         panel.spacing = unit(0.01, "lines"),
         axis.ticks = element_blank()
       ) +
-      scale_color_manual(values = c("darkred", "darkgreen"), guide = FALSE) +
+      scale_color_manual(values = c("darkred", "darkgreen"), guide = "none") +
       scale_shape_manual(values = c("pval <= 0.05" = 16, "n.s." = 17), guide = guide_legend(title = "Significance"))
     
     ## Plot the overall effects
@@ -529,7 +529,7 @@ plot_multivariate <- function(object,  plot_type= "all_plot") {
       theme(panel.border = element_blank(),
             panel.spacing = unit(0.01, "lines"),
             axis.ticks = element_blank()) +
-      scale_color_manual(values = c("darkred", "darkgreen"), guide = FALSE) +
+      scale_color_manual(values = c("darkred", "darkgreen"), guide = "none") +
       scale_shape_manual(values = c("pval <= 0.05" = 16, "n.s." = 17), guide = guide_legend(title = "Significance"))
     
     
@@ -548,7 +548,7 @@ plot_multivariate <- function(object,  plot_type= "all_plot") {
       theme(panel.border = element_blank(),
             panel.spacing = unit(0.01, "lines"),
             axis.ticks = element_blank()) +
-      scale_color_manual(values = c("darkred", "darkgreen"), guide = FALSE) +
+      scale_color_manual(values = c("darkred", "darkgreen"), guide = "none") +
       scale_shape_manual(values = c("pval <= 0.05" = 16, "n.s." = 17), guide = guide_legend(title = "Significance"))
     
     ##Plot the overall effects
