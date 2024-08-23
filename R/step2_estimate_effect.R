@@ -88,10 +88,14 @@ estimate_effect <- function(object , m, boots = 1000, ...) {
   outcome = object$input$outcome_input
   
   M = m
+  
+  if (!is.matrix(M)){
+    stop("m must be a matrix")
+  }
   if (is.null(colnames(M))) {
     colnames(M) <- 1:ncol(M)
   }
-  
+
   expo_var_ids =object$input$expo_var_ids
   ncol_var = length(expo_var_ids)
   outcome_type = object$input$outcome_var_type
