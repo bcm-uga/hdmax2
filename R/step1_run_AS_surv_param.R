@@ -363,27 +363,30 @@ run_AS_surv_param = function(exposure,
                                      M = M,
                                      survival_time = survival_time,
                                      censoring_status = censoring_status,
-                                     exposure = exposure)
+                                     exposure = exposure,
+                                     covar = covars)
     }else if(is.data.frame(exposure)){
       res_reg2 = surv_param_med_test(mod.lfmm1,
                                      M = M,
                                      survival_time = survival_time,
                                      censoring_status = censoring_status,
-                                     exposure = exposures)
+                                     exposure = exposures,
+                                     covar = covars)
     }
   }else if(expo_var_n > 1){
     res_reg2 = surv_param_med_test(mod.lfmm1,
                                    M = M,
                                    survival_time = survival_time,
                                    censoring_status = censoring_status,
-                                   exposure = exposures)
+                                   exposure = exposures,
+                                   covar = covars)
   }
   
   pval2 = as.double(res_reg2$pvalues)
-  survival_distribution = res_reg2$survival_distribution
+  #survival_distribution = res_reg2$survival_distribution
   names(pval2) = colnames(M)
-  reg2 = list(pval2, survival_distribution)
-  names(reg2) = c("pval", "survival_distribution")
+   reg2 = list(pval2)#, survival_distribution)
+   names(reg2) = c("pval")#, "survival_distribution")
   
   res[[2]] = reg2
   
@@ -429,11 +432,11 @@ run_AS_surv_param = function(exposure,
     covar, 
     suppl_covar,
     survival_time_input, 
-    censoring_status_input,
-    survival_distribution
+    censoring_status_input#,
+    #survival_distribution
   )
   
-  names(input) = c("exposure_input", "expo_var_types", "expo_var_ids" , "covar", "suppl_covar", "survival_time_input", "censoring_status_input", "survival_distribution")
+  names(input) = c("exposure_input", "expo_var_types", "expo_var_ids" , "covar", "suppl_covar", "survival_time_input", "censoring_status_input")#, "survival_distribution")
   
   res[[5]] = input
   

@@ -295,20 +295,23 @@ run_AS_surv_cox = function(exposure,
                                    M = M,
                                    survival_time = survival_time,
                                    censoring_status = censoring_status,
-                                   exposure = exposure)
+                                   exposure = exposure,
+                                   covar = covars)
     }else if(is.data.frame(exposure)){
       res_reg2 = surv_cox_med_test(mod.lfmm1,
                                      M = M,
                                      survival_time = survival_time,
                                      censoring_status = censoring_status,
-                                     exposure = exposures)
+                                     exposure = exposures,
+                                     covar = covars)
     }
   }else if(expo_var_n > 1){
     res_reg2 = surv_cox_med_test(mod.lfmm1,
                                    M = M,
                                    survival_time = survival_time,
                                    censoring_status = censoring_status,
-                                   exposure = exposures)
+                                   exposure = exposures,
+                                   covar = covars)
   }
   
   pval2 = as.double(res_reg2$pvalues)

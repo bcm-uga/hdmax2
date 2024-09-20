@@ -407,11 +407,15 @@ surv_cox_med_test = function(object,
   p = ncol(M)
   pvalues = zscores = c()
   for (j in 1:p) {
-    #cox_model <- survival::coxph(Y ~ M[,j] + X)
-    cox_model = survival::coxph(Y ~ M[, j] + exposure + object$U) #+ res$X)# )
-    pvalues = c(pvalues, summary(cox_model)$coefficients[1, 5])
-    zscores = c(zscores, summary(cox_model)$coefficients[1, 4])
-    #beta_est <- c(beta_est, summary(cox_model)$coefficients[1,1])
+    if(is.null(covar)){
+      cox_model = survival::coxph(Y ~ M[, j] + exposure + object$U)
+      pvalues = c(pvalues, summary(cox_model)$coefficients[1, 5])
+      zscores = c(zscores, summary(cox_model)$coefficients[1, 4])
+    } else {
+      cox_model = survival::coxph(Y ~ M[, j] + exposure + object$U + covar)
+      pvalues = c(pvalues, summary(cox_model)$coefficients[1, 5])
+      zscores = c(zscores, summary(cox_model)$coefficients[1, 4])
+    }
   }
   
   res = list(pvalues = pvalues, zscores = zscores)
@@ -423,39 +427,57 @@ surv_cox_med_test = function(object,
 ######### TODO roxygen comments
 
 surv_param_med_test = function(object,
-                             M,
-                             survival_time,
-                             censoring_status,
-                             exposure,
-                             covar=NULL) {
+                               M,
+                               survival_time,
+                               censoring_status,
+                               exposure,
+                               covar=NULL) {
   base = survival::Surv(survival_time, censoring_status)
-  distributions = c("weibull", "exponential", "gaussian", "logistic","lognormal", "loglogistic")
-  aic_values = numeric(length(distributions))
-  pvalues = zscores = c()
-    for (i in seq_along(distributions)) {
-      # Ajuster le modèle avec la distribution courante
-      fit = survival::survreg(base ~ exposure, dist = distributions[i])
-      
-      # Calculer l'AIC pour ce modèle
-      aic_values[i] = -2 * as.numeric(logLik(fit)) + 2 * length(coef(fit))
-    }
-  
-  names(aic_values) = distributions
-  best_distribution = names(which.min(aic_values))
-  
-  cat("La distribution avec le meilleur AIC est :", best_distribution, "avec un AIC de", min(aic_values), "\n")
-  
-  # base = Surv(time, cens)
-  # exposure = as.numeric(alcohol)
-  # best_distribution = "gaussian"
   p = ncol(M)
   pvalues = c()
-  for (j in 1:p) {  
-  param_model = survival::survreg(base ~ exposure, dist = best_distribution)
-  pvalues = c(pvalues, summary(param_model)$table[2,4])
   
+  for (j in 1:p) { 
+    if(is.null(covar)){
+      distributions = c("weibull", "exponential", "gaussian", "logistic","lognormal", "loglogistic")
+      aic_values = numeric(length(distributions))
+      
+      for (i in seq_along(distributions)) {
+        # Ajuster le modèle avec la distribution courante
+        fit = survival::survreg(base ~ M[,j] + exposure + object$U , dist = distributions[i])
+        
+        # Calculer l'AIC pour ce modèle
+        aic_values[i] = -2 * as.numeric(logLik(fit)) + 2 * length(coef(fit))
+      }
+      
+      names(aic_values) = distributions
+      best_distribution = names(which.min(aic_values))
+      
+      cat("La distribution avec le meilleur AIC est :", best_distribution, "avec un AIC de", min(aic_values), "\n")
+      
+      param_model = survival::survreg(base ~ M[,j] + exposure + object$U , dist = best_distribution)
+      pvalues = c(pvalues, summary(param_model)$table[2,4])
+    } else {
+      distributions = c("weibull", "exponential", "gaussian", "logistic","lognormal", "loglogistic")
+      aic_values = numeric(length(distributions))
+      
+      for (i in seq_along(distributions)) {
+        # Ajuster le modèle avec la distribution courante
+        fit = survival::survreg(base ~ M[,j] + exposure + object$U + covar , dist = distributions[i])
+        
+        # Calculer l'AIC pour ce modèle
+        aic_values[i] = -2 * as.numeric(logLik(fit)) + 2 * length(coef(fit))
+      }
+      
+      names(aic_values) = distributions
+      best_distribution = names(which.min(aic_values))
+      
+      cat("La distribution avec le meilleur AIC est :", best_distribution, "avec un AIC de", min(aic_values), "\n")
+    
+      param_model = survival::survreg(base ~ M[,j] + exposure + object$U + covar, dist = best_distribution)
+      pvalues = c(pvalues, summary(param_model)$table[2,4])
+    }
   }
-  res = list(pvalues = pvalues, survival_distribution = best_distribution)
+  res = list(pvalues = pvalues)
 }
   
   
