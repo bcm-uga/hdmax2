@@ -481,4 +481,28 @@ surv_param_med_test = function(object,
 }
   
   
- 
+#########################################################################
+######### TODO roxygen comments
+
+surv_aalen_med_test = function(object,
+                               M,
+                               survival_time,
+                               censoring_status,
+                               exposure,
+                               covar=NULL) {
+  base = survival::Surv(survival_time, censoring_status)
+  p = ncol(M)
+  pvalues = c()
+  
+  for (j in 1:p) { 
+    if(is.null(covar)){
+      
+      param_model = timereg::aalen(base ~ M[,j] + exposure + object$U)
+      pvalues = c(pvalues, param_model$pval.testBeq0[2])
+    } else {
+      param_model = timereg::aalen(base ~ M[,j] + exposure + object$U + covar)
+      pvalues = c(pvalues, param_model$pval.testBeq0[2])
+    }
+  }
+  res = list(pvalues = pvalues)
+}

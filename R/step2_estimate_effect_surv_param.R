@@ -87,9 +87,13 @@ estimate_effect_surv_param <- function(object , m, boots = 1000, ...) {
   exposure_mat = object$input$exposure_input
   survival_time = object$input$survival_time
   censoring_status = object$input$censoring_status_input
-  survival_distribution = object$input$survival_distribution 
+  #survival_distribution = object$input$survival_distribution 
   base = survival::Surv(survival_time, censoring_status)
   M = m
+  
+  distributions = c("weibull", "exponential", "gaussian", "logistic","lognormal", "loglogistic")
+  aic_values = numeric(length(distributions))
+  
   
   if (!is.matrix(M)){
     stop("m must be a matrix")
@@ -189,12 +193,26 @@ estimate_effect_surv_param <- function(object , m, boots = 1000, ...) {
           
           mod1 = stats::lm(Mi ~ exposure_k + ., data = dat.x)
           message(paste0("Generate regression 1 for categorial exposure and mediator ", i))
+          
+          for (d in seq_along(distributions)) {
+            # Ajuster le modèle avec la distribution courante
+            fit = survival::survreg(survival::Surv(survival_time, censoring_status) ~ exposure_k + Mi + ., data = dat.y, dist = distributions[d])
+            
+            # Calculer l'AIC pour ce modèle
+            aic_values[d] = -2 * as.numeric(logLik(fit)) + 2 * length(coef(fit))
+          }
+          
+          names(aic_values) = distributions
+          best_distribution = names(which.min(aic_values))
    
-          mod2 <- survival::survreg(survival::Surv(survival_time, censoring_status) ~ exposure_k + Mi + ., data = dat.y, dist = survival_distribution)
+          mod2 <- survival::survreg(survival::Surv(survival_time, censoring_status) ~ exposure_k + Mi + ., data = dat.y, dist = best_distribution)
           message(paste0("Generate regression 2 for survival outcome and mediator ", i))
  
           xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
           my[i, ] <- summary(mod2)$table[3,] # effect of M
+          
+          
+          #### on est supposer preciser l'outcome selon doc de mediation car objet survreg ne le fait , à verifier
           
           med = mediation::mediate(mod1, mod2, treat = "exposure_k", mediator = "Mi")
           
@@ -246,7 +264,15 @@ estimate_effect_surv_param <- function(object , m, boots = 1000, ...) {
           # effect B m -> Y
           
           data_b <- data.frame(exposure_k = exposure[samp,k], exposure_minus_k = exposure[samp,-k] , M=M[samp,] , covars = covars_2[samp,])
-          mod2 = survival::survreg(base ~ ., data = data_b, dist = survival_distribution)
+          for (d in seq_along(distributions)) {
+            # Ajuster le modèle avec la distribution courante
+            fit = survival::survreg(base ~ ., data = data_b, dist = distributions[d])
+            # Calculer l'AIC pour ce modèle
+            aic_values[d] = -2 * as.numeric(logLik(fit)) + 2 * length(coef(fit))
+          }
+          names(aic_values) = distributions
+          best_distribution = names(which.min(aic_values))
+          mod2 = survival::survreg(base ~ ., data = data_b, dist = best_distribution)
           B = as.data.frame(summary(mod2)$table)[3:(ncol(M)+2),]
           
           colnames(B) <- c("B", "B_sd", "B_zv", "B_pv")
@@ -263,9 +289,29 @@ estimate_effect_surv_param <- function(object , m, boots = 1000, ...) {
         ### Compute ODE and OTE for the survival model
 
         data_total = data.frame(exposure =exposure, base= base, covars = covars_2)
-        mod_total_effect = survival::survreg(base ~ . , data =  data_total, dist = survival_distribution)
+        data_b <- data.frame(exposure_k = exposure[samp,k], exposure_minus_k = exposure[samp,-k] , M=M[samp,] , covars = covars_2[samp,])
+        for (d in seq_along(distributions)) {
+          # Ajuster le modèle avec la distribution courante
+          fit = survival::survreg(base ~ . , data =  data_total, dist = distributions[d])
+                                  
+                                  # Calculer l'AIC pour ce modèle
+                                  aic_values[d] = -2 * as.numeric(logLik(fit)) + 2 * length(coef(fit))
+                                  }
+        names(aic_values) = distributions
+        best_distribution = names(which.min(aic_values))
+        mod_total_effect = survival::survreg(base ~ . , data =  data_total, dist = best_distribution)
+        
         data_direct = data.frame(exposure =exposure, base= base, M =M ,covars = covars_2)
-        mod_direct_effect = survival::survreg(base ~ ., data =  data_direct, dist = survival_distribution)
+        for (d in seq_along(distributions)) {
+          # Ajuster le modèle avec la distribution courante
+          fit = survival::survreg(base ~ ., data =  data_direct, dist = distributions[d])
+          
+          # Calculer l'AIC pour ce modèle
+          aic_values[d] = -2 * as.numeric(logLik(fit)) + 2 * length(coef(fit))
+        }
+        names(aic_values) = distributions
+        best_distribution = names(which.min(aic_values))
+        mod_direct_effect = survival::survreg(base ~ ., data =  data_direct, dist = best_distribution)
  
         ote = summary(mod_total_effect)$table[2,]
         ode = summary(mod_direct_effect)$table[2,]
@@ -305,7 +351,19 @@ estimate_effect_surv_param <- function(object , m, boots = 1000, ...) {
         mod1 = stats::lm(Mi ~ exposure + ., data = dat.x)
         message(paste0("Generate regression 1 for continuous or binary exposure and mediator ", i))
         
-        mod2 <- survival::survreg(survival::Surv(survival_time, censoring_status) ~ exposure + Mi + ., data = dat.y, dist = survival_distribution)
+        
+          for (d in seq_along(distributions)) {
+          # Ajuster le modèle avec la distribution courante
+          fit = survival::survreg(survival::Surv(survival_time, censoring_status) ~ exposure + Mi + ., data = dat.y, dist = distributions[d])
+          
+          # Calculer l'AIC pour ce modèle
+          aic_values[d] = -2 * as.numeric(logLik(fit)) + 2 * length(coef(fit))
+        }
+        
+        names(aic_values) = distributions
+        best_distribution = names(which.min(aic_values))
+        
+        mod2 <- survival::survreg(survival::Surv(survival_time, censoring_status) ~ exposure + Mi + ., data = dat.y, dist = best_distribution)
         message(paste0("Generate regression 2 for survival outcome and mediator ", i))
 
         xm[i, ] <- summary(mod1)$coeff[2, ] # effect of X
@@ -368,7 +426,23 @@ estimate_effect_surv_param <- function(object , m, boots = 1000, ...) {
         # effect B m -> Y
         
         data_b <- data.frame(exposure = exposure, M = M, covars = covars_2)
-        mod2 = survival::survreg(base[samp] ~ ., data = data_b[samp, ], dist = survival_distribution)
+        
+        
+        distributions = c("weibull", "exponential", "gaussian", "logistic","lognormal", "loglogistic")
+        aic_values = numeric(length(distributions))
+        
+        for (i in seq_along(distributions)) {
+          # Ajuster le modèle avec la distribution courante
+          fit = survival::survreg(base[samp] ~ ., data = data_b[samp, ], dist = distributions[i])
+          
+          # Calculer l'AIC pour ce modèle
+          aic_values[i] = -2 * as.numeric(logLik(fit)) + 2 * length(coef(fit))
+        }
+        
+        names(aic_values) = distributions
+        best_distribution = names(which.min(aic_values))
+        
+        mod2 = survival::survreg(base[samp] ~ ., data = data_b[samp, ], dist = best_distribution)
         B = as.data.frame(summary(mod2)$table)[3:(ncol(M)+2),]
         
         
@@ -394,9 +468,27 @@ estimate_effect_surv_param <- function(object , m, boots = 1000, ...) {
       ### Compute ODE and OTE for survival model
       
       data_total = data.frame(exposure =exposure, base= base, covars = covars_2)
-      mod_total_effect = survival::survreg(base ~ . , data =  data_total, dist = survival_distribution)
+      for (d in seq_along(distributions)) {
+        # Ajuster le modèle avec la distribution courante
+        fit = survival::survreg(base ~ . , data =  data_total, dist = distributions[d])
+        
+        # Calculer l'AIC pour ce modèle
+        aic_values[d] = -2 * as.numeric(logLik(fit)) + 2 * length(coef(fit))
+      }
+      names(aic_values) = distributions
+      best_distribution = names(which.min(aic_values))
+      mod_total_effect = survival::survreg(base ~ . , data =  data_total, dist = best_distribution)
       data_direct = data.frame(exposure =exposure, base= base, M =M ,covars = covars_2)
-      mod_direct_effect = survival::survreg(base ~ ., data =  data_direct, dist = survival_distribution)
+      for (d in seq_along(distributions)) {
+        # Ajuster le modèle avec la distribution courante
+        fit = survival::survreg(base ~ . , data =  data_direct, dist = distributions[d])
+        
+        # Calculer l'AIC pour ce modèle
+        aic_values[d] = -2 * as.numeric(logLik(fit)) + 2 * length(coef(fit))
+      }
+      names(aic_values) = distributions
+      best_distribution = names(which.min(aic_values))
+      mod_direct_effect = survival::survreg(base ~ ., data =  data_direct, dist = best_distribution)
       
       ote = summary(mod_total_effect)$table[2,]
       ode = summary(mod_direct_effect)$table[2,]
