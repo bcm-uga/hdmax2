@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 
 
 
-**THIS VIGNETTE IS CURRENTLY UNDER DEVELOPMENT, SO ITS CONTENT IS PROVISIONAL.**
 
 # Introduction 
 
@@ -67,7 +66,7 @@ For this example we use a **two variables exposure** (continuous and binary), a 
 
 # Simulated dataset
 
-We simulated data for 100 samples and 200 potential mediators.
+We simulated data for 100 samples and 1000 potential mediators.
 
 The matrix of potential mediators is an extract of real methylation data (TCGA PDAC samples).
 
@@ -129,7 +128,15 @@ The `run_AS` function provides an object containing:
 ```{r step 1 res AS, message=FALSE}
 head(hdmax2_step1$AS_1$pval)
 
-head(hdmax2_step1$AS_1$fscores)
+library(ggplot2)
+
+# Exemple de données
+data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
+
+ggplot(data_hdmax2_step1, aes(x = pvalues)) + geom_histogram(bins = 30, color = "black", fill = "gray")  + labs(title = "Max2 test pvalues distribution")
+
+
+#head(hdmax2_step1$AS_1$fscores)
 ```
 
 
