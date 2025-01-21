@@ -27,6 +27,7 @@ Depends:
 VignetteBuilder: knitr
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    hdmax2data
 LazyData: true
 URL: https://bcm-uga.github.io/hdmax2/
