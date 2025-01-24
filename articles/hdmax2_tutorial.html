@@ -275,16 +275,33 @@ fscores or zscores),</li>
 <span><span class="co">#&gt;    cg00009922 </span></span>
 <span><span class="co">#&gt;  7.946406e-11</span></span>
 <span></span>
+<span></span>
+<span><span class="va">pval1</span> <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">AS_1</span><span class="op">$</span><span class="va">pval</span></span>
+<span><span class="va">pval2</span> <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">AS_2</span><span class="op">$</span><span class="va">pval</span></span>
+<span><span class="va">cor_value</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">pval1</span>,<span class="va">pval2</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pval1</span>, y <span class="op">=</span> <span class="va">pval2</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pval1</span>, y <span class="op">=</span> <span class="va">pval2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bin_2d.html" class="external-link">geom_bin2d</a></span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> <span class="op">+</span>  <span class="co"># Ajuste le nombre de bins selon le besoin</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"lightblue"</span>, high <span class="op">=</span> <span class="st">"darkblue"</span>, </span>
+<span>                      guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_colourbar.html" class="external-link">guide_colorbar</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"correlation\n = "</span>,<span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">cor_value</span>,<span class="fl">3</span><span class="op">)</span>,<span class="st">"\n \n Count"</span><span class="op">)</span>, </span>
+<span>                                             title.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"A"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"1srt regresssion (X-&gt;M) pvalues"</span>, y <span class="op">=</span> <span class="st">"2nd regresssion (M-&gt;Y) pvalues"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">data_hdmax2_step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pvalues <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">data_hdmax2_step1</span><span class="op">$</span><span class="va">pvalues</span>,  </span>
-<span>     breaks <span class="op">=</span> <span class="fl">30</span>,                </span>
-<span>     main <span class="op">=</span> <span class="st">"Max2 test pvalues distribution"</span>, </span>
-<span>     xlab <span class="op">=</span> <span class="st">"pvalues"</span>,           </span>
-<span>     col <span class="op">=</span> <span class="st">"gray"</span>,               </span>
-<span>     border <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>  </span></code></pre></div>
-<p><img src="hdmax2_tutorial_files/figure-html/step%201%20res%20AS-1.png" width="700"></p>
+<span></span>
+<span><span class="va">data_hdmax2_step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pvalues <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p2</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">data_hdmax2_step1</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pvalues</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">100</span>, color <span class="op">=</span> <span class="st">"black"</span>, fill <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span>  <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"B"</span>, x <span class="op">=</span> <span class="st">"Max2 test pvalues distribution"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#title_grob &lt;- grid::textGrob("Hypothesis verification")#, gp = grid::gpar(fontsize = 16, fontface = "bold"))</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Affichage des graphiques côte à côte</span></span>
+<span><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span> <span class="va">p1</span>, <span class="va">p2</span>, ncol <span class="op">=</span> <span class="fl">2</span>, top <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/grid.text.html" class="external-link">textGrob</a></span><span class="op">(</span><span class="st">"Hypothesis verification"</span>, gp <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/gpar.html" class="external-link">gpar</a></span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">14</span>, fontface <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="hdmax2_tutorial_files/figure-html/step%201%20res%20AS-1.png" width="1152"></p>
 <ul>
 <li>Latent factors estimation matrix
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>U</mi><annotation encoding="application/x-tex">U</annotation></semantics></math>
@@ -588,31 +605,28 @@ probes) and 904 columns (patients)</li>
 column (age)</li>
 </ul>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"tcga_brca.RData"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Downloading TCGA BRCA dataset from zenodo 10.5281/zenodo.14716548"</span><span class="op">)</span></span>
-<span>  <span class="fu">zen4R</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zen4R/man/download_zenodo.html" class="external-link">download_zenodo</a></span><span class="op">(</span> doi <span class="op">=</span> <span class="st">"10.5281/zenodo.14716548"</span>, </span>
-<span>                        files <span class="op">=</span> <span class="st">"tcga_brca.RData"</span>,</span>
-<span>                        timeout <span class="op">=</span> <span class="fl">3600</span><span class="op">)</span></span>
-<span><span class="op">}</span>  </span>
-<span><span class="co">#&gt; [1] "Downloading TCGA BRCA dataset from zenodo 10.5281/zenodo.14716548"</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Successfully fetched list of published records - page 1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Successfully fetched list of published records!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Successfully fetched record for DOI '10.5281/zenodo.14716548'!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Download in sequential mode</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] ZenodoRecord - Download in sequential mode</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Will download 1 file from record '14716548' (doi: '10.5281/zenodo.14716548') - total size: 130 MiB</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] ZenodoRecord - Will download 1 file from record '14716548' (doi: '10.5281/zenodo.14716548') - total size: 130 MiB</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Downloading file 'tcga_brca.RData' - size: 130 MiB</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] Downloading file 'tcga_brca.RData' - size: 130 MiB</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> File downloaded at '/home/runner/work/hdmax2/hdmax2/vignettes'.</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] File downloaded at '/home/runner/work/hdmax2/hdmax2/vignettes'.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Verifying file integrity...</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] ZenodoRecord - Verifying file integrity...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> File 'tcga_brca.RData': integrity verified (md5sum: 46120c3ce6bdc062b58f7ce6127279be)</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] File 'tcga_brca.RData': integrity verified (md5sum: 46120c3ce6bdc062b58f7ce6127279be)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> End of download</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] ZenodoRecord - End of download</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"tcga_brca.RData"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># if (!(file.exists("tcga_brca.RData"))) {</span></span>
+<span><span class="co">#   print("Downloading TCGA BRCA dataset from zenodo 10.5281/zenodo.14716548")</span></span>
+<span><span class="co">#   zen4R::download_zenodo( doi = "10.5281/zenodo.14716548", </span></span>
+<span><span class="co">#                         files = "tcga_brca.RData",</span></span>
+<span><span class="co">#                         timeout = 3600)</span></span>
+<span><span class="co"># }  </span></span>
+<span><span class="co"># load("tcga_brca.RData")</span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"tcga_brca.RData"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">url_file</span> <span class="op">&lt;-</span> <span class="st">"https://zenodo.org/records/14716548/files/tcga_brca.RData?download=1"</span></span>
+<span>  <span class="va">response</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/GET.html" class="external-link">GET</a></span><span class="op">(</span><span class="va">url_file</span>, <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/write_disk.html" class="external-link">write_disk</a></span><span class="op">(</span><span class="st">"tcga_brca.RData"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">response</span><span class="op">$</span><span class="va">status_code</span> <span class="op">==</span> <span class="fl">200</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"tcga_brca.RData"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Erreur de téléchargement"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Number of Latent factore estimation</span></span>
 <span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">tcga_brca</span><span class="op">$</span><span class="va">M</span><span class="op">)</span></span>
@@ -648,19 +662,53 @@ outcome
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>-values
 results.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  cg00000292  cg00002426  cg00003994  cg00005847  cg00007981  cg00008493 </span></span>
-<span><span class="co">#&gt; 0.477052667 0.604344920 0.680642120 0.008929247 0.616438894 0.270660079</span></span>
+<code class="sourceCode R"><span><span class="co"># head(hdmax2_step1$max2_pvalues)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># data_hdmax2_step1 &lt;- data.frame(pvalues = hdmax2_step1$max2_pvalues)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># hist(data_hdmax2_step1$pvalues,  </span></span>
+<span><span class="co">#      breaks = 200,                </span></span>
+<span><span class="co">#      main = "Max2 test pvalues distribution", </span></span>
+<span><span class="co">#      xlab = "pvalues",           </span></span>
+<span><span class="co">#      col = "gray",               </span></span>
+<span><span class="co">#      border = "black")  </span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">AS_1</span><span class="op">$</span><span class="va">pval</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   cg00000292   cg00002426   cg00003994   cg00005847   cg00007981   cg00008493 </span></span>
+<span><span class="co">#&gt; 0.0009873141 0.7773962442 0.2813067905 0.0944946938 0.1972223151 0.0626456118</span></span>
+<span></span>
+<span></span>
+<span><span class="va">pval1</span> <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">AS_1</span><span class="op">$</span><span class="va">pval</span></span>
+<span><span class="va">pval2</span> <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">AS_2</span><span class="op">$</span><span class="va">pval</span></span>
+<span><span class="va">cor_value</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">pval1</span>,<span class="va">pval2</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pval1</span>, y <span class="op">=</span> <span class="va">pval2</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pval1</span>, y <span class="op">=</span> <span class="va">pval2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bin_2d.html" class="external-link">geom_bin2d</a></span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> <span class="op">+</span>  <span class="co"># Ajuste le nombre de bins selon le besoin</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"lightblue"</span>, high <span class="op">=</span> <span class="st">"darkblue"</span>, </span>
+<span>                      guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_colourbar.html" class="external-link">guide_colorbar</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"correlation\n = "</span>,<span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">cor_value</span>,<span class="fl">3</span><span class="op">)</span>,<span class="st">"\n \n Count"</span><span class="op">)</span>, </span>
+<span>                                             title.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"A"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"1srt regresssion (X-&gt;M) pvalues"</span>, y <span class="op">=</span> <span class="st">"2nd regresssion (M-&gt;Y) pvalues"</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="va">data_hdmax2_step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pvalues <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">data_hdmax2_step1</span><span class="op">$</span><span class="va">pvalues</span>,  </span>
-<span>     breaks <span class="op">=</span> <span class="fl">200</span>,                </span>
-<span>     main <span class="op">=</span> <span class="st">"Max2 test pvalues distribution"</span>, </span>
-<span>     xlab <span class="op">=</span> <span class="st">"pvalues"</span>,           </span>
-<span>     col <span class="op">=</span> <span class="st">"gray"</span>,               </span>
-<span>     border <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>  </span></code></pre></div>
-<p><img src="hdmax2_tutorial_files/figure-html/brca%20step%201%20res%20AS-1.png" width="700"></p>
+<span></span>
+<span></span>
+<span><span class="va">data_hdmax2_step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pvalues <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p2</span> <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">data_hdmax2_step1</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pvalues</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">100</span>, color <span class="op">=</span> <span class="st">"black"</span>, fill <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span>  <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"B"</span>, x <span class="op">=</span> <span class="st">"Max2 test pvalues distribution"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#title_grob &lt;- grid::textGrob("Hypothesis verification")#, gp = grid::gpar(fontsize = 16, fontface = "bold"))</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Affichage des graphiques côte à côte</span></span>
+<span><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span> <span class="va">p1</span>, <span class="va">p2</span>, ncol <span class="op">=</span> <span class="fl">2</span>, top <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/grid.text.html" class="external-link">textGrob</a></span><span class="op">(</span><span class="st">"Hypothesis verification"</span>, gp <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/gpar.html" class="external-link">gpar</a></span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">14</span>, fontface <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="hdmax2_tutorial_files/figure-html/brca%20step%201%20res%20AS-1.png" width="1152"></p>
 </div>
 <div class="section level3">
 <h3 id="selection-of-a-subset-of-mediators-1">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators-1"></a>
@@ -817,31 +865,24 @@ and 104 columns (samples)</li>
 (subtype : RR = 1, CIS = 0)</li>
 </ul>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"ms_GSE137143.RData"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Downloading Multiple Sclerosis dataset from zenodo 10.5281/zenodo.14716548"</span><span class="op">)</span></span>
-<span>  <span class="fu">zen4R</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zen4R/man/download_zenodo.html" class="external-link">download_zenodo</a></span><span class="op">(</span> doi <span class="op">=</span> <span class="st">"10.5281/zenodo.14716548"</span>, </span>
-<span>                        files <span class="op">=</span> <span class="st">"ms_GSE137143.RData"</span>,</span>
-<span>                        timeout <span class="op">=</span> <span class="fl">3600</span><span class="op">)</span></span>
-<span><span class="op">}</span>  </span>
-<span><span class="co">#&gt; [1] "Downloading Multiple Sclerosis dataset from zenodo 10.5281/zenodo.14716548"</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Successfully fetched list of published records - page 1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Successfully fetched list of published records!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Successfully fetched record for DOI '10.5281/zenodo.14716548'!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Download in sequential mode</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] ZenodoRecord - Download in sequential mode</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Will download 1 file from record '14716548' (doi: '10.5281/zenodo.14716548') - total size: 6.7 MiB</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] ZenodoRecord - Will download 1 file from record '14716548' (doi: '10.5281/zenodo.14716548') - total size: 6.7 MiB</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Downloading file 'ms_GSE137143.RData' - size: 6.7 MiB</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] Downloading file 'ms_GSE137143.RData' - size: 6.7 MiB</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> File downloaded at '/home/runner/work/hdmax2/hdmax2/vignettes'.</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] File downloaded at '/home/runner/work/hdmax2/hdmax2/vignettes'.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Verifying file integrity...</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] ZenodoRecord - Verifying file integrity...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> File 'ms_GSE137143.RData': integrity verified (md5sum: 00ac6279dd63bfd6a87cc7d1b70b48b7)</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] File 'ms_GSE137143.RData': integrity verified (md5sum: 00ac6279dd63bfd6a87cc7d1b70b48b7)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> End of download</span></span>
-<span><span class="co">#&gt; [zen4R][INFO] ZenodoRecord - End of download</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"ms_GSE137143.RData"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># if (!(file.exists("ms_GSE137143.RData"))) {</span></span>
+<span><span class="co">#   print("Downloading Multiple Sclerosis dataset from zenodo 10.5281/zenodo.14716548")</span></span>
+<span><span class="co">#   zen4R::download_zenodo( doi = "10.5281/zenodo.14716548", </span></span>
+<span><span class="co">#                         files = "ms_GSE137143.RData",</span></span>
+<span><span class="co">#                         timeout = 3600)</span></span>
+<span><span class="co"># }  </span></span>
+<span><span class="co"># load("ms_GSE137143.RData")</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"ms_GSE137143.RData"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">url_file</span> <span class="op">&lt;-</span> <span class="st">"https://zenodo.org/records/14716548/files/ms_GSE137143.RData?download=1"</span></span>
+<span>  <span class="va">response</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/GET.html" class="external-link">GET</a></span><span class="op">(</span><span class="va">url_file</span>, <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/write_disk.html" class="external-link">write_disk</a></span><span class="op">(</span><span class="st">"ms_GSE137143.RData"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">response</span><span class="op">$</span><span class="va">status_code</span> <span class="op">==</span> <span class="fl">200</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"ms_GSE137143.RData"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Erreur de téléchargement"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Number of Latent factore estimation</span></span>
 <span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">ms_GSE137143</span><span class="op">$</span><span class="va">M</span><span class="op">)</span></span>
@@ -876,19 +917,50 @@ outcome
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>-values
 results.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     TSPAN6       DPM1      SCYL3   C1orf112        FGR        CFH </span></span>
-<span><span class="co">#&gt; 0.14357011 0.09555062 0.96163358 0.88820760 0.09920302 0.39221000</span></span>
+<code class="sourceCode R"><span><span class="co"># head(hdmax2_step1$max2_pvalues)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># data_hdmax2_step1 &lt;- data.frame(pvalues = hdmax2_step1$max2_pvalues)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># hist(data_hdmax2_step1$pvalues,  </span></span>
+<span><span class="co">#      breaks = 200,                </span></span>
+<span><span class="co">#      main = "Max2 test pvalues distribution", </span></span>
+<span><span class="co">#      xlab = "pvalues",           </span></span>
+<span><span class="co">#      col = "gray",               </span></span>
+<span><span class="co">#      border = "black")  </span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">AS_1</span><span class="op">$</span><span class="va">pval</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    TSPAN6      DPM1     SCYL3  C1orf112       FGR       CFH </span></span>
+<span><span class="co">#&gt; 0.2875623 0.3091126 0.9806292 0.1870420 0.3149651 0.6262667</span></span>
+<span></span>
+<span></span>
+<span><span class="va">pval1</span> <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">AS_1</span><span class="op">$</span><span class="va">pval</span></span>
+<span><span class="va">pval2</span> <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">AS_2</span><span class="op">$</span><span class="va">pval</span></span>
+<span><span class="va">cor_value</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">pval1</span>,<span class="va">pval2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p1</span> <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pval1</span>, y <span class="op">=</span> <span class="va">pval2</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pval1</span>, y <span class="op">=</span> <span class="va">pval2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bin_2d.html" class="external-link">geom_bin2d</a></span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> <span class="op">+</span>  <span class="co"># Ajuste le nombre de bins selon le besoin</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"lightblue"</span>, high <span class="op">=</span> <span class="st">"darkblue"</span>, </span>
+<span>                      guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_colourbar.html" class="external-link">guide_colorbar</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"correlation\n = "</span>,<span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">cor_value</span>,<span class="fl">3</span><span class="op">)</span>,<span class="st">"\n \n Count"</span><span class="op">)</span>, </span>
+<span>                                             title.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"A"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"1srt regresssion (X-&gt;M) pvalues"</span>, y <span class="op">=</span> <span class="st">"2nd regresssion (M-&gt;Y) pvalues"</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="va">data_hdmax2_step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pvalues <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">data_hdmax2_step1</span><span class="op">$</span><span class="va">pvalues</span>,  </span>
-<span>     breaks <span class="op">=</span> <span class="fl">200</span>,                </span>
-<span>     main <span class="op">=</span> <span class="st">"Max2 test pvalues distribution"</span>, </span>
-<span>     xlab <span class="op">=</span> <span class="st">"pvalues"</span>,           </span>
-<span>     col <span class="op">=</span> <span class="st">"gray"</span>,               </span>
-<span>     border <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>  </span></code></pre></div>
-<p><img src="hdmax2_tutorial_files/figure-html/ms%20step%201%20res%20AS-1.png" width="700"></p>
+<span></span>
+<span></span>
+<span><span class="va">data_hdmax2_step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pvalues <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p2</span> <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">data_hdmax2_step1</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pvalues</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">100</span>, color <span class="op">=</span> <span class="st">"black"</span>, fill <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span>  <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"B"</span>, x <span class="op">=</span> <span class="st">"Max2 test pvalues distribution"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#title_grob &lt;- grid::textGrob("Hypothesis verification")#, gp = grid::gpar(fontsize = 16, fontface = "bold"))</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Affichage des graphiques côte à côte</span></span>
+<span><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span> <span class="va">p1</span>, <span class="va">p2</span>, ncol <span class="op">=</span> <span class="fl">2</span>, top <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/grid.text.html" class="external-link">textGrob</a></span><span class="op">(</span><span class="st">"Hypothesis verification"</span>, gp <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/gpar.html" class="external-link">gpar</a></span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">14</span>, fontface <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="hdmax2_tutorial_files/figure-html/ms%20step%201%20res%20AS-1.png" width="1152"></p>
 </div>
 <div class="section level3">
 <h3 id="selection-of-a-subset-of-mediators-2">Selection of a subset of mediators<a class="anchor" aria-label="anchor" href="#selection-of-a-subset-of-mediators-2"></a>
@@ -1134,7 +1206,7 @@ could be use to estimate different effects of AMR. Also
 <span></span>
 <span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
 <span>                                       m <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_hdmax2.html">plot_hdmax2</a></span><span class="op">(</span><span class="va">hdmax2_step2</span>, plot_type<span class="op">=</span> <span class="st">"all_plot"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "hdmax2 plot for univariate exposome"</span></span></code></pre></div>
 <p><img src="hdmax2_tutorial_files/figure-html/step2-1.png" width="960"></p>
