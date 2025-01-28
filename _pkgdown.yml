@@ -6,3 +6,4 @@ articles:
   - title: "Tutorial"
     contents:
       - "vignettes/hdmax2_tutorial.Rmd"
+      
