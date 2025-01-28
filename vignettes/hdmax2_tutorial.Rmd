@@ -56,12 +56,6 @@ The package  `hdmax2` is designed to accept :
 - $K$, the number of latent factors to be estimated. 
 
 
-To install the latest version of `hdmax2`, use the github repository 
-
-```{r package installation}
-#devtools::install_github("bcm-uga/hdmax2")
-```
-
 # METHOD Example (simulation) :  *multivariate exposure* and *continuous outcome*
 
 For this example we use a **two variables exposure** (continuous and binary), a **continuous outcome** and **two adjustment factors** (age and gender).
@@ -80,7 +74,7 @@ simu_data = hdmax2::simu_data
 ```
 
 ```{r pca for latent factor}
-## Number of Latent factore estimation
+## Number of Latent factor estimation
 pc <- prcomp(simu_data$M1)
 plot((pc$sdev^2/sum(pc$sdev^2))[1:10],
      type = "b",
@@ -110,9 +104,10 @@ The `run_AS` function takes as inputs:
 -  **M** for the potential mediators: must be a matrix with $n$ rows and $p$ columns (potential mediators).
 -  $K$ for the number of latent factors defined earlier: must be integer.
 -  Adjustment factors *covar* can be included: must be numeric (data frame or matrix) with $n$ rows.
+
 ```{r step 1 multivar, message=FALSE}
 ## multivariate Exposures (continuous + binary)
-X = data.frame(X1 = simu_data$X_continuous, X2 = simu_data$X_binary)
+X = data.frame(X_continuous = simu_data$X_continuous, X_binary = simu_data$X_binary)
 covar = cbind(simu_data$age, simu_data$gender)
 covar = as.data.frame(covar)
 
@@ -129,12 +124,11 @@ The `run_AS` function provides an object containing:
 ```{r step 1 res AS, message=FALSE, fig.height=5, fig.width=12}
 head(hdmax2_step1$AS_1$pval)
 
-
 pval1 = hdmax2_step1$AS_1$pval
 pval2 = hdmax2_step1$AS_2$pval
 cor_value = cor(pval1,pval2)
 p1 = ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y = pval2)) +
-  geom_bin2d(bins = 50) +  # Ajuste le nombre de bins selon le besoin
+  geom_bin2d(bins = 50) + 
   scale_fill_gradient(low = "lightblue", high = "darkblue", 
                       guide = guide_colorbar(title = paste("correlation\n = ",round(cor_value,3),"\n \n Count"), 
                                              title.position = "top")) + 
@@ -144,16 +138,8 @@ p1 = ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y = pval2)) 
 
 data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
 
-
-
-data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
-
 p2 = ggplot(data_hdmax2_step1, aes(x = pvalues)) + geom_histogram(bins = 100, color = "black", fill = "gray")  + labs(title = "B", x = "Max2 test pvalues distribution")
 
-#title_grob <- grid::textGrob("Hypothesis verification")#, gp = grid::gpar(fontsize = 16, fontface = "bold"))
-
-
-# Affichage des graphiques côte à côte
 gridExtra::grid.arrange( p1, p2, ncol = 2, top = grid::textGrob("Hypothesis verification", gp = grid::gpar(fontsize = 14, fontface = "bold")))
 
 ```
@@ -182,6 +168,7 @@ head(hdmax2_step1$max2_pvalues)
 Numerous selection methods are available, such as FDR control. Also in the context of methylation data, it's feasible to to identify aggregated mediator regions (AMR) based on the paired $P$-values frome mediation test. Refer to the *helper_functions* vignette for assistance FDR control and AMR researching procedure.
 
 For the example, we opted for the top ten most significant $P$-values from the *max-squared* test.
+
 ```{r mediators selection multivar}
 ## Selecting top 10 mediators
 mediators_top10 = simu_data$M2[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
@@ -286,7 +273,7 @@ We propose a set of plots including:
 - Mediators effect size representation
 
 
-```{r plot results multivar , fig.height=10, fig.width=10, fig.show='asis'}
+```{r plot results multivar , fig.height=10, fig.width=10, fig.show='asis', message = FALSE, warning = FALSE, results = "hide"}
 hdmax2::plot_hdmax2(hdmax2_step2, plot_type= "all_plot")
 ```
 
@@ -312,18 +299,7 @@ It is a list of 4 matrices : X (exposure), M (potential mediators), Y (outcome) 
 - Y : outcome variable, a matrix of 904 rows (patients) and 1 column (risk-score, a continuous variable)
 - CF : confounding factor, a matrix of 904 rows (patients) and 1 column (age)
 
-```{r brca variable definition}
-# if (!(file.exists("tcga_brca.RData"))) {
-#   print("Downloading TCGA BRCA dataset from zenodo 10.5281/zenodo.14716548")
-#   zen4R::download_zenodo( doi = "10.5281/zenodo.14716548", 
-#                         files = "tcga_brca.RData",
-#                         timeout = 3600)
-# }  
-# load("tcga_brca.RData")
-
-
-
-
+```{r load tcga brca}
 
 if (!(file.exists("tcga_brca.RData"))) {
   url_file <- "https://zenodo.org/records/14716548/files/tcga_brca.RData?download=1"
@@ -332,7 +308,7 @@ if (!(file.exists("tcga_brca.RData"))) {
   if (response$status_code == 200) {
     load("tcga_brca.RData")
   } else {
-    stop("Erreur de téléchargement")
+    stop("Download failed")
   }
 }
 ```
@@ -366,29 +342,14 @@ hdmax2_step1 = hdmax2::run_AS(exposure = data.frame(tcga_brca$X),
 *max-squared* test $P$-values results. 
 
 ```{r brca step 1 res AS, message=FALSE, fig.height=5, fig.width=12}
-# head(hdmax2_step1$max2_pvalues)
-# 
-# data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
-# 
-# hist(data_hdmax2_step1$pvalues,  
-#      breaks = 200,                
-#      main = "Max2 test pvalues distribution", 
-#      xlab = "pvalues",           
-#      col = "gray",               
-#      border = "black")  
-
-
-
-
-
 head(hdmax2_step1$AS_1$pval)
-
 
 pval1 = hdmax2_step1$AS_1$pval
 pval2 = hdmax2_step1$AS_2$pval
 cor_value = cor(pval1,pval2)
+
 p1 = ggplot2::ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y = pval2)) +
-  geom_bin2d(bins = 50) +  # Ajuste le nombre de bins selon le besoin
+  geom_bin2d(bins = 50) + 
   scale_fill_gradient(low = "lightblue", high = "darkblue", 
                       guide = guide_colorbar(title = paste("correlation\n = ",round(cor_value,3),"\n \n Count"), 
                                              title.position = "top")) + 
@@ -396,22 +357,11 @@ p1 = ggplot2::ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y =
   labs(title = "A",
        x = "1srt regresssion (X->M) pvalues", y = "2nd regresssion (M->Y) pvalues")
 
-
-data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
-
-
-
 data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
 
 p2 = ggplot2::ggplot(data_hdmax2_step1, aes(x = pvalues)) + geom_histogram(bins = 100, color = "black", fill = "gray")  + labs(title = "B", x = "Max2 test pvalues distribution")
 
-#title_grob <- grid::textGrob("Hypothesis verification")#, gp = grid::gpar(fontsize = 16, fontface = "bold"))
-
-
-# Affichage des graphiques côte à côte
 gridExtra::grid.arrange( p1, p2, ncol = 2, top = grid::textGrob("Hypothesis verification", gp = grid::gpar(fontsize = 14, fontface = "bold")))
-
-
 
 ```
 
@@ -472,7 +422,7 @@ hdmax2_step2$effects$her2_status$ote
 
 
 
-```{r brca plot results multivar , fig.height=10, fig.width=10, fig.show='asis'}
+```{r brca plot results multivar , fig.height=10, fig.width=10, fig.show='asis', message = FALSE, warning = FALSE, results = "hide"}
 hdmax2::plot_hdmax2(hdmax2_step2, plot_type= "all_plot")
 ```
 
@@ -500,14 +450,6 @@ It is a list of 3 matrices : X (exposure), M (potential mediators), Y (outcome) 
 
 
 ```{r ms variable definition}
-# if (!(file.exists("ms_GSE137143.RData"))) {
-#   print("Downloading Multiple Sclerosis dataset from zenodo 10.5281/zenodo.14716548")
-#   zen4R::download_zenodo( doi = "10.5281/zenodo.14716548", 
-#                         files = "ms_GSE137143.RData",
-#                         timeout = 3600)
-# }  
-# load("ms_GSE137143.RData")
-
 if (!(file.exists("ms_GSE137143.RData"))) {
   url_file <- "https://zenodo.org/records/14716548/files/ms_GSE137143.RData?download=1"
   response <- httr::GET(url_file, httr::write_disk("ms_GSE137143.RData", overwrite = TRUE))
@@ -515,7 +457,7 @@ if (!(file.exists("ms_GSE137143.RData"))) {
   if (response$status_code == 200) {
     load("ms_GSE137143.RData")
   } else {
-    stop("Erreur de téléchargement")
+    stop("Download failed")
   }
 }
 ```
@@ -548,17 +490,6 @@ hdmax2_step1 = hdmax2::run_AS(exposure = data.frame(ms_GSE137143$X),
 *max-squared* test $P$-values results. 
 
 ```{r ms step 1 res AS, message=FALSE, fig.height=5, fig.width=12}
-# head(hdmax2_step1$max2_pvalues)
-# 
-# data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
-# 
-# hist(data_hdmax2_step1$pvalues,  
-#      breaks = 200,                
-#      main = "Max2 test pvalues distribution", 
-#      xlab = "pvalues",           
-#      col = "gray",               
-#      border = "black")  
-
 head(hdmax2_step1$AS_1$pval)
 
 
@@ -567,7 +498,7 @@ pval2 = hdmax2_step1$AS_2$pval
 cor_value = cor(pval1,pval2)
 
 p1 = ggplot2::ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y = pval2)) +
-  geom_bin2d(bins = 50) +  # Ajuste le nombre de bins selon le besoin
+  geom_bin2d(bins = 50) + 
   scale_fill_gradient(low = "lightblue", high = "darkblue", 
                       guide = guide_colorbar(title = paste("correlation\n = ",round(cor_value,3),"\n \n Count"), 
                                              title.position = "top")) + 
@@ -578,16 +509,8 @@ p1 = ggplot2::ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y =
 
 data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
 
-
-
-data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
-
 p2 = ggplot2::ggplot(data_hdmax2_step1, aes(x = pvalues)) + geom_histogram(bins = 100, color = "black", fill = "gray")  + labs(title = "B", x = "Max2 test pvalues distribution")
 
-#title_grob <- grid::textGrob("Hypothesis verification")#, gp = grid::gpar(fontsize = 16, fontface = "bold"))
-
-
-# Affichage des graphiques côte à côte
 gridExtra::grid.arrange( p1, p2, ncol = 2, top = grid::textGrob("Hypothesis verification", gp = grid::gpar(fontsize = 14, fontface = "bold")))
 
 ```
@@ -609,7 +532,7 @@ The function `estimate_effect` estimate the individual indirect effect of mediat
 
 The function `estimate_effect` takes as inputs, step 1 object and selected mediators matrix $M^S$ from chosen selection method apply on *max-squared* test $P$-values.
 
-```{r ms step2 multivar, message=FALSE}
+```{r ms step2 multivar,  message = FALSE, warning = FALSE, results = "hide"}
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
                                        m = mediators_top10)
 ```
@@ -626,7 +549,6 @@ head(hdmax2_step2$effects$gender$ACME)
 head(hdmax2_step2$effects$gender$PM)
 head(hdmax2_step2$effects$gender$TE)
 head(hdmax2_step2$effects$gender$ADE)
-
 ```
 
 
@@ -638,7 +560,6 @@ This step also compute Overall effects :
 - OTE (Total Effect): corresponding to the effect of exposure variables on the outcome variable when the mediators $M^S$ are included in the model.
 
 ```{r}
-
 hdmax2_step2$effects$gender$oie_med # OIE median for first exposure variable
 hdmax2_step2$effects$gender$ode
 hdmax2_step2$effects$gender$ote
@@ -658,7 +579,7 @@ We propose a set of plots including:
 - Mediators effect size representation
 
 
-```{r ms plot results multivar , fig.height=10, fig.width=10, fig.show='asis'}
+```{r ms plot results multivar , fig.height=10, fig.width=10, fig.show='asis' , message = FALSE, warning = FALSE, results = "hide"}
 hdmax2::plot_hdmax2(hdmax2_step2, plot_type= "all_plot")
 ```
 
@@ -690,20 +611,26 @@ Identify Aggregated Methylated Regions (AMR) with `AMR_search` function which us
 helper_ex = hdmax2::helper_ex
 
 pc <- prcomp(helper_ex$methylation)
-plot((pc$sdev^2/sum(pc$sdev^2))[1:15],
+plot((pc$sdev^2/sum(pc$sdev^2))[1:10],
+     type = "b",
      xlab = 'Principal Component',
-     ylab = "Explained variance",
-     col = c(rep(1, 3), 2, rep(1, 16)))
+     ylab = "Explained variance")
 # chosen number of dimension
 K=5
+```
 
+#### STEP 1: Run association studies
+```{r AMR step1 , message=FALSE}
 ## run hdmax2 step1
 hdmax2_step1 = hdmax2::run_AS(exposure = helper_ex$exposure,
                               outcome = helper_ex$phenotype,
                               M = helper_ex$methylation, 
                               K = K)
+```
 
-##Detecting AMR
+#### Detecting AMR
+```{r AMR detecting , message=FALSE}
+
 seed = 0.7 #Careful to change this parameter when working with real data
 res.amr_search = hdmax2::AMR_search(chr = helper_ex$annotation$chr,
                                     start = helper_ex$annotation$start,
@@ -726,12 +653,12 @@ head(res.arm_build$res)
 res.arm_build$CpG_for_each_AMR
 ```
 
-### Quantifying indirect effects 
+### Quantifying indirect effects (Step 2) 
 
 Like with single mediators analysis *esimate_effect* function could be use to estimate different effects of AMR. Also `plot_hdmax2` can be applied to step2 results.
 
 
-```{r step2, message=FALSE, warning=FALSE, fig.height=10, fig.width=10, fig.show='asis'}
+```{r step2, fig.height=10, fig.width=10, fig.show='asis', message = FALSE, warning = FALSE, results = "hide"}
 ## run hdmax2 step2
 object = hdmax2_step1
 m = as.matrix(res.arm_build$AMR_mean)
