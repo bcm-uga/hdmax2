@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   hdmax2_tutorial: hdmax2_tutorial.html
-last_built: 2025-01-24T10:14Z
+last_built: 2025-01-28T13:36Z
 urls:
   reference: https://bcm-uga.github.io/hdmax2/reference
   article: https://bcm-uga.github.io/hdmax2/articles
