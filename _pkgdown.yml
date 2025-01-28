@@ -3,7 +3,6 @@ template:
   bootstrap: 5
   
 articles:
- - title: "Tutorial"
-  contents:
-    - "vignettes/hdmax2_tutorial.Rmd" 
-
+  - title: "Tutorial"
+    contents:
+      - "vignettes/hdmax2_tutorial.Rmd"
