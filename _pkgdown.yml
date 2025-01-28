@@ -1,9 +1,3 @@
 url: https://bcm-uga.github.io/hdmax2/
 template:
   bootstrap: 5
-  
-articles:
-  - title: "Tutorial"
-    contents:
-      - "vignettes/hdmax2_tutorial.Rmd"
-      
