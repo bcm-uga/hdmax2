@@ -56,7 +56,7 @@ The package  `hdmax2` is designed to accept :
 - $K$, the number of latent factors to be estimated. 
 
 
-# METHOD Example (simulation) :  *multivariate exposure* and *continuous outcome*
+# Example (simulation) :  *multivariate exposure* and *continuous outcome*
 
 For this example we use a **two variables exposure** (continuous and binary), a **continuous outcome** and **two adjustment factors** (age and gender).
 
@@ -288,7 +288,7 @@ In the `plot_hdmax2` function it is possible to produce the 4-plots set or each 
 
 
 
-# METHOD Use Case : Breast cancer
+# 1rst Use Case : Breast cancer
 
 `tcga_brca` was downloaded and processed from the Cancer Genome Atlas TCGA-BRCA dataset (\url{https://portal.gdc.cancer.gov/}. 2019 version of the data.) 
 
@@ -437,7 +437,7 @@ In the `plot_hdmax2` function it is possible to produce the 4-plots set or each 
 
 
 
-# METHOD Use Case : Multiple sclerosis
+# 2nd Use Case : Multiple sclerosis
 
 
 `ms_GSE137143` was downloaded and processed from the GEO repository (\url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE137143}. 2024 version of the data.) 
@@ -521,9 +521,9 @@ We selected the top 10 mediators.
 
 ```{r ms mediators selection multivar}
 ## Selecting top 10 mediators
-top10_max2 = sort(hdmax2_step1$max2_pvalues)[1:10]
-top10_max2
-mediators_top10 = (t(ms_GSE137143$M))[,names(sort(hdmax2_step1$max2_pvalues)[1:10])]
+top2_max2 = sort(hdmax2_step1$max2_pvalues)[1:2]
+top2_max2
+mediators_top2 = (t(ms_GSE137143$M))[,names(sort(hdmax2_step1$max2_pvalues)[1:2])]
 ```
 
 ## STEP 2
@@ -534,7 +534,7 @@ The function `estimate_effect` takes as inputs, step 1 object and selected media
 
 ```{r ms step2 multivar,  message = FALSE, warning = FALSE, results = "hide"}
 hdmax2_step2 = hdmax2::estimate_effect(object = hdmax2_step1,
-                                       m = mediators_top10)
+                                       m = mediators_top2)
 ```
 
 The function `estimate_effect` use `mediation::mediate` function to obtain several effects estimation with uncertainty:
