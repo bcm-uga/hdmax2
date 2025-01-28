@@ -171,8 +171,8 @@ the number of latent factors to be estimated.</p></li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="method-example-simulation-multivariate-exposure-and-continuous-outcome">METHOD Example (simulation) : <em>multivariate exposure</em> and
-<em>continuous outcome</em><a class="anchor" aria-label="anchor" href="#method-example-simulation-multivariate-exposure-and-continuous-outcome"></a>
+<h2 id="example-simulation-multivariate-exposure-and-continuous-outcome">Example (simulation) : <em>multivariate exposure</em> and
+<em>continuous outcome</em><a class="anchor" aria-label="anchor" href="#example-simulation-multivariate-exposure-and-continuous-outcome"></a>
 </h2>
 <p>For this example we use a <strong>two variables exposure</strong>
 (continuous and binary), a <strong>continuous outcome</strong> and
@@ -497,7 +497,7 @@ argument.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="method-use-case-breast-cancer">METHOD Use Case : Breast cancer<a class="anchor" aria-label="anchor" href="#method-use-case-breast-cancer"></a>
+<h2 id="rst-use-case-breast-cancer">1rst Use Case : Breast cancer<a class="anchor" aria-label="anchor" href="#rst-use-case-breast-cancer"></a>
 </h2>
 <p><code>tcga_brca</code> was downloaded and processed from the Cancer
 Genome Atlas TCGA-BRCA dataset (. 2019 version of the data.)</p>
@@ -717,7 +717,7 @@ argument.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="method-use-case-multiple-sclerosis">METHOD Use Case : Multiple sclerosis<a class="anchor" aria-label="anchor" href="#method-use-case-multiple-sclerosis"></a>
+<h2 id="nd-use-case-multiple-sclerosis">2nd Use Case : Multiple sclerosis<a class="anchor" aria-label="anchor" href="#nd-use-case-multiple-sclerosis"></a>
 </h2>
 <p><code>ms_GSE137143</code> was downloaded and processed from the GEO
 repository (. 2024 version of the data.)</p>
@@ -808,13 +808,11 @@ results.</p>
 <p>We selected the top 10 mediators.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Selecting top 10 mediators</span></span>
-<span><span class="va">top10_max2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
-<span><span class="va">top10_max2</span></span>
-<span><span class="co">#&gt;       MVB12B         NT5E        TMTC2        CD209       PFKFB2      TMEM86A </span></span>
-<span><span class="co">#&gt; 2.035825e-06 4.526574e-06 4.500873e-05 6.090668e-05 7.095797e-05 1.199468e-04 </span></span>
-<span><span class="co">#&gt;        HEMGN         POP5       HECTD1         PAK6 </span></span>
-<span><span class="co">#&gt; 1.426972e-04 1.534255e-04 2.295288e-04 2.510077e-04</span></span>
-<span><span class="va">mediators_top10</span> <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">ms_GSE137143</span><span class="op">$</span><span class="va">M</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<span><span class="va">top2_max2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span>
+<span><span class="va">top2_max2</span></span>
+<span><span class="co">#&gt;       MVB12B         NT5E </span></span>
+<span><span class="co">#&gt; 2.035825e-06 4.526574e-06</span></span>
+<span><span class="va">mediators_top2</span> <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">ms_GSE137143</span><span class="op">$</span><span class="va">M</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-2-2">STEP 2<a class="anchor" aria-label="anchor" href="#step-2-2"></a>
@@ -829,7 +827,7 @@ from chosen selection method apply on <em>max-squared</em> test
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>-values.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hdmax2_step2</span> <span class="op">=</span> <span class="fu">hdmax2</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_effect.html">estimate_effect</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">hdmax2_step1</span>,</span>
-<span>                                       m <span class="op">=</span> <span class="va">mediators_top10</span><span class="op">)</span></span></code></pre></div>
+<span>                                       m <span class="op">=</span> <span class="va">mediators_top2</span><span class="op">)</span></span></code></pre></div>
 <p>The function <code>estimate_effect</code> use
 <code><a href="https://rdrr.io/pkg/mediation/man/mediate.html" class="external-link">mediation::mediate</a></code> function to obtain several effects
 estimation with uncertainty:</p>
@@ -845,37 +843,21 @@ effect</li>
 </ul>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">ACME</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           est      CI_2.5     CI_97.5  pval    feat</span></span>
-<span><span class="co">#&gt; 1 -0.09077507 -0.18840144 -0.01922880 0.008  MVB12B</span></span>
-<span><span class="co">#&gt; 2  0.06707219  0.01431824  0.15316016 0.004    NT5E</span></span>
-<span><span class="co">#&gt; 3  0.07056658  0.01531698  0.15605630 0.008   TMTC2</span></span>
-<span><span class="co">#&gt; 4 -0.06991397 -0.15769496 -0.01525150 0.002   CD209</span></span>
-<span><span class="co">#&gt; 5 -0.07118542 -0.16409292 -0.01031814 0.016  PFKFB2</span></span>
-<span><span class="co">#&gt; 6  0.05980062  0.01578039  0.13478566 0.000 TMEM86A</span></span>
+<span><span class="co">#&gt;           est      CI_2.5    CI_97.5  pval   feat</span></span>
+<span><span class="co">#&gt; 1 -0.09077507 -0.18840144 -0.0192288 0.008 MVB12B</span></span>
+<span><span class="co">#&gt; 2  0.06707219  0.01431824  0.1531602 0.004   NT5E</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">PM</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          est      CI_2.5     CI_97.5  pval    feat</span></span>
-<span><span class="co">#&gt; 1  0.2889819  0.05283715  1.16352534 0.010  MVB12B</span></span>
-<span><span class="co">#&gt; 2 -0.2017068 -1.22826625 -0.03548262 0.004    NT5E</span></span>
-<span><span class="co">#&gt; 3 -0.1987571 -0.87569344 -0.03932224 0.012   TMTC2</span></span>
-<span><span class="co">#&gt; 4  0.2084197  0.03948217  0.84273234 0.008   CD209</span></span>
-<span><span class="co">#&gt; 5  0.2101325  0.02968379  0.85149969 0.018  PFKFB2</span></span>
-<span><span class="co">#&gt; 6 -0.1787964 -0.98591733 -0.04177735 0.000 TMEM86A</span></span>
+<span><span class="co">#&gt;          est      CI_2.5     CI_97.5  pval   feat</span></span>
+<span><span class="co">#&gt; 1  0.2889819  0.05283715  1.16352534 0.010 MVB12B</span></span>
+<span><span class="co">#&gt; 2 -0.2017068 -1.22826625 -0.03548262 0.004   NT5E</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">TE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          est     CI_2.5    CI_97.5  pval    feat</span></span>
-<span><span class="co">#&gt; 1 -0.2959140 -0.4642874 -0.1066426 0.002  MVB12B</span></span>
-<span><span class="co">#&gt; 2 -0.3038123 -0.4661981 -0.1013277 0.000    NT5E</span></span>
-<span><span class="co">#&gt; 3 -0.3151221 -0.4729717 -0.1367908 0.004   TMTC2</span></span>
-<span><span class="co">#&gt; 4 -0.3039390 -0.4631509 -0.1154835 0.006   CD209</span></span>
-<span><span class="co">#&gt; 5 -0.3117857 -0.4703669 -0.1309963 0.002  PFKFB2</span></span>
-<span><span class="co">#&gt; 6 -0.3027430 -0.4549222 -0.1107366 0.000 TMEM86A</span></span>
+<span><span class="co">#&gt;          est     CI_2.5    CI_97.5  pval   feat</span></span>
+<span><span class="co">#&gt; 1 -0.2959140 -0.4642874 -0.1066426 0.002 MVB12B</span></span>
+<span><span class="co">#&gt; 2 -0.3038123 -0.4661981 -0.1013277 0.000   NT5E</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">ADE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          est     CI_2.5     CI_97.5  pval    feat</span></span>
-<span><span class="co">#&gt; 1 -0.1706299 -0.3470438  0.01529790 0.080  MVB12B</span></span>
-<span><span class="co">#&gt; 2 -0.4403246 -0.6012640 -0.23313726 0.000    NT5E</span></span>
-<span><span class="co">#&gt; 3 -0.4710404 -0.6331761 -0.25663369 0.000   TMTC2</span></span>
-<span><span class="co">#&gt; 4 -0.2014184 -0.3751362 -0.01818126 0.036   CD209</span></span>
-<span><span class="co">#&gt; 5 -0.2065437 -0.3843393 -0.01560094 0.040  PFKFB2</span></span>
-<span><span class="co">#&gt; 6 -0.4204543 -0.5731202 -0.23953984 0.000 TMEM86A</span></span></code></pre></div>
+<span><span class="co">#&gt;          est     CI_2.5    CI_97.5 pval   feat</span></span>
+<span><span class="co">#&gt; 1 -0.1706299 -0.3470438  0.0152979 0.08 MVB12B</span></span>
+<span><span class="co">#&gt; 2 -0.4403246 -0.6012640 -0.2331373 0.00   NT5E</span></span></code></pre></div>
 <p>This step also compute Overall effects :</p>
 <ul>
 <li>OIE (Indirect effect): corresponding to the sum of the indirect
@@ -889,10 +871,10 @@ are included in the model.</li>
 </ul>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">oie_med</span> <span class="co"># OIE median for first exposure variable</span></span>
-<span><span class="co">#&gt; [1] -0.6212699</span></span>
+<span><span class="co">#&gt; [1] 0.02444527</span></span>
 <span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">ode</span></span>
-<span><span class="co">#&gt;    Estimate  Std. Error     z value    Pr(&gt;|z|) </span></span>
-<span><span class="co">#&gt; -2.32450147  1.23743400 -1.87848521  0.06031482</span></span>
+<span><span class="co">#&gt;     Estimate   Std. Error      z value     Pr(&gt;|z|) </span></span>
+<span><span class="co">#&gt; -1.824871656  0.686797321 -2.657074510  0.007882202</span></span>
 <span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">ote</span></span>
 <span><span class="co">#&gt;     Estimate   Std. Error      z value     Pr(&gt;|z|) </span></span>
 <span><span class="co">#&gt; -1.604244218  0.548823596 -2.923059847  0.003466099</span></span></code></pre></div>
