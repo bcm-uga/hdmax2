@@ -66,7 +66,7 @@ We simulated data for 100 samples and 1000 potential mediators.
 The matrix of potential mediators is an extract of real methylation data (TCGA PDAC samples).
 
 
-We define the $K$ number of estimated latent factors by performing a PCA on potential mediators matrix. The scree plot criterion looks for the “elbow” in the curve and selects all components just before the line flattens out, $K$ is chosen with this procedure.
+We define the $K$ number of estimated latent factors by performing a PCA on potential mediators matrix. Cattell's rule is applied to the eigenvalues of PCA. The scree plot criterion looks for the “elbow” in the curve and selects all components just before the line flattens out, $K$ is chosen with this procedure.
 
 
 ```{r variable definition}
@@ -117,12 +117,24 @@ hdmax2_step1 = hdmax2::run_AS(exposure = X ,
                               K = K,
                               covar = covar)
 ```
+
+
+
+
+
 The `run_AS` function provides an object containing:
 
 - Results from the two association studies ($P$-values, fscores or zscores),
 
-```{r step 1 res AS, message=FALSE, fig.height=5, fig.width=12}
+```{r AS output, message=FALSE}
 head(hdmax2_step1$AS_1$pval)
+head(hdmax2_step1$AS_2$pval)
+head(hdmax2_step1$max2_pvalues)
+```
+At this stage, we can use the figure below to assess two assumptions: panel A evaluates the independence of the two p-value vectors from two association studies (showing weak correlation), while panel B examines the uniformity of max2 test p-values (except for values near 0).
+
+```{r step 1 check assumption plot, message=FALSE, fig.height=5, fig.width=12}
+
 
 pval1 = hdmax2_step1$AS_1$pval
 pval2 = hdmax2_step1$AS_2$pval
@@ -144,8 +156,7 @@ gridExtra::grid.arrange( p1, p2, ncol = 2, top = grid::textGrob("Hypothesis veri
 
 ```
 
-
-- Latent factors estimation matrix $U$ ($p$ rows and $K$ columns) from first regression, 
+- Latent factors estimation matrix $U$ ($n$ rows and $K$ columns) from first regression, 
 
 ```{r step 1 latent factors, message=FALSE}
 head(hdmax2_step1$AS_1$U)
@@ -203,8 +214,8 @@ head(hdmax2_step2$effects$X2$ACME)
 
 ```{r}
 # For first exposure variable
-head(hdmax2_step2$effects$X1$PM)
-head(hdmax2_step2$effects$X2$PM)
+head(hdmax2_step2$effects$X_continuous$PM)
+head(hdmax2_step2$effects$X_binary$PM)
 ```
 
 
@@ -212,16 +223,16 @@ head(hdmax2_step2$effects$X2$PM)
 
 ```{r}
 # For first exposure variable
-head(hdmax2_step2$effects$X1$TE)
-head(hdmax2_step2$effects$X2$TE)
+head(hdmax2_step2$effects$X_continuous$TE)
+head(hdmax2_step2$effects$X_binary$TE)
 ```
 
 - ADE Average Direct Effect: which represents the unmediated effect.
 
 ```{r}
 # For first exposure variable
-head(hdmax2_step2$effects$X1$ADE)
-head(hdmax2_step2$effects$X2$ADE)
+head(hdmax2_step2$effects$X_continuous$ADE)
+head(hdmax2_step2$effects$X_binary$ADE)
 ```
 
 
@@ -231,31 +242,31 @@ This step also compute Overall effects :
 
 ```{r}
 # Estimate OIE for first exposure variable
-head(hdmax2_step2$effects$X1$oie)
+head(hdmax2_step2$effects$X_continuous$oie)
 # OIE median for first exposure variable
-hdmax2_step2$effects$X1$oie_med
+hdmax2_step2$effects$X_continuous$oie_med
 # OIE standard deviation for first exposure variable
-hdmax2_step2$effects$X1$oie_sd
+hdmax2_step2$effects$X_continuous$oie_sd
 ```
 - ODE (Direct Effect): corresponding to the effect of exposure variables on the outcome variable.
 
 ```{r}
-hdmax2_step2$effects$X1$ode
+hdmax2_step2$effects$X_continuous$ode
 
 ```
 
 - OTE (Total Effect): corresponding to the effect of exposure variables on the outcome variable when the mediators $M^S$ are included in the model.
 
 ```{r}
-hdmax2_step2$effects$X1$ote
+hdmax2_step2$effects$X_continuous$ote
 
 ```
 
 In addition, function `estimate_effect` estimates the intermediary effect sizes  $a_j$ and $b_j$ and their standard deviations.
 
 ```{r}
-head(hdmax2_step2$effects$X1$xm)
-head(hdmax2_step2$effects$X1$my)
+head(hdmax2_step2$effects$X_continuous$xm)
+head(hdmax2_step2$effects$X_continuous$my)
 
 ```
 
