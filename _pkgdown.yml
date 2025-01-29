@@ -1,3 +1,7 @@
 url: https://bcm-uga.github.io/hdmax2/
 template:
   bootstrap: 5
+navbar:
+ components:
+   intro:
+    text: Tutorial
