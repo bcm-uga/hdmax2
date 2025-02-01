@@ -277,9 +277,7 @@ panel A evaluates the independence of the two p-value vectors from two
 association studies (showing weak correlation), while panel B examines
 the uniformity of max2 test p-values (except for values near 0).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span></span>
-<span><span class="va">pval1</span> <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">AS_1</span><span class="op">$</span><span class="va">pval</span></span>
+<code class="sourceCode R"><span><span class="va">pval1</span> <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">AS_1</span><span class="op">$</span><span class="va">pval</span></span>
 <span><span class="va">pval2</span> <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">AS_2</span><span class="op">$</span><span class="va">pval</span></span>
 <span><span class="va">cor_value</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">pval1</span>,<span class="va">pval2</span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pval1</span>, y <span class="op">=</span> <span class="va">pval2</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pval1</span>, y <span class="op">=</span> <span class="va">pval2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -289,7 +287,7 @@ the uniformity of max2 test p-values (except for values near 0).</p>
 <span>                                             title.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"A"</span>,</span>
-<span>       x <span class="op">=</span> <span class="st">"1srt regresssion (X-&gt;M) pvalues"</span>, y <span class="op">=</span> <span class="st">"2nd regresssion (M-&gt;Y) pvalues"</span><span class="op">)</span></span>
+<span>       x <span class="op">=</span> <span class="st">"1srt regresssion (X ~ M) pvalues"</span>, y <span class="op">=</span> <span class="st">"2nd regresssion (M ~ Y) pvalues"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">data_hdmax2_step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pvalues <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
 <span></span>
@@ -382,12 +380,24 @@ effect</li>
 </ul>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For first exposure variable</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X1</span><span class="op">$</span><span class="va">ACME</span><span class="op">)</span></span>
-<span><span class="co">#&gt; NULL</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">$</span><span class="va">ACME</span><span class="op">)</span></span>
+<span><span class="co">#&gt;           est      CI_2.5    CI_97.5  pval       feat</span></span>
+<span><span class="co">#&gt; 1 -0.04783063 -0.18239064 0.08993008 0.468 cg00025981</span></span>
+<span><span class="co">#&gt; 2  0.11377784  0.06132205 0.16606836 0.000 cg00075768</span></span>
+<span><span class="co">#&gt; 3 -0.09091496 -0.22959483 0.03816226 0.154 cg00019093</span></span>
+<span><span class="co">#&gt; 4  0.07128853  0.04720660 0.09268712 0.000 cg00066729</span></span>
+<span><span class="co">#&gt; 5 -0.01037554 -0.11182775 0.08895316 0.882 cg00031759</span></span>
+<span><span class="co">#&gt; 6  0.05529412  0.02696207 0.08384472 0.000 cg00084432</span></span>
 <span></span>
 <span><span class="co"># For second exposure variable</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X2</span><span class="op">$</span><span class="va">ACME</span><span class="op">)</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_binary</span><span class="op">$</span><span class="va">ACME</span><span class="op">)</span></span>
+<span><span class="co">#&gt;           est      CI_2.5    CI_97.5  pval       feat</span></span>
+<span><span class="co">#&gt; 1 -0.05246611 -0.18006356 0.07323746 0.432 cg00025981</span></span>
+<span><span class="co">#&gt; 2  0.11759145  0.05839779 0.17625076 0.000 cg00075768</span></span>
+<span><span class="co">#&gt; 3 -0.08826527 -0.21823566 0.02683452 0.164 cg00019093</span></span>
+<span><span class="co">#&gt; 4  0.07230110  0.04880869 0.09546717 0.000 cg00066729</span></span>
+<span><span class="co">#&gt; 5 -0.01075235 -0.11440219 0.09968247 0.854 cg00031759</span></span>
+<span><span class="co">#&gt; 6  0.05621570  0.02630775 0.08511224 0.000 cg00084432</span></span></code></pre></div>
 <ul>
 <li>PM Proportion Mediate: corresponding to the proportion of the total
 effect that is mediated by the mediator</li>
@@ -633,7 +643,7 @@ results.</p>
 <span>                                             title.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"A"</span>,</span>
-<span>       x <span class="op">=</span> <span class="st">"1srt regresssion (X-&gt;M) pvalues"</span>, y <span class="op">=</span> <span class="st">"2nd regresssion (M-&gt;Y) pvalues"</span><span class="op">)</span></span>
+<span>       x <span class="op">=</span> <span class="st">"1srt regresssion (X ~ M) pvalues"</span>, y <span class="op">=</span> <span class="st">"2nd regresssion (M ~ Y) pvalues"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">data_hdmax2_step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pvalues <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
 <span></span>
@@ -850,7 +860,7 @@ results.</p>
 <span>                                             title.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"A"</span>,</span>
-<span>       x <span class="op">=</span> <span class="st">"1srt regresssion (X-&gt;M) pvalues"</span>, y <span class="op">=</span> <span class="st">"2nd regresssion (M-&gt;Y) pvalues"</span><span class="op">)</span></span>
+<span>       x <span class="op">=</span> <span class="st">"1srt regresssion (X ~ M) pvalues"</span>, y <span class="op">=</span> <span class="st">"2nd regresssion (M ~ Y) pvalues"</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="va">data_hdmax2_step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pvalues <span class="op">=</span> <span class="va">hdmax2_step1</span><span class="op">$</span><span class="va">max2_pvalues</span><span class="op">)</span></span>
