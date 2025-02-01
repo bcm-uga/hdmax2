@@ -134,8 +134,6 @@ head(hdmax2_step1$max2_pvalues)
 At this stage, we can use the figure below to assess two assumptions: panel A evaluates the independence of the two p-value vectors from two association studies (showing weak correlation), while panel B examines the uniformity of max2 test p-values (except for values near 0).
 
 ```{r step 1 check assumption plot, message=FALSE, fig.height=5, fig.width=12}
-
-
 pval1 = hdmax2_step1$AS_1$pval
 pval2 = hdmax2_step1$AS_2$pval
 cor_value = cor(pval1,pval2)
@@ -146,7 +144,7 @@ p1 = ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y = pval2)) 
                                              title.position = "top")) + 
   theme_minimal() +
   labs(title = "A",
-       x = "1srt regresssion (X->M) pvalues", y = "2nd regresssion (M->Y) pvalues")
+       x = "1srt regresssion (X ~ M) pvalues", y = "2nd regresssion (M ~ Y) pvalues")
 
 data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
 
@@ -203,10 +201,10 @@ The function `estimate_effect` use `mediation::mediate` function to obtain sever
 
 ```{r}
 # For first exposure variable
-head(hdmax2_step2$effects$X1$ACME)
+head(hdmax2_step2$effects$X_continuous$ACME)
 
 # For second exposure variable
-head(hdmax2_step2$effects$X2$ACME)
+head(hdmax2_step2$effects$X_binary$ACME)
 ```
 
 
@@ -366,7 +364,7 @@ p1 = ggplot2::ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y =
                                              title.position = "top")) + 
   theme_minimal() +
   labs(title = "A",
-       x = "1srt regresssion (X->M) pvalues", y = "2nd regresssion (M->Y) pvalues")
+       x = "1srt regresssion (X ~ M) pvalues", y = "2nd regresssion (M ~ Y) pvalues")
 
 data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
 
@@ -515,7 +513,7 @@ p1 = ggplot2::ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y =
                                              title.position = "top")) + 
   theme_minimal() +
   labs(title = "A",
-       x = "1srt regresssion (X->M) pvalues", y = "2nd regresssion (M->Y) pvalues")
+       x = "1srt regresssion (X ~ M) pvalues", y = "2nd regresssion (M ~ Y) pvalues")
 
 
 data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
