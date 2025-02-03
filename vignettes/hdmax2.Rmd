@@ -144,7 +144,7 @@ p1 = ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y = pval2)) 
                                              title.position = "top")) + 
   theme_minimal() +
   labs(title = "A",
-       x = "1srt regresssion (X ~ M) pvalues", y = "2nd regresssion (M ~ Y) pvalues")
+       x = "1srt regresssion (M ~ X) pvalues", y = "2nd regresssion (Y ~ M + X) pvalues")
 
 data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
 
@@ -364,7 +364,7 @@ p1 = ggplot2::ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y =
                                              title.position = "top")) + 
   theme_minimal() +
   labs(title = "A",
-       x = "1srt regresssion (X ~ M) pvalues", y = "2nd regresssion (M ~ Y) pvalues")
+       x = "1srt regresssion (M ~ X) pvalues", y = "2nd regresssion (Y ~ M + X) pvalues")
 
 data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
 
@@ -513,7 +513,7 @@ p1 = ggplot2::ggplot(data = data.frame(x = pval1, y = pval2), aes(x = pval1, y =
                                              title.position = "top")) + 
   theme_minimal() +
   labs(title = "A",
-       x = "1srt regresssion (X ~ M) pvalues", y = "2nd regresssion (M ~ Y) pvalues")
+       x = "1srt regresssion (M ~ X) pvalues", y = "2nd regresssion (Y ~ M + X) pvalues")
 
 
 data_hdmax2_step1 <- data.frame(pvalues = hdmax2_step1$max2_pvalues)
