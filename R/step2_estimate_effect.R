@@ -156,10 +156,14 @@ estimate_effect <- function(object , m, boots = 1000, ...) {
         covars = data.frame(obs_covar = object$input$covar, latent_factors = object$AS_1$U, df_extra = df_extra)
       } 
       if (is.null(object$input$covar_sup_reg2)) {
-        covars_2 = data.frame(latent_factors = object$AS_1$U, df_extra = df_extra)
+        if (is.null(object$input$covar)) {
+          covars_2 = data.frame(latent_factors = object$AS_1$U)
+        } else {
+          covars_2 = data.frame(obs_covar = object$input$covar, latent_factors = object$AS_1$U)
+        } 
       } else  {
-        covars_2 = data.frame(obs_covar = object$input$covar, obs_covar_2 = object$input$covar_sup_reg2, latent_factors = object$AS_1$U, df_extra = df_extra)
-      }
+        covars_2 = data.frame(obs_covar = object$input$covar, obs_covar_2 = object$input$covar_sup_reg2, latent_factors = object$AS_1$U)
+      } 
     }
     
     expo_var_type =  typeof(exposure)
