@@ -381,23 +381,23 @@ effect</li>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For first exposure variable</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">$</span><span class="va">ACME</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           est      CI_2.5    CI_97.5  pval       feat</span></span>
-<span><span class="co">#&gt; 1 -0.04783063 -0.18239064 0.08993008 0.468 cg00025981</span></span>
-<span><span class="co">#&gt; 2  0.11377784  0.06132205 0.16606836 0.000 cg00075768</span></span>
-<span><span class="co">#&gt; 3 -0.09091496 -0.22959483 0.03816226 0.154 cg00019093</span></span>
-<span><span class="co">#&gt; 4  0.07128853  0.04720660 0.09268712 0.000 cg00066729</span></span>
-<span><span class="co">#&gt; 5 -0.01037554 -0.11182775 0.08895316 0.882 cg00031759</span></span>
-<span><span class="co">#&gt; 6  0.05529412  0.02696207 0.08384472 0.000 cg00084432</span></span>
+<span><span class="co">#&gt;          est     CI_2.5    CI_97.5 pval       feat</span></span>
+<span><span class="co">#&gt; 1 -0.6056152 -0.6095041 -0.6016045    0 cg00025981</span></span>
+<span><span class="co">#&gt; 2 -0.6007216 -0.6089224 -0.5925635    0 cg00075768</span></span>
+<span><span class="co">#&gt; 3 -0.6060242 -0.6103293 -0.6018284    0 cg00019093</span></span>
+<span><span class="co">#&gt; 4 -0.5960947 -0.6121144 -0.5793931    0 cg00066729</span></span>
+<span><span class="co">#&gt; 5 -0.6048222 -0.6097191 -0.5999177    0 cg00031759</span></span>
+<span><span class="co">#&gt; 6 -0.5994393 -0.6141037 -0.5840224    0 cg00084432</span></span>
 <span></span>
 <span><span class="co"># For second exposure variable</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_binary</span><span class="op">$</span><span class="va">ACME</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           est      CI_2.5    CI_97.5  pval       feat</span></span>
-<span><span class="co">#&gt; 1 -0.05246611 -0.18006356 0.07323746 0.432 cg00025981</span></span>
-<span><span class="co">#&gt; 2  0.11759145  0.05839779 0.17625076 0.000 cg00075768</span></span>
-<span><span class="co">#&gt; 3 -0.08826527 -0.21823566 0.02683452 0.164 cg00019093</span></span>
-<span><span class="co">#&gt; 4  0.07230110  0.04880869 0.09546717 0.000 cg00066729</span></span>
-<span><span class="co">#&gt; 5 -0.01075235 -0.11440219 0.09968247 0.854 cg00031759</span></span>
-<span><span class="co">#&gt; 6  0.05621570  0.02630775 0.08511224 0.000 cg00084432</span></span></code></pre></div>
+<span><span class="co">#&gt;          est     CI_2.5    CI_97.5 pval       feat</span></span>
+<span><span class="co">#&gt; 1 -0.6086681 -0.6134610 -0.6043926    0 cg00025981</span></span>
+<span><span class="co">#&gt; 2 -0.6113487 -0.6198200 -0.6023355    0 cg00075768</span></span>
+<span><span class="co">#&gt; 3 -0.6080429 -0.6122256 -0.6035600    0 cg00019093</span></span>
+<span><span class="co">#&gt; 4 -0.6077762 -0.6263214 -0.5901032    0 cg00066729</span></span>
+<span><span class="co">#&gt; 5 -0.6086744 -0.6140295 -0.6035298    0 cg00031759</span></span>
+<span><span class="co">#&gt; 6 -0.6053858 -0.6216396 -0.5899213    0 cg00084432</span></span></code></pre></div>
 <ul>
 <li>PM Proportion Mediate: corresponding to the proportion of the total
 effect that is mediated by the mediator</li>
@@ -405,21 +405,21 @@ effect that is mediated by the mediator</li>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For first exposure variable</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">$</span><span class="va">PM</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           est      CI_2.5     CI_97.5  pval       feat</span></span>
-<span><span class="co">#&gt; 1  0.07793461 -0.14768424  0.30034760 0.468 cg00025981</span></span>
-<span><span class="co">#&gt; 2 -0.18706776 -0.27319809 -0.10068413 0.000 cg00075768</span></span>
-<span><span class="co">#&gt; 3  0.14686163 -0.06269033  0.37856293 0.154 cg00019093</span></span>
-<span><span class="co">#&gt; 4 -0.11709747 -0.15242776 -0.07750990 0.000 cg00066729</span></span>
-<span><span class="co">#&gt; 5  0.01346451 -0.14562168  0.18337909 0.882 cg00031759</span></span>
-<span><span class="co">#&gt; 6 -0.09018552 -0.13777651 -0.04434364 0.000 cg00084432</span></span>
+<span><span class="co">#&gt;         est    CI_2.5   CI_97.5 pval       feat</span></span>
+<span><span class="co">#&gt; 1 0.9962645 0.9922710 1.0003708    0 cg00025981</span></span>
+<span><span class="co">#&gt; 2 0.9899386 0.9829756 0.9973451    0 cg00075768</span></span>
+<span><span class="co">#&gt; 3 0.9971600 0.9928499 1.0012824    0 cg00019093</span></span>
+<span><span class="co">#&gt; 4 0.9871313 0.9724736 1.0019625    0 cg00066729</span></span>
+<span><span class="co">#&gt; 5 0.9954886 0.9910035 1.0000572    0 cg00031759</span></span>
+<span><span class="co">#&gt; 6 0.9910651 0.9774488 1.0044119    0 cg00084432</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_binary</span><span class="op">$</span><span class="va">PM</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           est      CI_2.5     CI_97.5  pval       feat</span></span>
-<span><span class="co">#&gt; 1  0.08691151 -0.12080763  0.29644228 0.432 cg00025981</span></span>
-<span><span class="co">#&gt; 2 -0.19477614 -0.29052451 -0.09616481 0.000 cg00075768</span></span>
-<span><span class="co">#&gt; 3  0.13953217 -0.04426333  0.35891488 0.164 cg00019093</span></span>
-<span><span class="co">#&gt; 4 -0.11924912 -0.15757274 -0.08046365 0.000 cg00066729</span></span>
-<span><span class="co">#&gt; 5  0.01682250 -0.16406513  0.18895125 0.854 cg00031759</span></span>
-<span><span class="co">#&gt; 6 -0.09207909 -0.14035110 -0.04339033 0.000 cg00084432</span></span></code></pre></div>
+<span><span class="co">#&gt;        est    CI_2.5  CI_97.5 pval       feat</span></span>
+<span><span class="co">#&gt; 1 1.003484 0.9993936 1.007412    0 cg00025981</span></span>
+<span><span class="co">#&gt; 2 1.009214 1.0015424 1.017097    0 cg00075768</span></span>
+<span><span class="co">#&gt; 3 1.002620 0.9989643 1.006506    0 cg00019093</span></span>
+<span><span class="co">#&gt; 4 1.008352 0.9938708 1.024133    0 cg00066729</span></span>
+<span><span class="co">#&gt; 5 1.004121 0.9994795 1.009029    0 cg00031759</span></span>
+<span><span class="co">#&gt; 6 1.003998 0.9906843 1.018637    0 cg00084432</span></span></code></pre></div>
 <ul>
 <li>TE total effect: which is equal to the sum of direct and indirect
 effect</li>
@@ -428,20 +428,20 @@ effect</li>
 <code class="sourceCode R"><span><span class="co"># For first exposure variable</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">$</span><span class="va">TE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          est     CI_2.5    CI_97.5 pval       feat</span></span>
-<span><span class="co">#&gt; 1 -0.6079588 -0.6106614 -0.6053151    0 cg00025981</span></span>
-<span><span class="co">#&gt; 2 -0.6078334 -0.6103544 -0.6050415    0 cg00075768</span></span>
-<span><span class="co">#&gt; 3 -0.6079978 -0.6106669 -0.6054574    0 cg00019093</span></span>
-<span><span class="co">#&gt; 4 -0.6080833 -0.6107622 -0.6053750    0 cg00066729</span></span>
-<span><span class="co">#&gt; 5 -0.6079325 -0.6106565 -0.6052642    0 cg00031759</span></span>
-<span><span class="co">#&gt; 6 -0.6078076 -0.6104230 -0.6052371    0 cg00084432</span></span>
+<span><span class="co">#&gt; 1 -0.6078652 -0.6123403 -0.6032551    0 cg00025981</span></span>
+<span><span class="co">#&gt; 2 -0.6068023 -0.6160126 -0.5976400    0 cg00075768</span></span>
+<span><span class="co">#&gt; 3 -0.6077726 -0.6126835 -0.6029578    0 cg00019093</span></span>
+<span><span class="co">#&gt; 4 -0.6038282 -0.6235358 -0.5851115    0 cg00066729</span></span>
+<span><span class="co">#&gt; 5 -0.6075678 -0.6131424 -0.6020302    0 cg00031759</span></span>
+<span><span class="co">#&gt; 6 -0.6048778 -0.6213427 -0.5872151    0 cg00084432</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_binary</span><span class="op">$</span><span class="va">TE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          est     CI_2.5    CI_97.5 pval       feat</span></span>
-<span><span class="co">#&gt; 1 -0.6070015 -0.6090468 -0.6049175    0 cg00025981</span></span>
-<span><span class="co">#&gt; 2 -0.6067137 -0.6088539 -0.6045375    0 cg00075768</span></span>
-<span><span class="co">#&gt; 3 -0.6070108 -0.6091154 -0.6049133    0 cg00019093</span></span>
-<span><span class="co">#&gt; 4 -0.6068201 -0.6089097 -0.6048201    0 cg00066729</span></span>
-<span><span class="co">#&gt; 5 -0.6069953 -0.6090666 -0.6049249    0 cg00031759</span></span>
-<span><span class="co">#&gt; 6 -0.6068186 -0.6089037 -0.6045198    0 cg00084432</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 -0.6065501 -0.6104064 -0.6027915    0 cg00025981</span></span>
+<span><span class="co">#&gt; 2 -0.6057857 -0.6138208 -0.5979243    0 cg00075768</span></span>
+<span><span class="co">#&gt; 3 -0.6064140 -0.6101264 -0.6025486    0 cg00019093</span></span>
+<span><span class="co">#&gt; 4 -0.6026878 -0.6181491 -0.5876771    0 cg00066729</span></span>
+<span><span class="co">#&gt; 5 -0.6061872 -0.6107937 -0.6015603    0 cg00031759</span></span>
+<span><span class="co">#&gt; 6 -0.6027737 -0.6174208 -0.5888104    0 cg00084432</span></span></code></pre></div>
 <ul>
 <li>ADE Average Direct Effect: which represents the unmediated
 effect.</li>
@@ -449,21 +449,21 @@ effect.</li>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For first exposure variable</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">$</span><span class="va">ADE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          est     CI_2.5    CI_97.5 pval       feat</span></span>
-<span><span class="co">#&gt; 1 -0.5601282 -0.6990500 -0.4254862    0 cg00025981</span></span>
-<span><span class="co">#&gt; 2 -0.7216112 -0.7749001 -0.6703574    0 cg00075768</span></span>
-<span><span class="co">#&gt; 3 -0.5170829 -0.6449217 -0.3785875    0 cg00019093</span></span>
-<span><span class="co">#&gt; 4 -0.6793718 -0.7008739 -0.6552783    0 cg00066729</span></span>
-<span><span class="co">#&gt; 5 -0.5975570 -0.6973984 -0.4960193    0 cg00031759</span></span>
-<span><span class="co">#&gt; 6 -0.6631018 -0.6921840 -0.6346139    0 cg00084432</span></span>
+<span><span class="co">#&gt;            est       CI_2.5       CI_97.5  pval       feat</span></span>
+<span><span class="co">#&gt; 1 -0.002249995 -0.004704156  2.258326e-04 0.082 cg00025981</span></span>
+<span><span class="co">#&gt; 2 -0.006080724 -0.010353790 -1.587034e-03 0.006 cg00075768</span></span>
+<span><span class="co">#&gt; 3 -0.001748348 -0.004365040  7.746755e-04 0.146 cg00019093</span></span>
+<span><span class="co">#&gt; 4 -0.007733492 -0.016981106  1.168161e-03 0.098 cg00066729</span></span>
+<span><span class="co">#&gt; 5 -0.002745542 -0.005484008  3.433874e-05 0.052 cg00031759</span></span>
+<span><span class="co">#&gt; 6 -0.005438517 -0.013843831  2.642160e-03 0.206 cg00084432</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_binary</span><span class="op">$</span><span class="va">ADE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          est     CI_2.5    CI_97.5 pval       feat</span></span>
-<span><span class="co">#&gt; 1 -0.5545354 -0.6808834 -0.4268651    0 cg00025981</span></span>
-<span><span class="co">#&gt; 2 -0.7243052 -0.7838235 -0.6649691    0 cg00075768</span></span>
-<span><span class="co">#&gt; 3 -0.5187455 -0.6330178 -0.3898110    0 cg00019093</span></span>
-<span><span class="co">#&gt; 4 -0.6791212 -0.7021317 -0.6556569    0 cg00066729</span></span>
-<span><span class="co">#&gt; 5 -0.5962429 -0.7068583 -0.4910823    0 cg00031759</span></span>
-<span><span class="co">#&gt; 6 -0.6630343 -0.6919211 -0.6327212    0 cg00084432</span></span></code></pre></div>
+<span><span class="co">#&gt;           est        CI_2.5     CI_97.5  pval       feat</span></span>
+<span><span class="co">#&gt; 1 0.002117995 -0.0003667510 0.004502433 0.082 cg00025981</span></span>
+<span><span class="co">#&gt; 2 0.005563085  0.0009328813 0.010318577 0.022 cg00075768</span></span>
+<span><span class="co">#&gt; 3 0.001628908 -0.0006251963 0.003955601 0.154 cg00019093</span></span>
+<span><span class="co">#&gt; 4 0.005088420 -0.0036692786 0.014375359 0.266 cg00066729</span></span>
+<span><span class="co">#&gt; 5 0.002487285 -0.0003163606 0.005441125 0.092 cg00031759</span></span>
+<span><span class="co">#&gt; 6 0.002612146 -0.0056035338 0.011123318 0.544 cg00084432</span></span></code></pre></div>
 <p>This step also compute Overall effects :</p>
 <ul>
 <li>OIE (Indirect effect): corresponding to the sum of the indirect
@@ -472,13 +472,13 @@ effect associated with all mediators.</li>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Estimate OIE for first exposure variable</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">$</span><span class="va">oie</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] -0.2958142 -0.1508090 -0.3900808 -0.1246276 -0.2151548 -0.1401295</span></span>
+<span><span class="co">#&gt; [1] -0.6064258 -0.6097231 -0.6089457 -0.6073540 -0.6056969 -0.6070264</span></span>
 <span><span class="co"># OIE median for first exposure variable</span></span>
 <span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">$</span><span class="va">oie_med</span></span>
-<span><span class="co">#&gt; [1] -0.1933182</span></span>
+<span><span class="co">#&gt; [1] -0.6072117</span></span>
 <span><span class="co"># OIE standard deviation for first exposure variable</span></span>
 <span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">$</span><span class="va">oie_sd</span></span>
-<span><span class="co">#&gt; [1] 0.08165734</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.001471896</span></span></code></pre></div>
 <ul>
 <li>ODE (Direct Effect): corresponding to the effect of exposure
 variables on the outcome variable.</li>
@@ -486,7 +486,7 @@ variables on the outcome variable.</li>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">$</span><span class="va">ode</span></span>
 <span><span class="co">#&gt;      Estimate    Std. Error       t value      Pr(&gt;|t|) </span></span>
-<span><span class="co">#&gt; -4.138240e-01  8.050834e-02 -5.140138e+00  1.794390e-06</span></span></code></pre></div>
+<span><span class="co">#&gt; -0.0008142819  0.0008132002 -1.0013301171  0.3196129874</span></span></code></pre></div>
 <ul>
 <li>OTE (Total Effect): corresponding to the effect of exposure
 variables on the outcome variable when the mediators
@@ -495,8 +495,8 @@ are included in the model.</li>
 </ul>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">$</span><span class="va">ote</span></span>
-<span><span class="co">#&gt;       Estimate     Std. Error        t value       Pr(&gt;|t|) </span></span>
-<span><span class="co">#&gt;  -6.080365e-01   1.337064e-03  -4.547549e+02  1.856535e-157</span></span></code></pre></div>
+<span><span class="co">#&gt;    Estimate  Std. Error     t value    Pr(&gt;|t|) </span></span>
+<span><span class="co">#&gt; -0.02813858  0.04965823 -0.56664474  0.57233541</span></span></code></pre></div>
 <p>In addition, function <code>estimate_effect</code> estimates the
 intermediary effect sizes
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mi>j</mi></msub><annotation encoding="application/x-tex">a_j</annotation></semantics></math>
@@ -513,13 +513,13 @@ and their standard deviations.</p>
 <span><span class="co">#&gt; 5 4.1366585 0.012411325 333.29708 2.910289e-142 cg00031759</span></span>
 <span><span class="co">#&gt; 6 1.7521157 0.017207734 101.82141  1.490810e-95 cg00084432</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">X_continuous</span><span class="op">$</span><span class="va">my</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       Estimate   Std.Error    t.Value       pValue       feat</span></span>
-<span><span class="co">#&gt; 1 -0.012063552 0.016128696 -0.7479558 4.563945e-01 cg00025981</span></span>
-<span><span class="co">#&gt; 2  0.059815480 0.015016868  3.9832193 1.358342e-04 cg00075768</span></span>
-<span><span class="co">#&gt; 3 -0.023244544 0.016497605 -1.4089648 1.622166e-01 cg00019093</span></span>
-<span><span class="co">#&gt; 4  0.100847132 0.016982709  5.9382241 5.061150e-08 cg00066729</span></span>
-<span><span class="co">#&gt; 5 -0.002496094 0.012440722 -0.2006390 8.414237e-01 cg00031759</span></span>
-<span><span class="co">#&gt; 6  0.031741873 0.008358622  3.7975008 2.619181e-04 cg00084432</span></span></code></pre></div>
+<span><span class="co">#&gt;     Estimate    Std.Error   t.Value        pValue       feat</span></span>
+<span><span class="co">#&gt; 1 -0.1432972 0.0003740081 -383.1392 9.121028e-148 cg00025981</span></span>
+<span><span class="co">#&gt; 2 -0.3131144 0.0015345890 -204.0379 6.780064e-123 cg00075768</span></span>
+<span><span class="co">#&gt; 3 -0.1569360 0.0003993090 -393.0189 9.004817e-149 cg00019093</span></span>
+<span><span class="co">#&gt; 4 -0.8401775 0.0080973478 -103.7596  2.719594e-96 cg00066729</span></span>
+<span><span class="co">#&gt; 5 -0.1462449 0.0004394737 -332.7727 3.358223e-142 cg00031759</span></span>
+<span><span class="co">#&gt; 6 -0.3420139 0.0030358816 -112.6572  1.613923e-99 cg00084432</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="vizualisation-of-results">Vizualisation of results<a class="anchor" aria-label="anchor" href="#vizualisation-of-results"></a>
@@ -696,36 +696,36 @@ effect</li>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">her2_status</span><span class="op">$</span><span class="va">ACME</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         est    CI_2.5   CI_97.5 pval       feat</span></span>
-<span><span class="co">#&gt; 1 0.2784688 0.2007761 0.3684568    0 cg11911951</span></span>
-<span><span class="co">#&gt; 2 0.2294585 0.1520016 0.3178191    0 cg26530341</span></span>
-<span><span class="co">#&gt; 3 0.1836607 0.1127275 0.2625803    0 cg00138126</span></span>
-<span><span class="co">#&gt; 4 0.2171309 0.1363593 0.3046410    0 cg11203041</span></span>
-<span><span class="co">#&gt; 5 0.1984004 0.1317436 0.2807484    0 cg03070194</span></span>
-<span><span class="co">#&gt; 6 0.1672393 0.1021579 0.2383321    0 cg01804429</span></span>
+<span><span class="co">#&gt; 1 0.2792769 0.1966407 0.3705695    0 cg11911951</span></span>
+<span><span class="co">#&gt; 2 0.2274984 0.1495706 0.3142055    0 cg26530341</span></span>
+<span><span class="co">#&gt; 3 0.1852299 0.1185951 0.2689990    0 cg00138126</span></span>
+<span><span class="co">#&gt; 4 0.2152579 0.1434096 0.2982112    0 cg11203041</span></span>
+<span><span class="co">#&gt; 5 0.1986468 0.1357484 0.2704283    0 cg03070194</span></span>
+<span><span class="co">#&gt; 6 0.1694830 0.1010663 0.2430196    0 cg01804429</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">her2_status</span><span class="op">$</span><span class="va">PM</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         est    CI_2.5  CI_97.5  pval       feat</span></span>
-<span><span class="co">#&gt; 1 1.1857272 0.5901775 6.606379 0.024 cg11911951</span></span>
-<span><span class="co">#&gt; 2 0.9680960 0.4750882 4.600577 0.020 cg26530341</span></span>
-<span><span class="co">#&gt; 3 0.7599831 0.3648364 3.012848 0.016 cg00138126</span></span>
-<span><span class="co">#&gt; 4 0.8759732 0.4352169 3.445938 0.034 cg11203041</span></span>
-<span><span class="co">#&gt; 5 0.8467502 0.3718854 4.839949 0.018 cg03070194</span></span>
-<span><span class="co">#&gt; 6 0.6952949 0.3211907 2.776993 0.028 cg01804429</span></span>
+<span><span class="co">#&gt; 1 1.1480889 0.5756999 5.597897 0.032 cg11911951</span></span>
+<span><span class="co">#&gt; 2 0.9808814 0.4401077 4.067071 0.024 cg26530341</span></span>
+<span><span class="co">#&gt; 3 0.7736714 0.3670970 2.828451 0.026 cg00138126</span></span>
+<span><span class="co">#&gt; 4 0.8790362 0.4131857 4.403670 0.038 cg11203041</span></span>
+<span><span class="co">#&gt; 5 0.8350218 0.3757213 3.301773 0.026 cg03070194</span></span>
+<span><span class="co">#&gt; 6 0.7140289 0.3183601 4.187144 0.026 cg01804429</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">her2_status</span><span class="op">$</span><span class="va">TE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         est     CI_2.5   CI_97.5  pval       feat</span></span>
-<span><span class="co">#&gt; 1 0.2308552 0.02317209 0.4351883 0.024 cg11911951</span></span>
-<span><span class="co">#&gt; 2 0.2339777 0.02457342 0.4313141 0.020 cg26530341</span></span>
-<span><span class="co">#&gt; 3 0.2425479 0.03929783 0.4509146 0.016 cg00138126</span></span>
-<span><span class="co">#&gt; 4 0.2395217 0.03116232 0.4467340 0.034 cg11203041</span></span>
-<span><span class="co">#&gt; 5 0.2359130 0.02592056 0.4534777 0.018 cg03070194</span></span>
-<span><span class="co">#&gt; 6 0.2358428 0.03412063 0.4455368 0.028 cg01804429</span></span>
+<span><span class="co">#&gt; 1 0.2355177 0.01874773 0.4454228 0.032 cg11911951</span></span>
+<span><span class="co">#&gt; 2 0.2332141 0.03411644 0.4544115 0.024 cg26530341</span></span>
+<span><span class="co">#&gt; 3 0.2371727 0.04074986 0.4397829 0.026 cg00138126</span></span>
+<span><span class="co">#&gt; 4 0.2376350 0.01261414 0.4509947 0.038 cg11203041</span></span>
+<span><span class="co">#&gt; 5 0.2363325 0.03319081 0.4476458 0.026 cg03070194</span></span>
+<span><span class="co">#&gt; 6 0.2352998 0.02283665 0.4506411 0.026 cg01804429</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">her2_status</span><span class="op">$</span><span class="va">ADE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            est     CI_2.5   CI_97.5  pval       feat</span></span>
-<span><span class="co">#&gt; 1 -0.047613629 -0.2438794 0.1561007 0.670 cg11911951</span></span>
-<span><span class="co">#&gt; 2  0.004519256 -0.1955957 0.2001269 0.952 cg26530341</span></span>
-<span><span class="co">#&gt; 3  0.058887217 -0.1384571 0.2591311 0.572 cg00138126</span></span>
-<span><span class="co">#&gt; 4  0.022390726 -0.1771542 0.2119913 0.812 cg11203041</span></span>
-<span><span class="co">#&gt; 5  0.037512666 -0.1607231 0.2475389 0.718 cg03070194</span></span>
-<span><span class="co">#&gt; 6  0.068603483 -0.1336841 0.2699141 0.508 cg01804429</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 -0.043759217 -0.2471936 0.1456342 0.714 cg11911951</span></span>
+<span><span class="co">#&gt; 2  0.005715672 -0.1909862 0.2176840 0.994 cg26530341</span></span>
+<span><span class="co">#&gt; 3  0.051942863 -0.1437535 0.2513561 0.584 cg00138126</span></span>
+<span><span class="co">#&gt; 4  0.022377058 -0.1826766 0.2180781 0.820 cg11203041</span></span>
+<span><span class="co">#&gt; 5  0.037685703 -0.1569621 0.2526730 0.704 cg03070194</span></span>
+<span><span class="co">#&gt; 6  0.065816820 -0.1460935 0.2692761 0.536 cg01804429</span></span></code></pre></div>
 <p>This step also compute Overall effects :</p>
 <ul>
 <li>OIE (Indirect effect): corresponding to the sum of the indirect
@@ -740,7 +740,7 @@ are included in the model.</li>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">her2_status</span><span class="op">$</span><span class="va">oie_med</span> <span class="co"># OIE median for first exposure variable</span></span>
-<span><span class="co">#&gt; [1] 0.5999524</span></span>
+<span><span class="co">#&gt; [1] 0.5985287</span></span>
 <span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">her2_status</span><span class="op">$</span><span class="va">ode</span></span>
 <span><span class="co">#&gt;      Estimate    Std. Error       t value      Pr(&gt;|t|) </span></span>
 <span><span class="co">#&gt; -0.3668303938  0.1029342201 -3.5637360789  0.0003850724</span></span>
@@ -911,21 +911,21 @@ effect</li>
 </ul>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">ACME</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           est      CI_2.5     CI_97.5  pval   feat</span></span>
-<span><span class="co">#&gt; 1 -0.09194340 -0.18993884 -0.02151362 0.004 MVB12B</span></span>
-<span><span class="co">#&gt; 2  0.06637587  0.01932139  0.13791642 0.002   NT5E</span></span>
+<span><span class="co">#&gt;           est      CI_2.5    CI_97.5  pval   feat</span></span>
+<span><span class="co">#&gt; 1 -0.08950581 -0.18871157 -0.0218598 0.000 MVB12B</span></span>
+<span><span class="co">#&gt; 2  0.06433022  0.01569121  0.1482869 0.008   NT5E</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">PM</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          est      CI_2.5     CI_97.5  pval   feat</span></span>
-<span><span class="co">#&gt; 1  0.3063268  0.06408475  1.01807556 0.006 MVB12B</span></span>
-<span><span class="co">#&gt; 2 -0.2032858 -1.03621193 -0.04762872 0.004   NT5E</span></span>
+<span><span class="co">#&gt; 1  0.2873987  0.06339643  1.28196827 0.000 MVB12B</span></span>
+<span><span class="co">#&gt; 2 -0.1911280 -0.89653635 -0.03543852 0.016   NT5E</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">TE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          est     CI_2.5    CI_97.5  pval   feat</span></span>
-<span><span class="co">#&gt; 1 -0.2959814 -0.4635981 -0.1062324 0.002 MVB12B</span></span>
-<span><span class="co">#&gt; 2 -0.3027227 -0.4624454 -0.1126964 0.002   NT5E</span></span>
+<span><span class="co">#&gt;          est     CI_2.5     CI_97.5  pval   feat</span></span>
+<span><span class="co">#&gt; 1 -0.2978464 -0.4553475 -0.09726653 0.000 MVB12B</span></span>
+<span><span class="co">#&gt; 2 -0.3062220 -0.4741517 -0.11300873 0.008   NT5E</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">ADE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          est     CI_2.5      CI_97.5  pval   feat</span></span>
-<span><span class="co">#&gt; 1 -0.1696329 -0.3432872  0.002910362 0.062 MVB12B</span></span>
-<span><span class="co">#&gt; 2 -0.4386200 -0.6069789 -0.237642512 0.000   NT5E</span></span></code></pre></div>
+<span><span class="co">#&gt;          est     CI_2.5     CI_97.5  pval   feat</span></span>
+<span><span class="co">#&gt; 1 -0.1730449 -0.3368503  0.01835974 0.082 MVB12B</span></span>
+<span><span class="co">#&gt; 2 -0.4374798 -0.6060496 -0.21215611 0.000   NT5E</span></span></code></pre></div>
 <p>This step also compute Overall effects :</p>
 <ul>
 <li>OIE (Indirect effect): corresponding to the sum of the indirect
@@ -939,7 +939,7 @@ are included in the model.</li>
 </ul>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">oie_med</span> <span class="co"># OIE median for first exposure variable</span></span>
-<span><span class="co">#&gt; [1] 0.03065335</span></span>
+<span><span class="co">#&gt; [1] 0.01985311</span></span>
 <span><span class="va">hdmax2_step2</span><span class="op">$</span><span class="va">effects</span><span class="op">$</span><span class="va">gender</span><span class="op">$</span><span class="va">ode</span></span>
 <span><span class="co">#&gt;     Estimate   Std. Error      z value     Pr(&gt;|z|) </span></span>
 <span><span class="co">#&gt; -1.824871656  0.686797321 -2.657074510  0.007882202</span></span>
