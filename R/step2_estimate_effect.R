@@ -113,17 +113,25 @@ estimate_effect <- function(object , m, boots = 1000, ...) {
     
     if( ncol_var == 1){
       message("Estimating indirect effect for univariate exposome.")  
-      
       if (is.null(object$input$covar)) {
         covars = data.frame(latent_factors = object$AS_1$U)
       } else  {
         covars = data.frame(obs_covar = object$input$covar, latent_factors = object$AS_1$U)
       } 
       if (is.null(object$input$covar_sup_reg2)) {
-        covars_2 = data.frame(latent_factors = object$AS_1$U)
-      } else  {
-        covars_2 = data.frame(obs_covar = object$input$covar, obs_covar_2 = object$input$covar_sup_reg2, latent_factors = object$AS_1$U)
-      } 
+        if (is.null(object$input$covar)) {
+          covars_2 = data.frame(latent_factors = object$AS_1$U)
+        } else  {
+          covars_2 = data.frame(obs_covar = object$input$covar, latent_factors = object$AS_1$U)
+        } 
+      } else {
+        if (is.null(object$input$covar)) {
+          covars_2 = data.frame(obs_covar_2 = object$input$covar_sup_reg2, latent_factors = object$AS_1$U)
+        } else  {
+          covars_2 = data.frame(obs_covar = object$input$covar, obs_covar_2 = object$input$covar_sup_reg2, latent_factors = object$AS_1$U)
+        } 
+        
+      }
     } else if( ncol_var > 1) {
       message("Estimating indirect effect for multivariate exposome.") 
       extra_expo_vars = expo_var_ids[-which(expo_var_ids %in% expo_var_id)]
