@@ -157,12 +157,12 @@ estimate_effect <- function(object , m, boots = 1000, ...) {
       } 
       if (is.null(object$input$covar_sup_reg2)) {
         if (is.null(object$input$covar)) {
-          covars_2 = data.frame(latent_factors = object$AS_1$U)
+          covars_2 = data.frame(latent_factors = object$AS_1$U, df_extra = df_extra)
         } else {
-          covars_2 = data.frame(obs_covar = object$input$covar, latent_factors = object$AS_1$U)
+          covars_2 = data.frame(obs_covar = object$input$covar, latent_factors = object$AS_1$U, df_extra = df_extra)
         } 
       } else  {
-        covars_2 = data.frame(obs_covar = object$input$covar, obs_covar_2 = object$input$covar_sup_reg2, latent_factors = object$AS_1$U)
+        covars_2 = data.frame(obs_covar = object$input$covar, obs_covar_2 = object$input$covar_sup_reg2, latent_factors = object$AS_1$U, df_extra = df_extra)
       } 
     }
     
